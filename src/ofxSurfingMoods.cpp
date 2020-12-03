@@ -50,7 +50,8 @@ void ofxSurfingMoods::setup()//default sizes
 	//font to draw preview boxes
 	fname = "overpass-mono-bold.otf";
 	//fname = "PragmataProR_0822.ttf";
-	myTTF = pathFolder + "fonts/" + fname;
+	//myTTF = pathFolder + "fonts/" + fname;
+	myTTF = "assets/fonts/" + fname;
 	sizeTTF = 9;//font size
 	bool isLoaded = myFont.load(myTTF, sizeTTF, true, true);
 	if (!isLoaded)
@@ -250,7 +251,8 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	//fname = "overpass-mono-bold.otf";
 	fname = "telegrama_render.otf";
 	//fname = "PragmataProR_0822.ttf";
-	myTTF_Gui = pathFolder + "fonts/" + fname;
+	//myTTF_Gui = pathFolder + "fonts/" + fname;
+	myTTF_Gui = "assets/fonts/" + fname;
 
 	ofFile fileF(myTTF_Gui);
 	bool bLoadedGuiFont = fileF.exists();
