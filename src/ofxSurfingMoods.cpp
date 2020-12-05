@@ -1113,6 +1113,11 @@ void ofxSurfingMoods::stopGen()
 
     RANGE_Selected = 0;
     TARGET_Selected = ranges[RANGE_Selected].min;//set the target to the first target pos of the range
+
+
+    //TODO:
+    ofxMC::Matrix mat("transitionMatrix.txt");
+    markov.setup(mat, 0);
 }
 
 //--------------------------------------------------------------
