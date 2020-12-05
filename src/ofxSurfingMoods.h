@@ -12,6 +12,7 @@
 
 #include "ofxSimpleTimer.h"
 #include "ofxGuiExtended2.h"
+#include "ofxMarkovChain.h"
 
 //--
 
@@ -25,7 +26,7 @@
 #define DEFAULT_RANGE_LIMIT_1 4//divisor between range 1 and range 2
 #define DEFAULT_RANGE_LIMIT_2 11//divisor between range 2 and range 3
 
-#define USE_PRESETS_STARTS_AT_1_NOT_0//we use presets from 1 to 8
+//#define USE_PRESETS_STARTS_AT_1_NOT_0//we use presets from 1 to 8
 
 //NOTE:
 //range 0 = presets 0-3
@@ -39,7 +40,19 @@
 class ofxSurfingMoods
 {
 
+    //markov
 public:
+    int i;
+//    ofParameter<int> cycle;
+    ofxMC::MarkovChain markov;
+    ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
+//    ofParameterGroup params_Ranged{"RANGED"};
+    ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
+    ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
+    ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
+//    ofParameterGroup params_Manual{"MANUAL"};
+    ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
+    ofParameter<float> controlManual{"CONTROL", 0,0,1.f};
 
 	//-
 

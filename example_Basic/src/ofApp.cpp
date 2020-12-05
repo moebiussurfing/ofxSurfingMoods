@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofSetFrameRate(60);
+	ofSetFrameRate(30);
 
 	ofSetLogLevel("ofApp", OF_LOG_NOTICE);
 	ofSetLogLevel("ofxSurfingMoods", OF_LOG_VERBOSE);
@@ -19,7 +19,7 @@ void ofApp::setup()
 	//GEN.setup();
 	//with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
 
-	GEN.setGui_AdvancedVertical_MODE(true);
+	GEN.setGui_AdvancedVertical_MODE(false);
 	GEN.setPosition(20, 20);//gui panel position
 
 	//-
