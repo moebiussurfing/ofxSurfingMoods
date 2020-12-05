@@ -5,7 +5,7 @@ ofxAddonTemplateCustomApp
 **ofxAddonTemplateCustomApp** is an **openFrameworks** addon template for MYSELF.
 
 ## Screenshot
-![image](/readme_images/Capture1.PNG?raw=true "image")
+![image](/readme_images/Capture.PNG?raw=true "image")
 
 ## Features
 - Customize gui.
