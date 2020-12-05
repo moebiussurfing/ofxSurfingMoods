@@ -11,20 +11,20 @@ There are an internal Bpm clock and customizable timers to define the global spe
 ![image](/readme_images/Capture1.PNG?raw=true "image")
 
 ## Features
-- Avoid repeat same state on the next step mode.
+- Avoid repeat the same state on the next step mode.
 - Force to start from first state of the Range Mood when arriving.
 - Three different modes:
-* 1. Range Mode
-* 2. Manual Control with a float to force select a Range, and to walk locked inside.
-* 3. Markov chain. Editable matrix to distribute graph probabilities.
+1. Range Mode
+2. Manual Control with a float to force select a Range, and to walk locked inside.
+3. Markov chain. Editable matrix to distribute graph probabilities.
 
 ## Usage
  - Look **example_Basic**.
 
 ## Dependencies
-Already included in OF_ADDON/libs. No need to add manually.
-- ofxMarkovChain
-- ofxSimpleTimer
+Already included in *OF_ADDON/libs*. No need to add manually.
+- **ofxMarkovChain**
+- **ofxSimpleTimer**
 
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
