@@ -5,18 +5,19 @@
 #include "ofxSurfingMoods.h"
 
 class ofApp: public ofBaseApp{
+
 public:
+
     void setup();
     void update();
     void draw();
     void exit();
-
     void keyPressed(int key);
     void windowResized(int w, int h);
 	
-    ofxSurfingMoods GEN;
+    ofxSurfingMoods moodMachine;
 
-    //listener for inside class GEN
+    //callbacks looking inside moodMachine
     void Changed_GEN_TARGET(int & targetVal);
     void Changed_GEN_PRESET_A(int & targetVal);
 	void Changed_GEN_PRESET_B(int & targetVal);

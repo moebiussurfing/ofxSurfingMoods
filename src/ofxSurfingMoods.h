@@ -18,59 +18,56 @@
 
 #pragma mark DEFINES
 
+//--
+
 #define MAX_ITEMS 16//reserve max for arrays creations
-#define DEFAULT_NUM_TARGETS 16//TARGETS
-#define DEFAULT_NUM_PRESETS 8//PRESETS
-
 #define NUM_RANGES 3//TARGET RANGES
-#define DEFAULT_RANGE_LIMIT_1 4//divisor between range 1 and range 2
-#define DEFAULT_RANGE_LIMIT_2 11//divisor between range 2 and range 3
 
-//#define USE_PRESETS_STARTS_AT_1_NOT_0//we use presets from 1 to 8
+//with default 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+#define DEFAULT_NUM_TARGETS 9//TARGETS
+#define DEFAULT_NUM_PRESETS 9//PRESETS
+#define DEFAULT_RANGE_LIMIT_1 3//divisor between range 1 and range 2
+#define DEFAULT_RANGE_LIMIT_2 6//divisor between range 2 and range 3
 
+//with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
+//#define DEFAULT_NUM_TARGETS 16//TARGETS
+//#define DEFAULT_NUM_PRESETS 8//PRESETS
+//#define DEFAULT_RANGE_LIMIT_1 4//divisor between range 1 and range 2
+//#define DEFAULT_RANGE_LIMIT_2 11//divisor between range 2 and range 3
 //NOTE:
 //range 0 = presets 0-3
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
+
+//--
 
 #define BPM_BAR_RATIO 4 //TO SCALE TIMER/BPM
 
 //--
 
 class ofxSurfingMoods
-{
+{	
 
-    //markov
 public:
-    int i;
-//    ofParameter<int> cycle;
-    ofxMC::MarkovChain markov;
-    ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
-//    ofParameterGroup params_Ranged{"RANGED"};
-    ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
-    ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
-    ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
-//    ofParameterGroup params_Manual{"MANUAL"};
-    ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
-    ofParameter<float> controlManual{"CONTROL", 0,0,1.f};
+	ofxSurfingMoods() {
+	};
 
-	//-
+	~ofxSurfingMoods() { 
+		exit(); 
+	};
 
-#pragma mark PUBLIC
-
-	//preview
-	void drawPreview();
-	void drawPreview(int x, int  y, int  w, int  h);
-
-	//-
-
-#pragma mark OF
+public:
 
 	void setup();
 	void update();
 	void draw();
 	void exit();
 	void windowResized(int w, int h);
+	void keyPressed(int key);
+
+	//preview
+	void drawPreview();
+	void drawPreview(int x, int  y, int  w, int  h);
 
 	//--
 
@@ -79,11 +76,11 @@ public:
 	//should make an outside listener to receive changes!
 	//each target is linked or trigs two other selectors together: preset and pattern
 	ofParameter<int> TARGET_Selected;//current target. allways starts from 0
-	
+
 	ofParameter<int> PRESET_A_Selected;
 	ofParameter<int> PRESET_B_Selected;
 	ofParameter<int> PRESET_C_Selected;
-	
+
 	ofParameter<int> RANGE_Selected;
 
 	ofParameter<bool> PRESET_A_Enable;
@@ -93,11 +90,28 @@ public:
 	//--
 
 private:
-
 	ofParameterGroup params_Listeners;
 	ofParameterGroup params_STORE;
 	ofParameterGroup params_USER;
 	ofParameterGroup parameters_ranges;
+
+	//-
+
+	//markov
+private:
+	//int i;
+	ofxMC::MarkovChain markov;
+	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
+	ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
+	ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
+	ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
+	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
+	ofParameter<float> controlManual{ "CONTROL", 0,0,1.f };
+	//ofParameterGroup params_Ranged{"RANGED"};
+	//ofParameterGroup params_Manual{"MANUAL"};
+	string path_markovMatrix;
+
+	//-
 
 	//-------------------------------------------
 
@@ -112,23 +126,24 @@ public:
 	void stop();
 	void playSwitch();
 
+	//--------------------------------------------------------------
 	void setPathSettingsFolder(string s)
 	{
 		pathFolder = s;
 	}
 
+	//--------------------------------------------------------------
 	bool isPlaying()
 	{
 		return PLAY.get();
 	}
 
+	//--------------------------------------------------------------
 	//bool isPLAY()
 	//{
 	//	return PLAY.get();
 	//}
-
-	//private:
-	//
+	//--------------------------------------------------------------
 	//	bool isPlaying()
 	//	{
 	//		return bIsPlaying;
@@ -139,16 +154,19 @@ public:
 	void setBPM(float bpm);
 	void setLEN_bars(int bars);
 
+	//--------------------------------------------------------------
 	float getBPM()
 	{
 		return BPM.get();
 	}
 
+	//--------------------------------------------------------------
 	void setRange(int r)
 	{
 		RANGE_Selected = r;
 	}
 
+	//--------------------------------------------------------------
 	void setTarget(int t)
 	{
 		TARGET_Selected = t;
@@ -156,22 +174,26 @@ public:
 
 	void setPosition(int x, int y);
 
+	//--------------------------------------------------------------
 	float getGuiUserWidth()
 	{
 		return group_USER->getWidth();
 	}
 
+	//--------------------------------------------------------------
 	void setGuiAdvancedPositon(int _x, int _y)
 	{
 		group_Advanced->setPosition(_x, _y);
 	}
 
+	//--------------------------------------------------------------
 	void setGuiUserPositon(int _x, int _y)
 	{
 		group_USER->setPosition(_x, _y);
 	}
 
 	//preview boxes bar
+//--------------------------------------------------------------
 	void setPreviewPosition(int x, int y, int w, int h)
 	{
 		positionPreviewBoxes = glm::vec2(x, y);
@@ -180,10 +202,12 @@ public:
 
 		bUseCustomPreviewPosition = true;
 	}
+	//--------------------------------------------------------------
 	void setPreviewVisible(bool b)
 	{
 		SHOW_Preview = b;
 	}
+	//--------------------------------------------------------------
 	void togglePreviewVisible()
 	{
 		SHOW_Preview = !SHOW_Preview;
@@ -201,6 +225,7 @@ public:
 	void setGui_visible(bool enable);
 	void setGui_AdvancedVertical_MODE(bool enable);
 
+	//--------------------------------------------------------------
 	void setNextTarget()
 	{
 		int t = TARGET_Selected;
@@ -210,6 +235,7 @@ public:
 		TARGET_Selected = t;
 	}
 
+	//--------------------------------------------------------------
 	void setPreviousTarget()
 	{
 		int t = TARGET_Selected;
@@ -219,11 +245,13 @@ public:
 		TARGET_Selected = t;
 	}
 
+	//--------------------------------------------------------------
 	void setShowGuiUser(bool b)
 	{
 		SHOW_GuiUser = b;
 	}
 
+	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
 	{
 		SHOW_GuiAdvanced = b;
@@ -244,7 +272,9 @@ private:
 	void loadSettings(string path);
 	void saveBanks(string path);
 	void loadBanks(string path);
-	bool autoSaveLoad_settings = true;
+
+	//bool autoSaveLoad_settings = true;
+	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
 
 	void stopGen();
 
@@ -281,7 +311,7 @@ private:
 	void setup_Params();
 
 	//this function can be used to trig ranges jumps externally without using the internal timer.
-	void EngineSwitch();
+	void runEngineModeRange();
 
 	bool BLOCK_CALLBACK_Feedback = false;
 
@@ -291,6 +321,7 @@ private:
 
 	//-
 
+private:
 	//default settings
 	int NUM_TARGETS = (int)DEFAULT_NUM_TARGETS; //TARGETS
 	int NUM_PRESETS_A = (int)DEFAULT_NUM_PRESETS; //PRESETS
@@ -317,7 +348,7 @@ private:
 	//-
 
 	//ofxGuiExtended
-
+private:
 	void setup_GUI_Main();
 	void setup_GUI_User();
 	void setup_GUI_Target();
@@ -334,10 +365,11 @@ private:
 
 	//theme
 	void setup_GUI_Customize();
-	ofJson j_Gui, j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
+	ofJson /*j_Gui,*/ j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
 
 	//-
 
+private:
 	ofParameter<int> timer;//timer
 	ofParameter<int> timer_Progress;//% to finish timer
 	ofParameter<int> Range_Min;//range
@@ -364,6 +396,7 @@ private:
 
 	//-
 
+private:
 	ofParameter<bool> bReset_Settings;
 	ofParameter<bool> bResetSort_Bank;
 	ofParameter<bool> bReset_Bank;
@@ -390,7 +423,7 @@ private:
 
 #pragma mark TIMER
 
-	//TIMER
+	//timer
 	ofxSimpleTimer timer_Range;
 	void timer_Range_Complete(int &args);
 	void timer_Range_Started(int &args);
@@ -414,7 +447,8 @@ private:
 
 #pragma mark RANGES
 
-	//RANGES
+private:
+	//ranges
 	void Changed_Ranges(ofAbstractParameter &e);
 	int RANGE_Selected_PRE;
 
