@@ -1450,7 +1450,7 @@ void ofxSurfingMoods::timer_Range_Complete(int &args)
             else if (controlManual < 2.f/3.f){
                 RANGE_Selected = 1;
             }
-            else if (controlManual < 1.f){
+            else if (controlManual <= 1.f){
                 RANGE_Selected = 2;
             }
 
