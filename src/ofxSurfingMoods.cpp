@@ -1443,6 +1443,8 @@ void ofxSurfingMoods::clone()
 //--------------------------------------------------------------
 void ofxSurfingMoods::timer_Range_Complete(int &args)
 {
+	ofLogNotice(__FUNCTION__) << "\n";
+
 	ofLogVerbose(__FUNCTION__) << "timer_Range_Complete";
 
 	if (PLAY)
@@ -1614,7 +1616,7 @@ void ofxSurfingMoods::timer_Range_Complete(int &args)
 					RANGE_Selected = 2;
 				}
 
-				ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
+				//ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
 			}
 		}
 	}
