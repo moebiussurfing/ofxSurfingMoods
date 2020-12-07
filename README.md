@@ -14,9 +14,6 @@ In your *ofApp*, you can receive the callbacks when *Presets* (A-B-C) changed, l
 
 **GIF**:  
 https://imgur.com/a/j5e9zwa
-<img src="https://imgur.com/a/j5e9zwa.gif"/>  
-!(image)[https://imgur.com/a/j5e9zwa.gif]  
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/j5e9zwa"  ><a href="//imgur.com/a/j5e9zwa">ofxSurfingMoods</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 ## Features
 - Three different **Modes**:
