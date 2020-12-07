@@ -2,10 +2,11 @@ ofxSurfingMoods
 =============================
 
 # Overview
-**ofxSurfingMoods** is an **openFrameworks** addon that works as my personal **Mood-Machine** to randomize'n'walk around some *Moods/States*.  
-Every State is named *Target*, and every Target can be linked to three *Presets* (A-B-C).  
-Also, there's three *Moods/States* called *Ranges*.  
-There is an internal **BPM Clock** and customizable timers, and counters to configure the global speeds.  
+**ofxSurfingMoods** is an **openFrameworks** addon that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
+There is three *Moods* that we call *Ranges* too.  
+Every *State* is named *Target*, and every *Target* can be linked to three *Presets* (A-B-C) receivers.  
+Each *Preset* receiver have 9 possible indexes/presets. We will get this index by callbacks in our *ofApp*, to **apply the States to our Scene**.
+There is an internal **BPM Clock** and customizable timers and counters, to configure the global speeds or how many time we want to stay walking into a *Mood*.  
 In your *ofApp*, you can receive the callbacks when *Presets* (A-B-C) changed, linking them to any *parameter/States/Preset Selections...etc* of your *Scene*.
 
 ## Screenshots

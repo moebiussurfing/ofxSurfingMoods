@@ -18,9 +18,9 @@ public:
     ofxSurfingMoods moodMachine;
 
     //callbacks looking inside moodMachine
-    void Changed_GEN_TARGET(int & targetVal);
-    void Changed_GEN_PRESET_A(int & targetVal);
-	void Changed_GEN_PRESET_B(int & targetVal);
-	void Changed_GEN_PRESET_C(int & targetVal);
-	void Changed_GEN_MOOD_RANGE(int & targetVal);
+    void Changed_Mood_TARGET(int & targetVal);
+    void Changed_Mood_PRESET_A(int & targetVal);
+	void Changed_Mood_PRESET_B(int & targetVal);
+	void Changed_Mood_PRESET_C(int & targetVal);
+	void Changed_Mood_RANGE(int & targetVal);
 };

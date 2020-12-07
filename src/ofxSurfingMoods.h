@@ -40,6 +40,12 @@
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
 
+//ofApp Example:
+//customize ranges/sizes (TODO: maybe not working..)
+//moodMachine.setup(9, 9, 3, 6);
+////9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+////3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
+
 //--
 
 #define BPM_BAR_RATIO 4 //TO SCALE TIMER/BPM
@@ -47,14 +53,14 @@
 //--
 
 class ofxSurfingMoods
-{	
+{
 
 public:
 	ofxSurfingMoods() {
 	};
 
-	~ofxSurfingMoods() { 
-		exit(); 
+	~ofxSurfingMoods() {
+		exit();
 	};
 
 private:
@@ -205,7 +211,7 @@ public:
 		positionPreviewBoxes_Width = w;
 		positionPreviewBoxes_Height = h;
 
-		rectPreview.setRect(positionPreviewBoxes.x, positionPreviewBoxes.y, 
+		rectPreview.setRect(positionPreviewBoxes.x, positionPreviewBoxes.y,
 			positionPreviewBoxes_Width, positionPreviewBoxes_Height);
 
 		bUseCustomPreviewPosition = true;
