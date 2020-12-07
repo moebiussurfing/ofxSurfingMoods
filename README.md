@@ -21,7 +21,7 @@ https://imgur.com/gallery/Li0cT6C
 
 ## Features
 - Three different **Modes**:
-1. **Mode Range**:  
+1. **Mode Ranged**:  
 Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 2. **Mode Markov Chain**:  
 Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor:  
