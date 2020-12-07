@@ -7,11 +7,11 @@ ofxSurfingMoods
 There is **three Moods** that we call **Ranges** too.  
 Every **State** is named **Target**, and every **Target** can be linked to three **Presets** (A-B-C) receivers.  
 
-Each **Preset** receiver (A-B-C) has 9 possible indexes/presets.  
-We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**  
-(linking them to any *parameter/States/Preset Selections...etc*)
+Each **Preset receiver (A-B-C)** has 9 available **Presets/indexes**.  
+We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**.  
+(Linking them to some *Parameters/States/Preset Selections/Changing Colors/Triggering Sounds...etc*)
 
-There is an internal **BPM Clock** and customizable timers and counters, to configure the global speeds or how much time we want to stay walking into a *Mood*.  
+There is an internal **BPM Clock** and customizable timers and counters, to configure the global speeds or how much time we want to stay walking into the *Mood States*.  
 
 ## Screenshots
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
