@@ -327,7 +327,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 
 	(group_USER->getToggle("PLAY"))->setConfig(j_itemFat);
 	(group_USER->getIntSlider("COUNTER"))->unregisterMouseEvents();//disable user mouse
-	 //(group_USER->getIntSlider("RANGE"))->setConfig(j_itemMini);
+	 //(group_USER->getIntSlider("MOOD | RANGE"))->setConfig(j_itemMini);
 
 	(group_USER->getToggle("MOOD RANGE"))->setConfig({
 		{"type", "fullsize"},
@@ -342,7 +342,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	refresh_MOOD_Color();
 
 	//mini
-	(group_RANGES->getIntSlider("RANGE"))->setConfig(j_itemMini);
+	(group_RANGES->getIntSlider("MOOD | RANGE"))->setConfig(j_itemMini);
 	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig(j_itemMini);
 	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig(j_itemMini);
 
@@ -358,7 +358,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 
 	//(group_USER->getToggle("PLAY"))->setConfig(jHigh);
 	//(group_USER->getIntSlider("STAY COUNT"))->setConfig(jHigh);
-	//(group_USER->getIntSlider("RANGE"))->setConfig(jHigh);
+	//(group_USER->getIntSlider("MOOD | RANGE"))->setConfig(jHigh);
 
 	(group_USER->getToggle("ENABLE A"))->setConfig(j_itemMedium);
 	(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
@@ -436,7 +436,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 	};
 	(group_USER->getToggle("MOOD RANGE"))->setConfig(jMood);
 
-	(group_RANGES->getIntSlider("RANGE"))->setConfig({
+	(group_RANGES->getIntSlider("MOOD | RANGE"))->setConfig({
 		{"background-color", cStr},
 		//{"border-color", cStr},
 		//{"fill-color", cStr},
@@ -454,13 +454,13 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 		//{"fill-color", cStr},
 		});
 
-	(group_USER->getIntSlider("TARGET"))->setConfig({
+	(group_USER->getIntSlider("STATE | TARGET"))->setConfig({
 		//{"background-color", cStr},
 		{"border-color", cStr},
 		//{"fill-color", cStr},
 		});
 
-	(group_USER->getIntSlider("RANGE"))->setConfig({
+	(group_USER->getIntSlider("MOOD | RANGE"))->setConfig({
 		//{"background-color", cStr},
 		{"border-color", cStr},
 		//{"fill-color", cStr},
@@ -844,7 +844,7 @@ void ofxSurfingMoods::setup_Params()
 	timer.set("TIMER", 1000, 1, 60000);//ms
 	timer.setSerializable(false);
 
-	TARGET_Selected.set("TARGET", 0, 0, NUM_TARGETS - 1);//target
+	TARGET_Selected.set("STATE | TARGET", 0, 0, NUM_TARGETS - 1);//target
 
 	PRESET_A_Enable.set("ENABLE A", true);
 	PRESET_B_Enable.set("ENABLE B", true);
@@ -901,7 +901,7 @@ void ofxSurfingMoods::setup_Params()
 
 	//define params
 	timer_Progress.set("COMPLETE", 0, 0, 100);//%
-	RANGE_Selected.set("RANGE", 0, 0, NUM_RANGES - 1);
+	RANGE_Selected.set("MOOD | RANGE", 0, 0, NUM_RANGES - 1);
 	//myRange.min.set("MIN PRESET", 0, 0, NUM_TARGETS - 1);//?
 	//myRange.max.set("MAX PRESET", 0, 0, NUM_TARGETS - 1);
 	myRange.name.set("MOOD", ranges[RANGE_Selected].name);
@@ -1865,7 +1865,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			}
 		}
 
-		else if (WIDGET == "TARGET")
+		else if (WIDGET == "STATE | TARGET")
 		{
 			ofLogNotice(__FUNCTION__) << TARGET_Selected;
 
@@ -2045,17 +2045,21 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_Ranged = false;
 				Mode_MarkovChain = false;
 			}
+
 			(group_USER->getFloatSlider(controlManual.getName()))->setEnabled(Mode_Manual.get());
 		}
 		else if (WIDGET == controlManual.getName())
 		{
+			//workflow
+			if (!PLAY.get()) {
+				PLAY = true;
+			}
 		}
 
 		//workflow
 		else if (WIDGET == PRESET_A_Enable.getName())
 		{
 			(group_USER->getIntSlider(PRESET_A_Selected.getName()))->setEnabled(PRESET_A_Enable.get());
-			//(group_USER->getIntSlider(PRESET_A_Selected.getName()))->setHidden(!PRESET_A_Enable.get());
 		}
 		else if (WIDGET == PRESET_B_Enable.getName())
 		{
@@ -2066,8 +2070,6 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			(group_USER->getIntSlider(PRESET_C_Selected.getName()))->setEnabled(PRESET_C_Enable.get());
 		}
 
-		//(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
-		//(group_USER->getToggle("ENABLE C"))->setConfig(j_itemMedium);
 	}
 }
 
@@ -2079,7 +2081,7 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 		std::string name = e.getName();
 		ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
-		if (name == "RANGE")
+		if (name == "MOOD | RANGE")
 		{
 			ofLogNotice(__FUNCTION__) << RANGE_Selected;
 
