@@ -1,10 +1,3 @@
-///BUG:
-///+++++ count duration changes, destroys bar previews. must rescale
-
-///TODO:
-///++ repair browsing targets by keys collapses with range selectr engine
-///++ add blocking to stay into same range running timmer
-///++ define different cycling modes: star allways at first target, from last to first..
 
 #pragma once
 
@@ -27,14 +20,16 @@
 //with default 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
 #define DEFAULT_NUM_TARGETS 9//TARGETS
 #define DEFAULT_NUM_PRESETS 9//PRESETS
-#define DEFAULT_RANGE_LIMIT_1 3//divisor between range 1 and range 2
-#define DEFAULT_RANGE_LIMIT_2 6//divisor between range 2 and range 3
+#define DEFAULT_RANGE_LIMIT_1 3//divisor between range 0 and range 1
+#define DEFAULT_RANGE_LIMIT_2 6//divisor between range 1 and range 2
+
+//--
 
 //with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
 //#define DEFAULT_NUM_TARGETS 16//TARGETS
 //#define DEFAULT_NUM_PRESETS 8//PRESETS
-//#define DEFAULT_RANGE_LIMIT_1 4//divisor between range 1 and range 2
-//#define DEFAULT_RANGE_LIMIT_2 11//divisor between range 2 and range 3
+//#define DEFAULT_RANGE_LIMIT_1 4//divisor between range 0 and range 1
+//#define DEFAULT_RANGE_LIMIT_2 11//divisor between range 1 and range 2
 //NOTE:
 //range 0 = presets 0-3
 //range 1 = presets 4-10
@@ -66,9 +61,11 @@ class ofxSurfingMoods
 {
 
 public:
+	//--------------------------------------------------------------
 	ofxSurfingMoods() {
 	};
 
+	//--------------------------------------------------------------
 	~ofxSurfingMoods() {
 		exit();
 	};
@@ -214,7 +211,7 @@ public:
 	}
 
 	//preview boxes bar
-//--------------------------------------------------------------
+	//--------------------------------------------------------------
 	void setPreviewPosition(int x, int y, int w, int h)
 	{
 		positionPreviewBoxes = glm::vec2(x, y);

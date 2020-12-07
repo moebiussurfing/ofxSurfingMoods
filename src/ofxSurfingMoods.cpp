@@ -77,6 +77,7 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//1.
 	ofAddListener(params_Listeners.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
+	ofAddListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 
 	//2.
 	ofAddListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
@@ -196,6 +197,7 @@ void ofxSurfingMoods::exit()
 	//-
 
 	ofRemoveListener(params_Listeners.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
+	ofRemoveListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 	ofRemoveListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
 
 	//timer
@@ -2043,10 +2045,29 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_Ranged = false;
 				Mode_MarkovChain = false;
 			}
+			(group_USER->getFloatSlider(controlManual.getName()))->setEnabled(Mode_Manual.get());
 		}
-		else if (WIDGET == Mode_Manual.getName())
+		else if (WIDGET == controlManual.getName())
 		{
 		}
+
+		//workflow
+		else if (WIDGET == PRESET_A_Enable.getName())
+		{
+			(group_USER->getIntSlider(PRESET_A_Selected.getName()))->setEnabled(PRESET_A_Enable.get());
+			//(group_USER->getIntSlider(PRESET_A_Selected.getName()))->setHidden(!PRESET_A_Enable.get());
+		}
+		else if (WIDGET == PRESET_B_Enable.getName())
+		{
+			(group_USER->getIntSlider(PRESET_B_Selected.getName()))->setEnabled(PRESET_B_Enable.get());
+		}
+		else if (WIDGET == PRESET_C_Enable.getName())
+		{
+			(group_USER->getIntSlider(PRESET_C_Selected.getName()))->setEnabled(PRESET_C_Enable.get());
+		}
+
+		//(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
+		//(group_USER->getToggle("ENABLE C"))->setConfig(j_itemMedium);
 	}
 }
 
