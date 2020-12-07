@@ -9,7 +9,7 @@ Every **State** is named **Target**, and every **Target** can be linked to three
 
 Each **Preset receiver (A-B-C)** has 9 available **Presets/indexes**.  
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**.  
-(Linking them to some *Parameters/States/Preset Selections/Changing Colors/Triggering Sounds...etc*)
+(Linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/Triggering Video/Sounds...etc*)
 
 There is an internal **BPM Clock** and customizable timers and counters, to configure the global speeds or how much time we want to stay walking into the *Mood States*.  
 
