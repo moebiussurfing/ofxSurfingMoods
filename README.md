@@ -5,7 +5,7 @@ ofxSurfingMoods
 **ofxSurfingMoods** is an **openFrameworks** addon that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
 
 There is **three Moods** that we call **Ranges** too.  
-Every **State** is named **Target**, and every **Target** can be linked to three **Presets** (A-B-C) receivers.  
+Every **State** is named **Target**, and every **Target** can be linked to three **Presets receivers (A-B-C)**.  
 
 Each **Preset receiver (A-B-C)** has 9 available **Presets/indexes**.  
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**.  
@@ -17,14 +17,14 @@ There is an internal **BPM Clock** and customizable timers and counters, to conf
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
 
 **VIDEO/GIF**:  
-https://imgur.com/gallery/Li0cT6C
+https://imgur.com/a/MtI4NL7
 
 ## Features
 - Three different **Modes**:
 1. **Mode Ranged**:  
 Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 2. **Mode Markov Chain**:  
-Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor:  
+Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. (Each row values must add up to 1.0 to be stochastic.):  
 ![image](/readme_images/MarkovMatrix.PNG?raw=true "image")  
 3. **Mode Manual Control**:  
 Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
@@ -38,6 +38,7 @@ Available float to force select a **Mood/Range**, and to *walk'n'randomize* **St
  - Look into **OF_ADDON/example_Basic**.
 
 ## Dependencies
+Add to your project:  
 - **ofxGuiExtended2** (https://github.com/moebiussurfing/ofxGuiExtended2)  
 
 Already included in *OF_ADDON/libs*. No need to add manually:
