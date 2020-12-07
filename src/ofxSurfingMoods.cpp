@@ -58,6 +58,14 @@ void ofxSurfingMoods::setup()//default sizes
 		ofLogError(__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
 	}
 
+	//-
+
+	//preview rectangle
+	bUseCustomPreviewPosition = true;
+	path_rect = pathFolder + "ofxSurfingMoods_";
+	rectPreview.loadSettings("", path_rect, true);
+	//rectPreview.setRect(25, 650, 700, 50);//initialize
+
 	//--
 
 	//gui
@@ -84,7 +92,7 @@ void ofxSurfingMoods::setup()//default sizes
 	//RESET
 	////ERASE BANK TARGETS
 	//resetBank(false);
-	////REEST CLOCK
+	////REST CLOCK
 	//resetClock();
 
 	//-
@@ -167,6 +175,11 @@ void ofxSurfingMoods::windowResized(int w, int h)
 //--------------------------------------------------------------
 void ofxSurfingMoods::exit()
 {
+	//-
+
+	//preview rectangle
+	rectPreview.saveSettings("", path_rect, true);
+
 	//-
 
 	if (autoSaveLoad_settings)
@@ -477,13 +490,23 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 	float gx, gy, gw, gh;
 	float ww, hh;
 
-	//custom
+	////custom
+	//if (bUseCustomPreviewPosition)
+	//{
+	//	gx = positionPreviewBoxes.x;
+	//	gy = positionPreviewBoxes.y;
+	//	ww = positionPreviewBoxes_Width;
+	//	hh = positionPreviewBoxes_Height;
+	//}
+
+	////custom
+	// preview rectangle
 	if (bUseCustomPreviewPosition)
 	{
-		gx = positionPreviewBoxes.x;
-		gy = positionPreviewBoxes.y;
-		ww = positionPreviewBoxes_Width;
-		hh = positionPreviewBoxes_Height;
+		gx = rectPreview.getX();
+		gy = rectPreview.getY();
+		ww = rectPreview.getWidth();
+		hh = rectPreview.getHeight();
 	}
 
 	//default
@@ -505,8 +528,22 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 	else
 	{
 	}
+	
+	//-
 
 	drawPreview(gx, gy, ww, hh);
+
+	//-
+
+	// preview rectangle
+	if (Edit_Gui)
+	{
+		ofPushStyle();
+		ofSetColor(128,64);
+		ofDrawRectangle(rectPreview);
+		rectPreview.draw();
+		ofPopStyle();
+	}
 }
 
 //--------------------------------------------------------------
@@ -752,27 +789,28 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h)///custom positi
 			if (Mode_Manual)
 			{
 				ofNoFill();
-				ofSetColor(255, 200);
+				ofSetColor(255, 150);
 				ofSetLineWidth(line + 2.0f);
 				float xx = x + controlManual * w;
+				_h = h * 0.25f;
 				ofDrawLine(xx, (y + h + padH), xx, (y + h + padH) + _h);
 			}
 		}
 
 		//-
 
-		//        //markov
-		//        float ww =300;
-		//        float hh =300;
-		//        if(i == 0){
-		//            ofSetColor(ofColor::red);
-		//            ofDrawRectangle(ww, hh + 10, 10, 10);
-		//        }
+		////markov debug preview
+		//float ww =300;
+		//float hh =300;
+		//if(i == 0){
+		//    ofSetColor(ofColor::red);
+		//    ofDrawRectangle(ww, hh + 10, 10, 10);
+		//}
 		//
-		//        markov.draw(ww + 35, hh + 20);
+		//markov.draw(ww + 35, hh + 20);
 		//
-		//        ofSetColor(ofColor::white);
-		//        ofDrawBitmapString("You can change the \ntransition matrix in \n'data/transitionMatrix.txt'", ww + 10, hh + 50);
+		//ofSetColor(ofColor::white);
+		//ofDrawBitmapString("You can change the \ntransition matrix in \n'data/transitionMatrix.txt'", ww + 10, hh + 50);
 
 		//-
 
@@ -821,6 +859,7 @@ void ofxSurfingMoods::setup_Params()
 	SHOW_GuiUser.set("SHOW USER", false);
 	SHOW_GuiAdvanced.set("SHOW ADVANCED", false);
 	SHOW_Preview.set("SHOW PREVIEW", false);
+	Edit_Gui.set("EDIT GUI", false);
 
 	//disabled
 	////labels to monitor
@@ -926,6 +965,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(bReset_Bank);
 	params_Listeners.add(SHOW_GuiUser);
 	params_Listeners.add(SHOW_GuiAdvanced);
+	params_Listeners.add(Edit_Gui);
 	params_Listeners.add(SHOW_Preview);
 	params_Listeners.add(TARGET_Selected);
 	params_Listeners.add(clone_TARGETS);
@@ -988,6 +1028,7 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(PRESET_C_Enable);
 
 	params_USER.add(SHOW_GuiAdvanced);
+	params_USER.add(Edit_Gui);
 	//params_USER.add(autoSaveLoad_settings);
 }
 
@@ -1137,9 +1178,9 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 	{
 		if (SORT_RELATIVE)
 		{
-			presets_A[p] = MIN(p, NUM_PRESETS_A-1);
-			presets_B[p] = MIN(p, NUM_PRESETS_B-1);
-			presets_C[p] = MIN(p, NUM_PRESETS_C-1);
+			presets_A[p] = MIN(p, NUM_PRESETS_A - 1);
+			presets_B[p] = MIN(p, NUM_PRESETS_B - 1);
+			presets_C[p] = MIN(p, NUM_PRESETS_C - 1);
 		}
 		else
 		{
@@ -1342,7 +1383,7 @@ void ofxSurfingMoods::runEngineModeRange()
 	else
 	{
 		//range changed
-		if ( RANGE_Selected.get() != _RANGE_Selected_PRE)
+		if (RANGE_Selected.get() != _RANGE_Selected_PRE)
 		{
 			TARGET_Selected = Range_Min.get();
 		}
@@ -1536,7 +1577,7 @@ void ofxSurfingMoods::timer_Range_Complete(int &args)
 					if (Mode_AvoidRepeat.get())//avoids repeat same target
 					{
 						int _pre = TARGET_Selected.get();
-						
+
 						markov.update();
 						TARGET_Selected = markov.getState();
 
@@ -1937,6 +1978,17 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		else if (WIDGET == "SHOW PREVIEW")
 		{
 
+		}
+		else if (WIDGET == Edit_Gui.getName())
+		{
+			if (Edit_Gui)
+			{
+				rectPreview.enableEdit();
+			}
+			else
+			{
+				rectPreview.disableEdit();
+			}
 		}
 
 		//modes

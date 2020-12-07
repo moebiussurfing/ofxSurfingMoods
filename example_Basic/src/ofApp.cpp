@@ -5,7 +5,8 @@ void ofApp::setup()
 {
 	ofSetFrameRate(60);
 
-	ofSetLogLevel("ofApp", OF_LOG_SILENT);
+	//ofSetLogLevel(OF_LOG_SILENT);
+	//ofSetLogLevel("ofApp", OF_LOG_SILENT);
 	//ofSetLogLevel("ofxSurfingMoods", OF_LOG_SILENT);
 
 	//--
@@ -44,14 +45,14 @@ void ofApp::update()
 void ofApp::draw()
 {
 	////next to the gui
-	//moodMachine.drawPreview();
+	moodMachine.drawPreview();
 
-	//customized position: bottom centered
-	int w = 500;
-	int h = 50;
-	int x = ofGetWidth() / 2. - w * 0.5;
-	int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
-	moodMachine.drawPreview(x, y, w, h);
+	////customized position: bottom centered
+	//int w = 500;
+	//int h = 50;
+	//int x = ofGetWidth() / 2. - w * 0.5;
+	//int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
+	//moodMachine.drawPreview(x, y, w, h);
 }
 
 //--------------------------------------------------------------

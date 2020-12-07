@@ -13,6 +13,7 @@
 #include "ofxSimpleTimer.h"
 #include "ofxGuiExtended2.h"
 #include "ofxMarkovChain.h"
+#include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
 
 //--
 
@@ -55,6 +56,10 @@ public:
 	~ofxSurfingMoods() { 
 		exit(); 
 	};
+
+private:
+	ofxInteractiveRect rectPreview = { "_PreviewRect" };
+	std::string path_rect;
 
 public:
 
@@ -200,6 +205,9 @@ public:
 		positionPreviewBoxes_Width = w;
 		positionPreviewBoxes_Height = h;
 
+		rectPreview.setRect(positionPreviewBoxes.x, positionPreviewBoxes.y, 
+			positionPreviewBoxes_Width, positionPreviewBoxes_Height);
+
 		bUseCustomPreviewPosition = true;
 	}
 	//--------------------------------------------------------------
@@ -214,14 +222,12 @@ public:
 	}
 
 private:
-
 	glm::vec2 positionPreviewBoxes;
 	float positionPreviewBoxes_Width;
 	float positionPreviewBoxes_Height;
 	bool bUseCustomPreviewPosition = false;
 
 public:
-
 	void setGui_visible(bool enable);
 	void setGui_AdvancedVertical_MODE(bool enable);
 
@@ -415,6 +421,7 @@ private:
 	bool SHOW_GUI_SwitcherGen;
 	ofParameter<bool> SHOW_GuiUser;
 	ofParameter<bool> SHOW_GuiAdvanced;
+	ofParameter<bool> Edit_Gui;
 	ofParameter<bool> SHOW_Preview;
 
 	//void updateLabels();
