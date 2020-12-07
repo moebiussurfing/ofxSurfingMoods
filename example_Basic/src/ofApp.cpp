@@ -5,6 +5,15 @@ void ofApp::setup()
 {
 	ofSetFrameRate(60);
 
+	//-
+
+	//callbacks listeners for inside class moodMachine
+	moodMachine.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
+	moodMachine.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
+	moodMachine.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
+	moodMachine.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
+	moodMachine.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
+
 	//--
 
 	//ofxSurfingMoods
@@ -16,14 +25,6 @@ void ofApp::setup()
 	//9 presets for each receiver A-B-C.
 	//splitting the 3 moods/ranges: limit 0-1 target 3, limit 1-2 target 6.
 
-	//-
-
-	//callbacks listeners for inside class moodMachine
-	moodMachine.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
-	moodMachine.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
-	moodMachine.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
-	moodMachine.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
-	moodMachine.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
 }
 
 //--------------------------------------------------------------
@@ -105,7 +106,7 @@ void ofApp::Changed_Mood_RANGE(int &targetVal)
 	}
 	if (targetVal == 1)
 	{
-	    ofBackground(ofColor::lightYellow);
+	    ofBackground(ofColor::yellow);
 	}
 	if (targetVal == 2)
 	{

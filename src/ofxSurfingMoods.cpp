@@ -154,7 +154,6 @@ void ofxSurfingMoods::setup()//default sizes
 //--------------------------------------------------------------
 void ofxSurfingMoods::update()
 {
-	////markov
 	//if (Mode_MarkovChain)
 	//{
 	//	i++;

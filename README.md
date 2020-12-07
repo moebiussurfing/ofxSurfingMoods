@@ -16,8 +16,8 @@ There is an internal **BPM Clock** and customizable timers and counters, to conf
 ## Screenshots
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
 
-**GIF**:  
-https://imgur.com/a/j5e9zwa
+**VIDEO/GIF**:  
+https://imgur.com/gallery/Li0cT6C
 
 ## Features
 - Three different **Modes**:
