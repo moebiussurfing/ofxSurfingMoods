@@ -16,15 +16,12 @@ void ofApp::setup()
 
 	//--
 
-	//ofxSurfingMoods
-
 	moodMachine.setup();
 	//default structure is: 
 	//3 moods/ranges (with 3 targets each) 
 	//9 states/targets.
 	//9 presets for each receiver A-B-C.
 	//splitting the 3 moods/ranges: limit 0-1 target 3, limit 1-2 target 6.
-
 }
 
 //--------------------------------------------------------------
