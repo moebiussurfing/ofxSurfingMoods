@@ -32,7 +32,7 @@ Available float to force select a **Mood/Range**, and to walk locked inside.
 - Colored Preview panel to display the workflow during runtime. Also, customizable layout using the mouse.
 
 ## Usage
- - Look int **/example_Basic**.
+ - Look into **/example_Basic**.
 
 ## Dependencies
 Already included in *OF_ADDON/libs*. No need to add manually!
