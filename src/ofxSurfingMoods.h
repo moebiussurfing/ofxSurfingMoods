@@ -40,11 +40,21 @@
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
 
+//snippets:
+
 //ofApp Example:
 //customize ranges/sizes (TODO: maybe not working..)
 //moodMachine.setup(9, 9, 3, 6);
 ////9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
 ////3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
+
+//ofApp Example:
+////customized position: bottom centered
+//int w = 500;
+//int h = 50;
+//int x = ofGetWidth() / 2. - w * 0.5;
+//int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
+//moodMachine.drawPreview(x, y, w, h);
 
 //--
 

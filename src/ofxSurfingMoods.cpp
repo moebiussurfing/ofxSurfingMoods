@@ -143,6 +143,11 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//updateLabels();
 
+	//-
+
+	setGui_AdvancedVertical_MODE(false);
+	setPosition(20, 20);//gui panel position
+
 	//----
 }
 

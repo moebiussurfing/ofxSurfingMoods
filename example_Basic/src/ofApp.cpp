@@ -5,10 +5,6 @@ void ofApp::setup()
 {
 	ofSetFrameRate(60);
 
-	//ofSetLogLevel(OF_LOG_SILENT);
-	//ofSetLogLevel("ofApp", OF_LOG_SILENT);
-	//ofSetLogLevel("ofxSurfingMoods", OF_LOG_SILENT);
-
 	//--
 
 	//ofxSurfingMoods
@@ -19,11 +15,6 @@ void ofApp::setup()
 	//9 states/targets.
 	//9 presets for each receiver A-B-C.
 	//splitting the 3 moods/ranges: limit 0-1 target 3, limit 1-2 target 6.
-
-	//-
-
-	moodMachine.setGui_AdvancedVertical_MODE(false);
-	moodMachine.setPosition(20, 20);//gui panel position
 
 	//-
 
@@ -45,13 +36,6 @@ void ofApp::update()
 void ofApp::draw()
 {
 	moodMachine.drawPreview();
-
-	////customized position: bottom centered
-	//int w = 500;
-	//int h = 50;
-	//int x = ofGetWidth() / 2. - w * 0.5;
-	//int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
-	//moodMachine.drawPreview(x, y, w, h);
 }
 
 //--------------------------------------------------------------
@@ -114,17 +98,17 @@ void ofApp::Changed_Mood_RANGE(int &targetVal)
 {
 	ofLogNotice(__FUNCTION__) << targetVal;
 
-	// example: change thr background color reflecting the Mood/Range
-	//if (targetVal == 0)
-	//{
-	//    ofBackground(color_MOOD1);
-	//}
-	//if (targetVal == 1)
-	//{
-	//    ofBackground(color_MOOD2);
-	//}
-	//if (targetVal == 2)
-	//{
-	//    ofBackground(color_MOOD3);
-	//}
+	// example: change the background color reflecting the Mood/Range
+	if (targetVal == 0)
+	{
+	    ofBackground(ofColor::indianRed);
+	}
+	if (targetVal == 1)
+	{
+	    ofBackground(ofColor::lightYellow);
+	}
+	if (targetVal == 2)
+	{
+	    ofBackground(ofColor::lightGreen);
+	}
 }
