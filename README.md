@@ -10,8 +10,8 @@ There is an internal **BPM Clock** and customizable timers and counters, to conf
 In your *ofApp*, you can receive the callbacks when *Presets* (A-B-C) changed, linking them to any *parameter/States/Preset Selections...etc* of your *Scene*.
 
 ## Screenshots
-![image](/readme_images/Capture.gif?raw=true "image")
 ![image](/readme_images/Capture1.PNG?raw=true "image")
+![image](/readme_images/Capture.gif?raw=true "image")
 https://imgur.com/a/j5e9zwa
 
 ## Features
