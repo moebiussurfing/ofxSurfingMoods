@@ -935,7 +935,7 @@ void ofxSurfingMoods::setup_Params()
 	//---
 
 	//store params (grouped only to save/load, not to allow on gui or callbacks)
-	params_STORE.setName("GEN_params_STORE");
+	params_STORE.setName("MoodMachine_params_STORE");
 	params_STORE.add(COUNT_Duration);
 	params_STORE.add(BPM);
 	params_STORE.add(LEN_BARS);
@@ -953,6 +953,7 @@ void ofxSurfingMoods::setup_Params()
 	params_STORE.add(Mode_Manual);
 	params_STORE.add(controlManual);
 	//params_STORE.add(autoSaveLoad_settings);
+
 	autoSaveLoad_settings.setSerializable(false);
 
 	//-
@@ -1701,10 +1702,10 @@ void ofxSurfingMoods::saveSettings(string path)
 	//1. store app state
 	//save gui SwitcherGen settings
 
-	ofXml settings_GEN;
-	ofSerialize(settings_GEN, params_STORE);
+	ofXml settings_MoodMachine;
+	ofSerialize(settings_MoodMachine, params_STORE);
 	string filePath = path + fileSettings + ".xml";
-	settings_GEN.save(filePath);
+	settings_MoodMachine.save(filePath);
 
 	ofLogNotice(__FUNCTION__) << "saveSettings: " << filePath;
 }
