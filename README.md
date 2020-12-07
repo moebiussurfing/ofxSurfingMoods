@@ -26,17 +26,19 @@ Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing
 2. **Mode Manual Control**:  
 Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
 3. **Mode Markov Chain**:  
-Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. 
+Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor:  
+![image](/readme_images/MarkovMatrix.PNG?raw=true "image")  
+
 - Avoid repeat the same Target/State on the next step State, in case randomize gets the same previous Target/State.
 - Force to *Start-from-First* Target/State of the Mood/Range when arriving to one of the three Moods.  
 (Then if you are triggering a kind of music patterns, you can create a transitional pattern to use when arriving at a Mood).
 - Colored Preview panel to display the workflow during runtime. Also, customizable layout using the mouse.
 
 ## Usage
- - Look into **/example_Basic**.
+ - Look into **OF_ADDON/example_Basic**.
 
 ## Dependencies
-- ofxGuiExtended2 (https://github.com/moebiussurfing/ofxGuiExtended2)  
+- **ofxGuiExtended2** (https://github.com/moebiussurfing/ofxGuiExtended2)  
 
 Already included in *OF_ADDON/libs*. No need to add manually:
 - **ofxMarkovChain** (https://github.com/elaye/ofxMarkovChain)
