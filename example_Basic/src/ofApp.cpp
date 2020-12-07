@@ -3,13 +3,13 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-    ofSetFrameRate(25);
+    ofSetFrameRate(60);
 
     ofSetCircleResolution(100);
 
     //-
 
-    //circle gradient colors
+    //circle gradient colors to visualize Preset A index
     gradient.addColor( ofColor::red );
     gradient.addColor( ofColor::yellow );
     gradient.addColor( ofColor::green );
@@ -17,11 +17,11 @@ void ofApp::setup()
     //-
 
     //callbacks listeners from moodMachine
+    moodMachine.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
     moodMachine.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
     moodMachine.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
     moodMachine.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
     moodMachine.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
-    moodMachine.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
 
     //--
 
@@ -53,8 +53,9 @@ void ofApp::draw()
     float x = ofGetWidth()*0.5;
     float y = ofGetHeight()*0.5;
     ofDrawCircle(x, y, r);
+	ofSetLineWidth(2.0);
     ofNoFill();
-    ofSetColor(0, 200);
+    ofSetColor(64, 200);
     ofDrawCircle(x, y, r);
     ofPopStyle();
 }
@@ -75,11 +76,11 @@ void ofApp::windowResized(int w, int h)
 void ofApp::exit()
 {
     //callbacks listeners from moodMachine
+    moodMachine.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
     moodMachine.TARGET_Selected.removeListener(this, &ofApp::Changed_Mood_TARGET);
     moodMachine.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);
     moodMachine.PRESET_B_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_B);
     moodMachine.PRESET_C_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_C);
-    moodMachine.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
 }
 
 

@@ -34,17 +34,16 @@ void ofxSurfingMoods::setup()//default sizes
 	//-
 
 	//settings paths
-	pathFolder = "ofxSurfingMoods/";//default folder
-	fileSettings = "settings";//settings
-	fileBank = "bank.json";//ranges bank: any target to relatives preset/pattern
+	path_Folder = "ofxSurfingMoods/";//default folder
+	filename_Settings = "moods_Settings";//settings
+	filename_Bank = "moods_Bank.json";//ranges bank: any target to relatives preset/pattern
 
 	//-
 
 	//markov
-	path_markovMatrix = pathFolder + "markov/" + "transitionMatrix.txt";
+	path_markovMatrix = path_Folder + "markov/" + "transitionMatrix.txt";
 	ofxMC::Matrix mat(path_markovMatrix);
 	markov.setup(mat, 0);
-	//i = 0;
 
 	//--
 
@@ -62,9 +61,10 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//preview rectangle
 	bUseCustomPreviewPosition = true;
-	path_rect = pathFolder + "ofxSurfingMoods_";
+	path_rect = path_Folder + "ofxSurfingMoods_";
 	rectPreview.loadSettings("", path_rect, true);
-	//rectPreview.setRect(25, 650, 700, 50);//initialize
+
+	//rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
 
 	//--
 
@@ -97,13 +97,13 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//-
 
-	setGui_visible(true);
+	setGui_Visible(true);
 
 	//windowResized(ofGetWidth(), ofGetHeight());
 
 	//--
 
-	ENABLED_SwitcherGen = true;
+	ENABLED_MoodMachine = true;
 	bIsPlaying = false;
 	timer = 0;
 	PLAY = false;
@@ -122,16 +122,16 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//load gen bank targets
+	//load bank targets
 	if (autoSaveLoad_settings)
 	{
-		loadBanks(pathFolder);
+		loadBanks(path_Folder);
 	}
 
-	//load gen panel settings
+	//load panel settings
 	if (autoSaveLoad_settings)
 	{
-		loadSettings(pathFolder);
+		loadSettings(path_Folder);
 	}
 
 	//workflow
@@ -188,9 +188,9 @@ void ofxSurfingMoods::exit()
 
 	if (autoSaveLoad_settings)
 	{
-		//save gen panel settings
-		saveSettings(pathFolder);
-		saveBanks(pathFolder);
+		//save panel settings
+		saveSettings(path_Folder);
+		saveBanks(path_Folder);
 	}
 
 	//-
@@ -268,7 +268,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	////highlight important items
 	//ofColor cUser;
 	//cUser.set(64, 64, 64, 128);
-	//string cUserStr = ofxGui::colorToString(cUser);
+	//std::string cUserStr = ofxGui::colorToString(cUser);
 
 	//--
 
@@ -277,7 +277,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	//sizeTTF_Gui = 8;//font size
 	////fname = "overpass-mono-bold.otf";
 	//fname = "telegrama_render.otf";
-	////myTTF_Gui = pathFolder + "fonts/" + fname;
+	////myTTF_Gui = path_Folder + "fonts/" + fname;
 	//myTTF_Gui = "assets/fonts/" + fname;
 
 	//ofFile fileF(myTTF_Gui);
@@ -532,7 +532,7 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 	else
 	{
 	}
-	
+
 	//-
 
 	drawPreview(gx, gy, ww, hh);
@@ -540,10 +540,10 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 	//-
 
 	// preview rectangle
-	if (Edit_Gui)
+	if (Edit_Preview)
 	{
 		ofPushStyle();
-		ofSetColor(128,64);
+		ofSetColor(128, 64);
 		ofDrawRectangle(rectPreview);
 		rectPreview.draw();
 		ofPopStyle();
@@ -555,7 +555,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h)///custom positi
 {
 	//TODO: there's a little offset...
 
-	//if (SHOW_GUI_SwitcherGen || SHOW_Preview)
+	//if (SHOW_GUI_MoodMachine || SHOW_Preview)
 	if (SHOW_Preview)
 	{
 		ofPushStyle();
@@ -860,10 +860,10 @@ void ofxSurfingMoods::setup_Params()
 	bReset_Settings.setSerializable(false);
 	clone_TARGETS.set("BANK CLONE>", false);
 	clone_TARGETS.setSerializable(false);
-	SHOW_GuiUser.set("SHOW USER", false);
+	SHOW_GuiUser.set("SHOW USER", true);
 	SHOW_GuiAdvanced.set("SHOW ADVANCED", false);
 	SHOW_Preview.set("SHOW PREVIEW", false);
-	Edit_Gui.set("EDIT PREVIEW", false);
+	Edit_Preview.set("EDIT PREVIEW", false);
 
 	//disabled
 	////labels to monitor
@@ -959,7 +959,7 @@ void ofxSurfingMoods::setup_Params()
 	//-
 
 	//group params for callback listener only
-	params_Listeners.setName("GEN_params");
+	params_Listeners.setName("MoodMachine_params");
 
 	params_Listeners.add(PLAY);
 	params_Listeners.add(BPM);
@@ -970,7 +970,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(bReset_Bank);
 	params_Listeners.add(SHOW_GuiUser);
 	params_Listeners.add(SHOW_GuiAdvanced);
-	params_Listeners.add(Edit_Gui);
+	params_Listeners.add(Edit_Preview);
 	params_Listeners.add(SHOW_Preview);
 	params_Listeners.add(TARGET_Selected);
 	params_Listeners.add(clone_TARGETS);
@@ -1031,7 +1031,7 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(PRESET_B_Enable);
 	params_USER.add(PRESET_C_Enable);
 
-	params_USER.add(Edit_Gui);
+	params_USER.add(Edit_Preview);
 
 	params_USER.add(SHOW_Preview);
 	params_USER.add(SHOW_GuiAdvanced);
@@ -1113,7 +1113,7 @@ void ofxSurfingMoods::save_range(int r)
 //	//disabled everywhere, not required to show the monitor label on gui..
 //	ofLogNotice(__FUNCTION__) << "updateLabels";
 //
-//	string pad;
+//	std::string pad;
 //	//pad = " ";
 //	//pad = "\t";
 //	pad = "\t\t";
@@ -1122,7 +1122,7 @@ void ofxSurfingMoods::save_range(int r)
 //	//MONITOR1 = "TARGET:" + ofToString(TARGET_Selected);
 //	//MONITOR1 += pad;
 //
-//	//string rName;
+//	//std::string rName;
 //	//rName = ofToString(myRange.name.get());
 //	//MONITOR1 = "RANGE:" + rName;
 //	//if (rName.size() < 2)
@@ -1142,9 +1142,9 @@ void ofxSurfingMoods::save_range(int r)
 #pragma mark API
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::stopGen()
+void ofxSurfingMoods::stopMachine()
 {
-	ofLogNotice(__FUNCTION__) << "stopGen";
+	ofLogNotice(__FUNCTION__) << "stopMachine";
 
 	COUNTER_step = 0;
 	directionUp = true;
@@ -1171,7 +1171,7 @@ void ofxSurfingMoods::resetClock()
 	BPM = 120;
 	//timer = 0;
 
-	stopGen();
+	stopMachine();
 	//stop();
 }
 
@@ -1210,7 +1210,7 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 	TARGET_Selected_PRE = -1;
 	if (stopBack)
 	{
-		stopGen();
+		stopMachine();
 	}
 }
 
@@ -1219,13 +1219,13 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 //--------------------------------------------------------------
 void ofxSurfingMoods::stop()
 {
-	if (ENABLED_SwitcherGen && PLAY)
+	if (ENABLED_MoodMachine && PLAY)
 	{
 		PLAY = false;
 
 		if (stopBack)
 		{
-			stopGen();
+			stopMachine();
 		}
 	}
 }
@@ -1233,7 +1233,7 @@ void ofxSurfingMoods::stop()
 //--------------------------------------------------------------
 void ofxSurfingMoods::play()
 {
-	if (ENABLED_SwitcherGen && !PLAY)
+	if (ENABLED_MoodMachine && !PLAY)
 	{
 		PLAY = true;
 	}
@@ -1242,7 +1242,7 @@ void ofxSurfingMoods::play()
 //--------------------------------------------------------------
 void ofxSurfingMoods::playSwitch()
 {
-	if (ENABLED_SwitcherGen)
+	if (ENABLED_MoodMachine)
 	{
 		if (PLAY)
 		{
@@ -1250,7 +1250,7 @@ void ofxSurfingMoods::playSwitch()
 
 			if (stopBack)
 			{
-				stopGen();
+				stopMachine();
 			}
 		}
 		else
@@ -1263,24 +1263,36 @@ void ofxSurfingMoods::playSwitch()
 //--------------------------------------------------------------
 void ofxSurfingMoods::setPosition(int _x, int _y)
 {
-	setGuiUserPositon(_x, _y);
+	setGui_UserPositon(_x, _y);
 
 	if (!MODE_vertical)//advanced panel to the right
 	{
-		setGuiAdvancedPositon(_x + 205, _y);
+		setGui_AdvancedPositon(_x + 205, _y);
 	}
 	else//advanced panel to the botton
 	{
 		float h = group_USER->getHeight();
-		setGuiAdvancedPositon(_x, _y + h + 20);
+		setGui_AdvancedPositon(_x, _y + h + 20);
 	}
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::setGui_visible(bool enable)
+void ofxSurfingMoods::setGui_Visible(bool enable)
 {
-	SHOW_GUI_SwitcherGen = enable;
-	gui.getVisible().set(SHOW_GUI_SwitcherGen);
+	////TODO: global gui enabler. not implemented..
+	//SHOW_GUI_MoodMachine = enable;
+	//gui.getVisible().set(SHOW_GUI_MoodMachine);
+
+	SHOW_GuiUser = enable;
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setGui_ToggleVisible()
+{
+	//SHOW_GUI_MoodMachine = !SHOW_GUI_MoodMachine;
+	//gui.getVisible().set(SHOW_GUI_MoodMachine);
+
+	SHOW_GuiUser = !SHOW_GuiUser;
 }
 
 //--------------------------------------------------------------
@@ -1290,13 +1302,13 @@ void ofxSurfingMoods::setGui_AdvancedVertical_MODE(bool enable)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::setBPM(float bpm)
+void ofxSurfingMoods::setBpm(float bpm)
 {
 	BPM = bpm;
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::setLEN_bars(int bars)
+void ofxSurfingMoods::setBarsScale(int bars)
 {
 	LEN_BARS = bars;
 }
@@ -1639,7 +1651,7 @@ void ofxSurfingMoods::timer_Range_Started(int &args)
 #pragma mark SETTINGS
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::saveBanks(string path)
+void ofxSurfingMoods::saveBanks(std::string path)
 {
 	//--
 
@@ -1671,7 +1683,7 @@ void ofxSurfingMoods::saveBanks(string path)
 
 			ofLogNotice(__FUNCTION__) << "presets: " << pt;
 		}
-		bool bSaved = ofSavePrettyJson(path + fileBank, js_targets);
+		bool bSaved = ofSavePrettyJson(path + filename_Bank, js_targets);
 
 		if (bSaved)
 		{
@@ -1697,24 +1709,24 @@ void ofxSurfingMoods::saveBanks(string path)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::saveSettings(string path)
+void ofxSurfingMoods::saveSettings(std::string path)
 {
 	//1. store app state
-	//save gui SwitcherGen settings
+	//save gui settings
 
 	ofXml settings_MoodMachine;
 	ofSerialize(settings_MoodMachine, params_STORE);
-	string filePath = path + fileSettings + ".xml";
+	std::string filePath = path + filename_Settings + ".xml";
 	settings_MoodMachine.save(filePath);
 
-	ofLogNotice(__FUNCTION__) << "saveSettings: " << filePath;
+	ofLogNotice(__FUNCTION__) << filePath;
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::loadBanks(string path)
+void ofxSurfingMoods::loadBanks(std::string path)
 {
 	// 2. bank targets presets_A/presets_C
-	string pathBank = path + fileBank;
+	std::string pathBank = path + filename_Bank;
 	ofFile file(pathBank);
 	if (file.exists())
 	{
@@ -1766,29 +1778,27 @@ void ofxSurfingMoods::loadBanks(string path)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::loadSettings(string path)
+void ofxSurfingMoods::loadSettings(std::string path)
 {
-	ofLogNotice(__FUNCTION__) << "loadSettings";
+	ofLogNotice(__FUNCTION__) << path;
 
-	// 1. load gen panel settings
-	ofXml settings_GEN;
+	// 1. load panel settings
+	ofXml _settings_MoodMachine;
 
-	string filePath = path + fileSettings + ".xml";
+	std::string filePath = path + filename_Settings + ".xml";
 
-	bool bLoaded = settings_GEN.load(filePath);
+	bool bLoaded = _settings_MoodMachine.load(filePath);
 	if (bLoaded)
 	{
 		ofLogNotice(__FUNCTION__) << "LOADED: " << filePath;
-		ofLogNotice(__FUNCTION__) << endl << endl << settings_GEN.toString();
+		ofLogNotice(__FUNCTION__) << endl << endl << _settings_MoodMachine.toString();
 
-		ofDeserialize(settings_GEN, params_STORE);
+		ofDeserialize(_settings_MoodMachine, params_STORE);
 	}
 	else
 	{
 		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << filePath;
 	}
-
-	//----
 }
 
 
@@ -1799,10 +1809,10 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 {
 	if (!BLOCK_CALLBACK_Feedback)
 	{
-		string WIDGET = e.getName();
+		std::string WIDGET = e.getName();
 
 		if (WIDGET != "COMPLETE")
-			ofLogVerbose(__FUNCTION__) << "Changed_Params_Listeners '" << WIDGET << "': " << e;
+			ofLogVerbose(__FUNCTION__) << WIDGET << " : " << e;
 
 		if (WIDGET == "PLAY")
 		{
@@ -1820,6 +1830,15 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 				(group_USER->getIntSlider("COUNTER"))->setEnabled(true);//hidden
 				(group_USER->getIntSlider("COMPLETE"))->setEnabled(true);//hidden
+
+				//workflow
+				//enable some mode
+				if (!Mode_MarkovChain && !Mode_Manual && !Mode_Ranged)
+				{
+					Mode_Ranged = true;
+					Mode_MarkovChain = false;
+					Mode_Manual = false;
+				}
 			}
 			else
 			{
@@ -1846,7 +1865,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		else if (WIDGET == "TARGET")
 		{
-			ofLogNotice(__FUNCTION__) << "CHANGED TARGET_Selected:" << TARGET_Selected;
+			ofLogNotice(__FUNCTION__) << TARGET_Selected;
 
 			//blink
 			bBlink = true;
@@ -1988,9 +2007,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		{
 
 		}
-		else if (WIDGET == Edit_Gui.getName())
+		else if (WIDGET == Edit_Preview.getName())
 		{
-			if (Edit_Gui)
+			if (Edit_Preview)
 			{
 				rectPreview.enableEdit();
 			}
@@ -2003,7 +2022,6 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		//modes
 		else if (WIDGET == Mode_MarkovChain.getName())
 		{
-			//            Mode_Ranged = !Mode_MarkovChain;
 			if (Mode_MarkovChain)
 			{
 				Mode_Manual = false;
@@ -2012,7 +2030,6 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		}
 		else if (WIDGET == Mode_Ranged.getName())
 		{
-			//            Mode_MarkovChain = !Mode_Ranged;
 			if (Mode_Ranged)
 			{
 				Mode_Manual = false;
@@ -2038,12 +2055,12 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 {
 	if (!BLOCK_CALLBACK_Feedback)
 	{
-		string name = e.getName();
-		ofLogVerbose(__FUNCTION__) << "Changed_Ranges '" << name << "': " << e;
+		std::string name = e.getName();
+		ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
 		if (name == "RANGE")
 		{
-			ofLogNotice(__FUNCTION__) << "CHANGED RANGE_Selected:" << RANGE_Selected;
+			ofLogNotice(__FUNCTION__) << RANGE_Selected;
 
 			//TODO
 			//split to functions to disable autosave when playing mode..
@@ -2051,8 +2068,6 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 			//auto save previous
 			if (RANGE_Selected != RANGE_Selected_PRE)
 			{
-				ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected.get();
-
 				int r;
 				if (range_autoSave)
 				{
@@ -2112,6 +2127,11 @@ void ofxSurfingMoods::keyPressed(int key)
 	else if (key == 's')
 	{
 		stop();
+	}
+
+	else if (key == 'g')
+	{
+		setGui_ToggleVisible();
 	}
 
 	else if (key == '1')

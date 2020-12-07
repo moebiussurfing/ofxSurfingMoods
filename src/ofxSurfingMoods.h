@@ -150,7 +150,7 @@ public:
 	//--------------------------------------------------------------
 	void setPathSettingsFolder(string s)
 	{
-		pathFolder = s;
+		path_Folder = s;
 	}
 
 	//--------------------------------------------------------------
@@ -172,8 +172,8 @@ public:
 
 public:
 
-	void setBPM(float bpm);
-	void setLEN_bars(int bars);
+	void setBpm(float bpm);
+	void setBarsScale(int bars);
 
 	//--------------------------------------------------------------
 	float getBPM()
@@ -202,13 +202,13 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	void setGuiAdvancedPositon(int _x, int _y)
+	void setGui_AdvancedPositon(int _x, int _y)
 	{
 		group_Advanced->setPosition(_x, _y);
 	}
 
 	//--------------------------------------------------------------
-	void setGuiUserPositon(int _x, int _y)
+	void setGui_UserPositon(int _x, int _y)
 	{
 		group_USER->setPosition(_x, _y);
 	}
@@ -232,7 +232,7 @@ public:
 		SHOW_Preview = b;
 	}
 	//--------------------------------------------------------------
-	void togglePreviewVisible()
+	void setPreviewToggleVisible()
 	{
 		SHOW_Preview = !SHOW_Preview;
 	}
@@ -244,7 +244,8 @@ private:
 	bool bUseCustomPreviewPosition = false;
 
 public:
-	void setGui_visible(bool enable);
+	void setGui_Visible(bool enable);//TODO: global gui enabler. not implemented..
+	void setGui_ToggleVisible();
 	void setGui_AdvancedVertical_MODE(bool enable);
 
 	//--------------------------------------------------------------
@@ -286,9 +287,9 @@ private:
 #pragma mark SETTNGS
 
 	//path for xml settings
-	string pathFolder;
-	string fileSettings;
-	string fileBank;
+	string path_Folder;
+	string filename_Settings;
+	string filename_Bank;
 
 	void saveSettings(string path);
 	void loadSettings(string path);
@@ -298,7 +299,7 @@ private:
 	//bool autoSaveLoad_settings = true;
 	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
 
-	void stopGen();
+	void stopMachine();
 
 	//--
 
@@ -429,15 +430,15 @@ private:
 	//-
 
 	bool stopBack = true; //WORKFLOW: goes to range 0 when stops
-	bool ENABLED_SwitcherGen;
+	bool ENABLED_MoodMachine;
 
 	//can be enabled only when default positioner mode
 	bool MODE_vertical = false;
 
-	bool SHOW_GUI_SwitcherGen;
+	bool SHOW_GUI_MoodMachine;
 	ofParameter<bool> SHOW_GuiUser;
 	ofParameter<bool> SHOW_GuiAdvanced;
-	ofParameter<bool> Edit_Gui;
+	ofParameter<bool> Edit_Preview;
 	ofParameter<bool> SHOW_Preview;
 
 	//void updateLabels();
