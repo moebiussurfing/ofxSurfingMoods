@@ -23,11 +23,11 @@ https://imgur.com/gallery/Li0cT6C
 - Three different **Modes**:
 1. **Mode Range**:  
 Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
-2. **Mode Manual Control**:  
-Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
-3. **Mode Markov Chain**:  
+2. **Mode Markov Chain**:  
 Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor:  
 ![image](/readme_images/MarkovMatrix.PNG?raw=true "image")  
+3. **Mode Manual Control**:  
+Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
 
 - Avoid repeat the same Target/State on the next step State, in case randomize gets the same previous Target/State.
 - Force to *Start-from-First* Target/State of the Mood/Range when arriving to one of the three Moods.  
