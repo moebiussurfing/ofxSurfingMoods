@@ -22,7 +22,7 @@ https://imgur.com/gallery/Li0cT6C
 ## Features
 - Three different **Modes**:
 1. **Mode Range**:  
-Looped walking through the **Moods/Ranges** : **1>2>3**  **3>2>1**  **1>2>3**  ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
+Looped walking through the **Moods/Ranges** :   **1>2>3**    **3>2>1**    **1>2>3**  ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 2. **Mode Manual Control**:  
 Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
 3. **Mode Markov Chain**:  
