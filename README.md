@@ -22,9 +22,9 @@ https://imgur.com/a/j5e9zwa
 ## Features
 - Three different **Modes**:
 1. **Mode Range**:  
-Looped walking through the **Moods/Ranges** : **1>2>3** + **3>2>1** + **1>2>3** + ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
+Looped walking through the **Moods/Ranges** : **1>2>3**  **3>2>1**  **1>2>3**  ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 2. **Mode Manual Control**:  
-Available float to force select a **Mood/Range**, and to *walk'n'randomize* locked inside.
+Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
 3. **Mode Markov Chain**:  
 Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. 
 - Avoid repeat the same Target/State on the next step State, in case randomize gets the same previous Target/State.
