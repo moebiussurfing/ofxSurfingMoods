@@ -863,7 +863,7 @@ void ofxSurfingMoods::setup_Params()
 	SHOW_GuiUser.set("SHOW USER", false);
 	SHOW_GuiAdvanced.set("SHOW ADVANCED", false);
 	SHOW_Preview.set("SHOW PREVIEW", false);
-	Edit_Gui.set("EDIT GUI", false);
+	Edit_Gui.set("EDIT PREVIEW", false);
 
 	//disabled
 	////labels to monitor
@@ -992,9 +992,8 @@ void ofxSurfingMoods::setup_Params()
 
 	//user
 	//params_USER.setName("USER");
-	params_USER.setName("MOOD ENGINE");//change display name
+	params_USER.setName("MOOD MACHINE");//change display name
 
-	params_USER.add(SHOW_Preview);
 	params_USER.add(PLAY);
 
 	params_USER.add(Mode_Ranged);
@@ -1031,8 +1030,11 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(PRESET_B_Enable);
 	params_USER.add(PRESET_C_Enable);
 
-	params_USER.add(SHOW_GuiAdvanced);
 	params_USER.add(Edit_Gui);
+
+	params_USER.add(SHOW_Preview);
+	params_USER.add(SHOW_GuiAdvanced);
+
 	//params_USER.add(autoSaveLoad_settings);
 }
 
