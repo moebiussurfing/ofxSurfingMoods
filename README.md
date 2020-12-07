@@ -36,6 +36,8 @@ Available float to force select a **Mood/Range**, and to walk locked inside.
  - Look into **/example_Basic**.
 
 ## Dependencies
+- ofxGuiExtended2 (https://github.com/moebiussurfing/ofxGuiExtended2)  
+
 Already included in *OF_ADDON/libs*. No need to add manually!
 - **ofxMarkovChain** (https://github.com/elaye/ofxMarkovChain)
 - **ofxSimpleTimer** (https://github.com/HeliosInteractive/ofxSimpleTimer)
