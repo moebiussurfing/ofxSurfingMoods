@@ -218,7 +218,7 @@ void ofxSurfingMoods::setup_GUI_Main()
 
 	group_Advanced = gui.addGroup("ADVANCED");
 	group_RANGES = group_Advanced->addGroup("RANGES LIMITS");
-	group_TARGETS = group_Advanced->addGroup("TARGETS TOOLS");
+	group_TARGETS = group_Advanced->addGroup("BANK TOOLS");
 	group_CLOCK = group_Advanced->addGroup("CLOCK");
 
 	//---
