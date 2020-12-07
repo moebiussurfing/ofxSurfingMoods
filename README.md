@@ -22,13 +22,13 @@ https://imgur.com/a/j5e9zwa
 ## Features
 - Three different **Modes**:
 1. **Mode Range**:  
-Looped walking from **Moods/Ranges** **1>2>3** and **3>2>1**, doing randomize to select around the contained Targets into the **Mood/Range**.
+Looped walking through the **Moods/Ranges** : **1>2>3** + **3>2>1** + **1>2>3** + ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 2. **Mode Manual Control**:  
-Available float to force select a **Mood/Range**, and to walk locked inside.
+Available float to force select a **Mood/Range**, and to *walk'n'randomize* locked inside.
 3. **Mode Markov Chain**:  
-**Editable matrix** to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. 
-- Avoid repeat the same **Target/State** on the next step State, in case randomize gets the same previous **Target**.
-- Force to *Start-from-First* **Target/State** of the **Mood Range** when arriving to one of the three **Moods**.  
+Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. 
+- Avoid repeat the same Target/State on the next step State, in case randomize gets the same previous Target/State.
+- Force to *Start-from-First* Target/State of the Mood/Range when arriving to one of the three Moods.  
 (Then if you are triggering a kind of music patterns, you can create a transitional pattern to use when arriving at a Mood).
 - Colored Preview panel to display the workflow during runtime. Also, customizable layout using the mouse.
 
