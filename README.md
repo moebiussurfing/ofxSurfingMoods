@@ -14,6 +14,9 @@ In your *ofApp*, you can receive the callbacks when *Presets* (A-B-C) changed, l
 
 **GIF**:  
 https://imgur.com/a/j5e9zwa
+<img src="https://imgur.com/a/j5e9zwa.gif"/>
+!(image)[https://imgur.com/a/j5e9zwa.gif]
+
 
 ## Features
 - Three different **Modes**:
