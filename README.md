@@ -12,6 +12,7 @@ In your *ofApp*, you can receive the callbacks when *Presets* (A-B-C) changed, l
 ## Screenshots
 ![image](/readme_images/Capture.gif?raw=true "image")
 ![image](/readme_images/Capture1.PNG?raw=true "image")
+https://imgur.com/a/j5e9zwa
 
 ## Features
 - Three different **Modes**:
