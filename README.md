@@ -21,11 +21,15 @@ https://imgur.com/a/MtI4NL7
 
 ## Features
 - Three different **Modes**:
+
 1. **Mode Ranged**:  
 Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
+
 2. **Mode Markov Chain**:  
 Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. (Each row represents each State, and the odds (%) of jumping to the other States, or "to rest into itself". All row values must add up to 1.0 (100%) to be stochastic.):  
 ![image](/readme_images/MarkovMatrix.PNG?raw=true "image")  
+![image](/readme_images/MarcovGraph.png?raw=true "image")  
+
 3. **Mode Manual Control**:  
 Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
 
