@@ -68,7 +68,7 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//gui
+	//gui & params
 	setup_GUI_Main();
 
 	//--
@@ -90,6 +90,8 @@ void ofxSurfingMoods::setup()//default sizes
 	ofAddListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
 	ofAddListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
 
+	//-
+
 	//RESET
 	////ERASE BANK TARGETS
 	//resetBank(false);
@@ -99,8 +101,6 @@ void ofxSurfingMoods::setup()//default sizes
 	//-
 
 	setGui_Visible(true);
-
-	//windowResized(ofGetWidth(), ofGetHeight());
 
 	//--
 
@@ -117,20 +117,20 @@ void ofxSurfingMoods::setup()//default sizes
 
 	load_range(RANGE_Selected);
 
-	//----
+	//-------
 
 	//startup
 
 	//--
 
 	//load bank targets
-	if (autoSaveLoad_settings)
+	if (autoSaveLoad_settings.get())
 	{
 		loadBanks(path_Folder);
 	}
 
 	//load panel settings
-	if (autoSaveLoad_settings)
+	if (autoSaveLoad_settings.get())
 	{
 		loadSettings(path_Folder);
 	}
@@ -138,18 +138,16 @@ void ofxSurfingMoods::setup()//default sizes
 	//workflow
 	group_Advanced->getVisible().set(SHOW_GuiAdvanced);
 
-	//-----
+	//--
 
 	refresh_MOOD_Color();
 
 	//updateLabels();
 
-	//-
+	//--
 
 	setGui_AdvancedVertical_MODE(false);
 	setPosition(20, 20);//gui panel position
-
-	//----
 }
 
 //--------------------------------------------------------------
@@ -1087,14 +1085,14 @@ void ofxSurfingMoods::load_range(int r)//recall current range margins from data 
 //--------------------------------------------------------------
 void ofxSurfingMoods::save_range(int r)
 {
-	ofLogNotice(__FUNCTION__) << "save_range";
-
 	if ((r < 0) || (r >= NUM_RANGES))
 	{
-		ofLogError(__FUNCTION__) << "save_range. OUT OF RANGE";
+		if (r != -1) ofLogError(__FUNCTION__) << "OUT OF RANGE !";
 	}
 	else
 	{
+		ofLogNotice(__FUNCTION__) << r;
+
 		////clamp ranges
 		//if (r < 0)
 		//	r = 0;
@@ -1139,9 +1137,6 @@ void ofxSurfingMoods::save_range(int r)
 //	MONITOR2 += pad;
 //	MONITOR2 += "C" + ofToString(PRESET_C_Selected);
 //}
-
-
-#pragma mark API
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::stopMachine()
@@ -1286,6 +1281,9 @@ void ofxSurfingMoods::setGui_Visible(bool enable)
 	//gui.getVisible().set(SHOW_GUI_MoodMachine);
 
 	SHOW_GuiUser = enable;
+
+	//workflow
+	if (!SHOW_GuiUser && SHOW_GuiAdvanced) SHOW_GuiAdvanced = false;
 }
 
 //--------------------------------------------------------------
@@ -1655,73 +1653,57 @@ void ofxSurfingMoods::timer_Range_Started(int &args)
 //--------------------------------------------------------------
 void ofxSurfingMoods::saveBanks(std::string path)
 {
-	//--
+	//store bank, each target to their preset/presets_ABC settings
+	ofJson pt;
+	js_targets.clear();
 
-	//avoid crashes
-	//if ((int)MAX_ITEMS > 0 && (int)MAX_ITEMS < NUM_TARGETS)
+	for (int i = 0; i < NUM_TARGETS; i++)
 	{
-		//2. store bank, each target to their preset/presets_C settings
-		ofJson pt;
-		js_targets.clear();
+		//clamp min
+		int prst_A = (int)MAX(presets_A[i], 0);
+		int prst_B = (int)MAX(presets_B[i], 0);
+		int prst_C = (int)MAX(presets_C[i], 0);
+		//clamp max
+		prst_A = (int)MIN(prst_A, NUM_PRESETS_A);
+		prst_B = (int)MIN(prst_B, NUM_PRESETS_B);
+		prst_C = (int)MIN(prst_C, NUM_PRESETS_C);
 
-		for (int i = 0; i < NUM_TARGETS; i++)
-		{
-			//clamp min
-			int prst_A = (int)MAX(presets_A[i], 0);
-			int prst_B = (int)MAX(presets_B[i], 0);
-			int prst_C = (int)MAX(presets_C[i], 0);
-			//clamp max
-			prst_A = (int)MIN(prst_A, NUM_PRESETS_A);
-			prst_B = (int)MIN(prst_B, NUM_PRESETS_B);
-			prst_C = (int)MIN(prst_C, NUM_PRESETS_C);
+		pt["preset_A"] = prst_A;
+		pt["preset_B"] = prst_B;
+		pt["preset_C"] = prst_C;
 
-			pt["preset_A"] = prst_A;
-			pt["preset_B"] = prst_B;
-			pt["preset_C"] = prst_C;
+		//-
 
-			//-
+		js_targets.push_back(pt);
 
-			js_targets.push_back(pt);
-
-			ofLogNotice(__FUNCTION__) << "presets: " << pt;
-		}
-		bool bSaved = ofSavePrettyJson(path + filename_Bank, js_targets);
-
-		if (bSaved)
-		{
-			ofLogNotice(__FUNCTION__) << "ofSaveJson: " << js_targets;
-		}
-		else
-		{
-			ofLogError(__FUNCTION__) << "CAN'T SAVE FILES INTO: " << path;
-		}
+		ofLogNotice(__FUNCTION__) << "presets: " << pt;
 	}
-	//else
-	//{
-	//ofLogError(__FUNCTION__) << "OUT OF MAX_ITEMS";
-	//}
+	bool bSaved = ofSavePrettyJson(path + filename_Bank, js_targets);
 
-	//-
-
-	//TODO: to use without hardcoding
-	//// save gui settings_RANGES
-	//ofXml settings_RANGES;
-	//ofSerialize(settings_RANGES, parameters_SwitcherGen);
-	//settings_RANGES.save(path);
+	if (bSaved)
+	{
+		ofLogNotice(__FUNCTION__) << "ofSaveJson: " << js_targets;
+	}
+	else
+	{
+		ofLogError(__FUNCTION__) << "CAN'T SAVE FILES INTO: " << path;
+	}
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::saveSettings(std::string path)
 {
-	//1. store app state
+	//store app state
 	//save gui settings
 
-	ofXml settings_MoodMachine;
-	ofSerialize(settings_MoodMachine, params_STORE);
-	std::string filePath = path + filename_Settings + ".xml";
-	settings_MoodMachine.save(filePath);
+	ofXml _settings;
+	ofSerialize(_settings, params_STORE);
 
-	ofLogNotice(__FUNCTION__) << filePath;
+	std::string _path = path + filename_Settings + ".xml";
+
+	_settings.save(_path);
+
+	ofLogNotice(__FUNCTION__) << _path;
 }
 
 //--------------------------------------------------------------
@@ -1739,7 +1721,7 @@ void ofxSurfingMoods::loadBanks(std::string path)
 		ofLogNotice(__FUNCTION__) << "LOADED FILE: " << pathBank;
 		ofLogNotice(__FUNCTION__) << js_targets;
 
-		ofLogWarning(__FUNCTION__) << pathBank + " json file must be present and formatted as expected!";
+		ofLogNotice(__FUNCTION__) << pathBank + " json file must be present and formatted as expected!";
 
 		//avoid crashes
 		int p = 0;
@@ -1775,31 +1757,37 @@ void ofxSurfingMoods::loadBanks(std::string path)
 	}
 	else
 	{
-		ofLogError(__FUNCTION__) << "loadSettings '" << pathBank << "' NOT FOUND!";
+		ofLogError(__FUNCTION__) << pathBank << " NOT FOUND!";
 	}
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::loadSettings(std::string path)
 {
-	ofLogNotice(__FUNCTION__) << path;
+	//ofLogNotice(__FUNCTION__) << path;
+
+	//TODO:
+	//ofSetDataPathRoot();
+	//ofToDataPath();
+
+	//-
 
 	// 1. load panel settings
-	ofXml _settings_MoodMachine;
+	ofXml _settings;
 
-	std::string filePath = path + filename_Settings + ".xml";
+	std::string _path = path + filename_Settings + ".xml";
+	bool bLoaded = _settings.load(_path);
 
-	bool bLoaded = _settings_MoodMachine.load(filePath);
 	if (bLoaded)
 	{
-		ofLogNotice(__FUNCTION__) << "LOADED: " << filePath;
-		ofLogNotice(__FUNCTION__) << endl << endl << _settings_MoodMachine.toString();
+		ofLogNotice(__FUNCTION__) << "LOADED: " << _path;
+		ofLogNotice(__FUNCTION__) << endl << endl << _settings.toString();
 
-		ofDeserialize(_settings_MoodMachine, params_STORE);
+		ofDeserialize(_settings, params_STORE);
 	}
 	else
 	{
-		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << filePath;
+		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
 	}
 }
 

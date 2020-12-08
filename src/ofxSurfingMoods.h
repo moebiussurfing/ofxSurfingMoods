@@ -61,6 +61,7 @@ class ofxSurfingMoods
 {
 
 public:
+
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
 	};
@@ -91,15 +92,17 @@ public:
 
 #pragma mark API
 
+public:
 	//should make an outside listener to receive changes!
-	//each target is linked or trigs two other selectors together: preset and pattern
+	
+	ofParameter<int> RANGE_Selected;
+
+	//each target/state is linked or trigs 3 other receiver selectors together: Preset A-B-C
 	ofParameter<int> TARGET_Selected;//current target. allways starts from 0
 
 	ofParameter<int> PRESET_A_Selected;
 	ofParameter<int> PRESET_B_Selected;
 	ofParameter<int> PRESET_C_Selected;
-
-	ofParameter<int> RANGE_Selected;
 
 	ofParameter<bool> PRESET_A_Enable;
 	ofParameter<bool> PRESET_B_Enable;
@@ -117,7 +120,6 @@ private:
 
 	//markov
 private:
-	//int i;
 	ofxMC::MarkovChain markov;
 	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
 	ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
@@ -127,7 +129,7 @@ private:
 	ofParameter<float> controlManual{ "CONTROL", 0,0,1.f };
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
-	string path_markovMatrix;
+	std::string path_markovMatrix;
 
 	//-
 
@@ -166,6 +168,8 @@ public:
 	//	{
 	//		return bIsPlaying;
 	//	}
+
+	//-
 
 public:
 
@@ -285,13 +289,15 @@ private:
 
 	//path for xml settings
 	string path_Folder;
-	string filename_Settings;
-	string filename_Bank;
 
-	void saveSettings(string path);
-	void loadSettings(string path);
-	void saveBanks(string path);
-	void loadBanks(string path);
+	std::string filename_Settings;
+	std::string filename_Bank;
+
+	void saveSettings(std::string path);
+	void loadSettings(std::string path);
+
+	void saveBanks(std::string path);
+	void loadBanks(std::string path);
 
 	//bool autoSaveLoad_settings = true;
 	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
@@ -314,8 +320,8 @@ private:
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
 	void refresh_MOOD_Color();
 
-	ofParameter<string> labelRange{ "RANGE", "" };
-	ofParameter<string> labelTarget{ "TARGET", "" };
+	ofParameter<std::string> labelRange{ "RANGE", "" };
+	ofParameter<std::string> labelTarget{ "TARGET", "" };
 
 	//blink
 	bool bBlink = false;
@@ -324,9 +330,9 @@ private:
 
 	//labels
 	ofTrueTypeFont myFont;
-	string myTTF;
+	std::string myTTF;
 	int sizeTTF;
-	string fname;
+	std::string fname;
 
 	void setup_Params();
 
@@ -396,8 +402,8 @@ private:
 	ofParameter<int> Range_Max;//range
 	void Changed_Params_Listeners(ofAbstractParameter &e);
 
-	//ofParameter<string> MONITOR1;
-	ofParameter<string> MONITOR2;
+	//ofParameter<std::string> MONITOR1;
+	ofParameter<std::string> MONITOR2;
 
 	//-
 
@@ -412,7 +418,7 @@ private:
 
 	ofJson js_targets;
 	ofJson js_tar;
-	string targets_subPath;
+	std::string targets_subPath;
 
 	//-
 
@@ -461,7 +467,7 @@ private:
 	int gui_slider_big_h;
 	int gui_button_big_h;
 
-	string myTTF_Gui;
+	std::string myTTF_Gui;
 	int sizeTTF_Gui;
 
 	//-
@@ -475,7 +481,7 @@ private:
 
 	struct range
 	{
-		ofParameter<string> name;
+		ofParameter<std::string> name;
 		ofParameter<int> min;
 		ofParameter<int> max;
 	};
