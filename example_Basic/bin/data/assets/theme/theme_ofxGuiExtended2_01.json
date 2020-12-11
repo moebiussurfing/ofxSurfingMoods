@@ -1,8 +1,8 @@
 {
-    "theme_ofxGuiExtended2": {
+    "moebiusSurfing_Theme_01": {
         "base": {
-            "background-color": "rgba(0,0,0,0.3)",
-            "fill-color": "rgba(64,64,64,0.8)",
+            "background-color": "rgba(0,0,0,0.6)",
+            "fill-color": "rgba(80,80,80,1.0)",
             "border-width": 1,
             "padding": 0,
             "border-color": "rgba(0,0,0,0.4)",
@@ -18,12 +18,12 @@
         
         "panel": {
             "show-header": true,
-            "background-color": "rgba(0,0,0,0.3)",
+            "background-color": "rgba(0,0,0,0.6)",
             "width": 200
         },
         
         "group": {
-            "background-color": "rgba(0,0,0,0.2)",
+            "background-color": "rgba(0,0,0,0.4)",
             "padding": 0,
             "margin": 0,
             "margin-bottom": 1,
@@ -36,13 +36,13 @@
         "group-header": {
             "height": 20,
             "margin": 0,
-            "background-color": "rgba(0,0,0,0.2)",
+            "background-color": "rgba(0,0,0,0.4)",
             "text-color": "rgba(255,255,255,1)",
             "width": 200
         },
         
         "slider": {
-            "fill-color": "rgba(128,128,128,0.7)",
+            "fill-color": "rgba(50,50,50,0.8)",
             "height": 20,
             "precision": 3,
             "padding": 0,
@@ -52,9 +52,9 @@
         
         "toggle": {
             "height": 24,
-            "background-color": "rgba(64,64,64,0.3)",
+            "background-color": "rgba(30,30,30,0.5)",
             "border-color": "rgba(32,32,32,0.4)",
-            "fill-color": "rgba(128,128,128,0.7)",
+            "fill-color": "rgba(70,70,70,0.7)",
             "type": "radio",
             "border-width": 1
         },
@@ -88,7 +88,7 @@
         "tabs": {
             "border-color": "rgba(32,32,32,0.4)",
             "fill-color": "rgba(64,64,64,0.8)",
-            "height": 1,
+            "height": 10,
             "padding": 10
         }
     }
