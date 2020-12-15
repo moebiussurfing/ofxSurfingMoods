@@ -135,6 +135,9 @@ void ofxSurfingMoods::setup()//default sizes
 		loadSettings(path_Folder);
 	}
 
+	setGui_AdvancedVertical_MODE(false);
+	//setPosition(20, 20);//gui panel position
+
 	//workflow
 	group_Advanced->getVisible().set(SHOW_GuiAdvanced);
 
@@ -145,9 +148,6 @@ void ofxSurfingMoods::setup()//default sizes
 	//updateLabels();
 
 	//--
-
-	setGui_AdvancedVertical_MODE(false);
-	setPosition(20, 20);//gui panel position
 }
 
 //--------------------------------------------------------------
@@ -185,6 +185,8 @@ void ofxSurfingMoods::exit()
 
 	//-
 
+	positionGui_Engine = glm::vec2(group_USER->getPosition().x, group_USER->getPosition().y);
+
 	if (autoSaveLoad_settings)
 	{
 		//save panel settings
@@ -214,7 +216,8 @@ void ofxSurfingMoods::setup_GUI_Main()
 
 	//ofxGuiExtended panels
 
-	group_USER = gui.addGroup("__USER__");
+	group_USER = gui.addPanel("__USER__");
+	//group_USER = gui.addGroup("__USER__");
 
 	group_Advanced = gui.addGroup("ADVANCED");
 	group_RANGES = group_Advanced->addGroup("RANGES LIMITS");
@@ -251,6 +254,7 @@ void ofxSurfingMoods::setup_GUI_Main()
 void ofxSurfingMoods::setup_GUI_User()
 {
 	group_USER->add(params_USER);
+	group_USER->setShowHeader(true);
 }
 
 #pragma mark GUI LAYOUT
@@ -337,10 +341,12 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	(group_USER->getToggle("MOOD RANGE"))->unregisterMouseEvents();
 	//(group_USER->getToggle("MOOD RANGE"))->setShowName(false);
 	//(group_USER->getToggle("MOOD RANGE"))->setEnabled(false);//hidden
+
 	refresh_MOOD_Color();
 
 	//mini
 	(group_RANGES->getIntSlider(RANGE_Selected.getName()))->setConfig(j_itemMini);
+
 	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig(j_itemMini);
 	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig(j_itemMini);
 
@@ -362,6 +368,11 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
 	(group_USER->getToggle("ENABLE C"))->setConfig(j_itemMedium);
 
+	//big
+	(group_USER->getIntSlider(TARGET_Selected.getName()))->setConfig({
+		{"height", 30}
+		});
+
 	//--
 
 	////disable
@@ -382,11 +393,12 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	group_TARGETS->minimize();
 	group_RANGES->minimize();
 
-	//-
+	//--
 
 	//theme
-	group_USER->loadTheme("assets/theme/theme_ofxGuiExtended2.json");
-	group_Advanced->loadTheme("assets/theme/theme_ofxGuiExtended2.json");
+	path_Theme = "assets/theme/";
+	path_Theme += "theme_ofxGuiExtended2.json";
+	loadTheme(path_Theme);
 	//group_RANGES;
 	//group_TARGETS;
 	//group_CLOCK;
@@ -833,6 +845,8 @@ void ofxSurfingMoods::setup_Params()
 
 	std::string spacer = "           ";
 
+	positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
+
 	//-
 
 	//1. setup_GUI_Target
@@ -954,6 +968,7 @@ void ofxSurfingMoods::setup_Params()
 	params_STORE.add(Mode_AvoidRepeat);
 	params_STORE.add(Mode_Manual);
 	params_STORE.add(controlManual);
+	params_STORE.add(positionGui_Engine);
 	//params_STORE.add(autoSaveLoad_settings);
 
 	autoSaveLoad_settings.setSerializable(false);
@@ -988,6 +1003,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(Mode_AvoidRepeat);
 	params_Listeners.add(Mode_Manual);
 	params_Listeners.add(controlManual);
+	params_Listeners.add(positionGui_Engine);
 
 	//----
 
@@ -1791,6 +1807,8 @@ void ofxSurfingMoods::loadSettings(std::string path)
 	{
 		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
 	}
+
+	group_USER->setPosition(positionGui_Engine.get().x, positionGui_Engine.get().y);
 }
 
 
@@ -1990,6 +2008,18 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		else if (WIDGET == "SHOW ADVANCED")
 		{
 			group_Advanced->getVisible().set(SHOW_GuiAdvanced);
+
+			//workflow
+			auto p = group_USER->getShape().getTopRight();
+			if (!MODE_vertical)//advanced panel to the right
+			{
+				setGui_AdvancedPositon(p.x + 5, p.y);
+			}
+			else//advanced panel to the botton
+			{
+				auto p = group_USER->getShape().getBottomLeft();
+				setGui_AdvancedPositon(p.x, p.y + 10);
+			}
 		}
 		else if (WIDGET == "SHOW USER")
 		{

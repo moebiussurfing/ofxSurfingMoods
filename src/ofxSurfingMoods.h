@@ -61,11 +61,9 @@ class ofxSurfingMoods
 {
 
 public:
-
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
 	};
-
 	//--------------------------------------------------------------
 	~ofxSurfingMoods() {
 		exit();
@@ -87,6 +85,8 @@ public:
 	//preview
 	void drawPreview();
 	void drawPreview(int x, int  y, int  w, int  h);
+
+	ofParameter<glm::vec2> positionGui_Engine;
 
 	//--
 
@@ -311,7 +311,6 @@ public:
 	ofParameter<float> BPM;//bpm
 	ofParameter<int> LEN_BARS;//in bars
 
-
 //----
 
 private:
@@ -381,8 +380,10 @@ private:
 	void setup_GUI_Ranges();
 
 	ofxGui gui;
+
+	ofxGuiPanel *group_USER;
+	//ofxGuiGroup2 *group_USER;
 	ofxGuiGroup2 *group_Advanced;
-	ofxGuiGroup2 *group_USER;
 	ofxGuiGroup2 *group_RANGES;
 	ofxGuiGroup2 *group_TARGETS;
 	ofxGuiGroup2 *group_CLOCK;
@@ -392,6 +393,19 @@ private:
 	//theme
 	void setup_GUI_Customize();
 	ofJson /*j_Gui,*/ j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
+
+private:
+	std::string path_Theme;
+
+public:
+	//--------------------------------------------------------------
+	void loadTheme(std::string _path) {
+		path_Theme = _path;
+		//path_Theme = "assets/theme/";
+		//path_Theme += "theme_ofxGuiExtended2.json";
+		group_USER->loadTheme(path_Theme);
+		group_Advanced->loadTheme(path_Theme);
+	}
 
 	//-
 
