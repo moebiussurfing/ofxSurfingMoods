@@ -144,7 +144,7 @@ public:
 
 	void play();
 	void stop();
-	void playSwitch();
+	void setTogglePlay();
 
 	//--------------------------------------------------------------
 	void setPathSettingsFolder(string s)

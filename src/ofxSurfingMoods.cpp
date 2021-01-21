@@ -148,6 +148,16 @@ void ofxSurfingMoods::setup()//default sizes
 	//updateLabels();
 
 	//--
+
+	//theme
+	path_Theme = "assets/theme/";
+	path_Theme += "theme_ofxGuiExtended2.json";
+	loadTheme(path_Theme);
+	//group_RANGES;
+	//group_TARGETS;
+	//group_CLOCK;
+
+	//--
 }
 
 //--------------------------------------------------------------
@@ -350,13 +360,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig(j_itemMini);
 	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig(j_itemMini);
 
-	//highlights
-	//ofJson jHigh;
-	//jHigh =
-	//{
-	//	{"fill-color", cUserStr},
-	//};
-	//(group_CLOCK->getFloatSlider("BPM"))->setConfig(jHigh);
+	//(group_CLOCK->getFloatSlider("BPM"))->setConfig(jConf_BigBut2);
 	(group_CLOCK->getFloatSlider("BPM"))->setConfig({ { "precision", 2 } });
 	//(group_CLOCK->getIntSlider("BARS LEN"))->setConfig(jHigh);
 
@@ -392,16 +396,6 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	//group_CLOCK->minimize();
 	group_TARGETS->minimize();
 	group_RANGES->minimize();
-
-	//--
-
-	//theme
-	path_Theme = "assets/theme/";
-	path_Theme += "theme_ofxGuiExtended2.json";
-	loadTheme(path_Theme);
-	//group_RANGES;
-	//group_TARGETS;
-	//group_CLOCK;
 }
 
 //--------------------------------------------------------------
@@ -1255,7 +1249,7 @@ void ofxSurfingMoods::play()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::playSwitch()
+void ofxSurfingMoods::setTogglePlay()
 {
 	if (ENABLED_MoodMachine)
 	{
@@ -2158,7 +2152,7 @@ void ofxSurfingMoods::keyPressed(int key)
 {
 	if (key == ' ')
 	{
-		playSwitch();
+		setTogglePlay();
 	}
 
 	else if (key == 'p')
