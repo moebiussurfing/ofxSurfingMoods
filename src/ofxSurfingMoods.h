@@ -3,8 +3,15 @@
 
 #include "ofMain.h"
 
+//#define USE_ofxGuiExtended
+
+
 #include "ofxSimpleTimer.h"
+
+#ifdef USE_ofxGuiExtended
 #include "ofxGuiExtended2.h"
+#endif
+
 #include "ofxMarkovChain.h"
 #include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
 
@@ -196,6 +203,7 @@ public:
 
 	void setPosition(int x, int y);
 
+#ifdef USE_ofxGuiExtended
 	//--------------------------------------------------------------
 	float getGuiUserWidth()
 	{
@@ -213,6 +221,7 @@ public:
 	{
 		group_USER->setPosition(_x, _y);
 	}
+#endif
 
 	//preview boxes bar
 	//--------------------------------------------------------------
@@ -372,6 +381,7 @@ private:
 
 	//-
 
+#ifdef USE_ofxGuiExtended
 	//ofxGuiExtended
 private:
 	void setup_GUI_Main();
@@ -406,6 +416,7 @@ public:
 		group_USER->loadTheme(path_Theme);
 		group_Advanced->loadTheme(path_Theme);
 	}
+#endif
 
 	//-
 

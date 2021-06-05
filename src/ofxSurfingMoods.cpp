@@ -62,14 +62,17 @@ void ofxSurfingMoods::setup()//default sizes
 	//preview rectangle
 	bUseCustomPreviewPosition = true;
 	path_rect = path_Folder + "ofxSurfingMoods_";
-	rectPreview.loadSettings("", path_rect, true);
+	//rectPreview.loadSettings("", path_rect, true);
 
 	//rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
 
 	//--
 
 	//gui & params
+	
+#ifdef USE_ofxGuiExtended
 	setup_GUI_Main();
+#endif
 
 	//--
 
@@ -139,7 +142,9 @@ void ofxSurfingMoods::setup()//default sizes
 	//setPosition(20, 20);//gui panel position
 
 	//workflow
+	#ifdef USE_ofxGuiExtended
 	group_Advanced->getVisible().set(SHOW_GuiAdvanced);
+#endif
 
 	//--
 
@@ -149,6 +154,7 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
+	#ifdef USE_ofxGuiExtended
 	//theme
 	path_Theme = "assets/theme/";
 	path_Theme += "theme_ofxGuiExtended2.json";
@@ -156,6 +162,7 @@ void ofxSurfingMoods::setup()//default sizes
 	//group_RANGES;
 	//group_TARGETS;
 	//group_CLOCK;
+#endif
 
 	//--
 }
@@ -195,7 +202,9 @@ void ofxSurfingMoods::exit()
 
 	//-
 
+#ifdef USE_ofxGuiExtended
 	positionGui_Engine = glm::vec2(group_USER->getPosition().x, group_USER->getPosition().y);
+#endif
 
 	if (autoSaveLoad_settings)
 	{
@@ -218,7 +227,7 @@ void ofxSurfingMoods::exit()
 
 #pragma mark ENGINE
 
-
+#ifdef USE_ofxGuiExtended
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_GUI_Main()
 {
@@ -397,6 +406,7 @@ void ofxSurfingMoods::setup_GUI_Customize()
 	group_TARGETS->minimize();
 	group_RANGES->minimize();
 }
+#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::refresh_MOOD_Color()
@@ -425,7 +435,8 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 	//ofLogVerbose(__FUNCTION__) << "colorLabel: " << ofToString(colorLabel);
 
 	//-
-
+	
+#ifdef USE_ofxGuiExtended
 	//colorize
 	std::string cStr = ofxGui::colorToString(colorLabel);
 	//ofLogVerbose(__FUNCTION__) << "mood color: " << cStr;
@@ -469,8 +480,10 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 		{"border-color", cStr},
 		//{"fill-color", cStr},
 		});
+#endif
 }
 
+#ifdef USE_ofxGuiExtended
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_GUI_Target()
 {
@@ -493,6 +506,7 @@ void ofxSurfingMoods::setup_GUI_Target()
 	group_CLOCK->add(bReset_Settings);
 	group_CLOCK->add(SHOW_GuiUser);
 }
+#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
@@ -522,12 +536,15 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 	//default
 	else
 	{
+
+#ifdef USE_ofxGuiExtended
 		//advanced panel to the right
 		gw = group_USER->getWidth() + 5;
 		gx = group_USER->getPosition().x + gw + 5;
 		gy = group_USER->getPosition().y + 4;
 		ww = 400;
 		hh = 30;
+#endif
 	}
 
 	//horizontal by default
@@ -1051,6 +1068,7 @@ void ofxSurfingMoods::setup_Params()
 	//params_USER.add(autoSaveLoad_settings);
 }
 
+#ifdef USE_ofxGuiExtended
 //ranges
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_GUI_Ranges()
@@ -1061,6 +1079,7 @@ void ofxSurfingMoods::setup_GUI_Ranges()
 	//group_RANGES->addSpacer(0, 1);
 	//group_RANGES->add(bReset_Bank);
 }
+#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::load_range(int r)//recall current range margins from data vector
@@ -1269,6 +1288,7 @@ void ofxSurfingMoods::setTogglePlay()
 	}
 }
 
+#ifdef USE_ofxGuiExtended
 //--------------------------------------------------------------
 void ofxSurfingMoods::setPosition(int _x, int _y)
 {
@@ -1284,6 +1304,7 @@ void ofxSurfingMoods::setPosition(int _x, int _y)
 		setGui_AdvancedPositon(_x, _y + h + 20);
 	}
 }
+#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_Visible(bool enable)
@@ -1802,7 +1823,9 @@ void ofxSurfingMoods::loadSettings(std::string path)
 		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
 	}
 
+#ifdef USE_ofxGuiExtended
 	group_USER->setPosition(positionGui_Engine.get().x, positionGui_Engine.get().y);
+#endif
 }
 
 
@@ -1832,8 +1855,10 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				COUNTER_step = 0;
 				COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
 
+#ifdef USE_ofxGuiExtended
 				(group_USER->getIntSlider("COUNTER"))->setEnabled(true);//hidden
 				(group_USER->getIntSlider("COMPLETE"))->setEnabled(true);//hidden
+#endif
 
 				//workflow
 				//enable some mode
@@ -1853,8 +1878,10 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				COUNTER_step_FromOne = 0;
 				RANGE_Selected = 0;
 
+#ifdef USE_ofxGuiExtended
 				(group_USER->getIntSlider("COUNTER"))->setEnabled(false);//hidden
 				(group_USER->getIntSlider("COMPLETE"))->setEnabled(false);//hidden
+#endif
 			}
 		}
 
@@ -2001,6 +2028,8 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		//gui
 		else if (WIDGET == "SHOW ADVANCED")
 		{
+
+#ifdef USE_ofxGuiExtended
 			group_Advanced->getVisible().set(SHOW_GuiAdvanced);
 
 			//workflow
@@ -2014,10 +2043,14 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				auto p = group_USER->getShape().getBottomLeft();
 				setGui_AdvancedPositon(p.x, p.y + 10);
 			}
+#endif
 		}
 		else if (WIDGET == "SHOW USER")
 		{
+
+#ifdef USE_ofxGuiExtended
 			group_USER->getVisible().set(SHOW_GuiUser);
+#endif
 		}
 		else if (WIDGET == "SHOW PREVIEW")
 		{
@@ -2060,7 +2093,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_MarkovChain = false;
 			}
 
+#ifdef USE_ofxGuiExtended
 			(group_USER->getFloatSlider(controlManual.getName()))->setEnabled(Mode_Manual.get());
+#endif
 		}
 		else if (WIDGET == controlManual.getName())
 		{
@@ -2071,6 +2106,8 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		}
 
 		//workflow
+
+#ifdef USE_ofxGuiExtended
 		else if (WIDGET == PRESET_A_Enable.getName())
 		{
 			(group_USER->getIntSlider(PRESET_A_Selected.getName()))->setEnabled(PRESET_A_Enable.get());
@@ -2083,6 +2120,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		{
 			(group_USER->getIntSlider(PRESET_C_Selected.getName()))->setEnabled(PRESET_C_Enable.get());
 		}
+#endif
 	}
 }
 
@@ -2133,8 +2171,11 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 
 		else if (name == "STAY COUNT")
 		{
+
+#ifdef USE_ofxGuiExtended
 			//re scale slider limit
 			(group_USER->getIntSlider("COUNTER"))->setMax(COUNT_Duration);
+#endif
 
 			//avoid rescale timers error on preview
 
