@@ -1,5 +1,6 @@
-ofxColorGradient
 ofxImGui
 ofxScaleDragRect
 ofxSurfingHelpers
+ofxSurfingImGui
 ofxSurfingMoods
+ofxWindowApp

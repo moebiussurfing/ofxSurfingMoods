@@ -36,4 +36,6 @@ public:
     //circle gradient colors
     ofxColorGradient<ofColor> gradient;
     ofColor colorCircle;
+
+	bool bGui = true;;
 };

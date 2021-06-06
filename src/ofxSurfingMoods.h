@@ -1,17 +1,26 @@
 
 #pragma once
-
 #include "ofMain.h"
 
+/*
+
+TODO:
+
++ fix preview box (merge double click with drag rect)
++ use WindowOpen scheme to add helper to set patram types
+
+*/
+
+
 //#define USE_ofxGuiExtended
-
-
-#include "ofxSimpleTimer.h"
-
 #ifdef USE_ofxGuiExtended
 #include "ofxGuiExtended2.h"
 #endif
 
+#include "ofxSurfingImGui.h"
+
+#include "ofxWindowApp.h"
+#include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
 #include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
 
@@ -66,8 +75,24 @@
 
 class ofxSurfingMoods
 {
+	//-
 
 public:
+	ofxSurfing_ImGui_LayoutManager ImGuiManager;
+	void setup_ImGui();
+	void draw_ImGui();
+	ofxImGui::Gui gui;
+	//ofxImGui::Settings mainSettings = ofxImGui::Settings();
+	//ImFont* customFont = nullptr;
+	//ofParameter<bool> bGui{ "Show Gui", true };
+	//ofParameter<bool> auto_resize{ "Auto Resize", true };
+	//ofParameter<bool> auto_lockToBorder{ "Lock GUI", false };
+	ofParameter<bool> bLockMouseByImGui{ "Mouse Locked", false };
+
+	ofxWindowApp windowApp;
+
+	//-
+
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
 	};
@@ -75,6 +100,8 @@ public:
 	~ofxSurfingMoods() {
 		exit();
 	};
+
+	//-
 
 private:
 	ofxInteractiveRect rectPreview = { "_PreviewRect" };
@@ -463,7 +490,8 @@ private:
 	//can be enabled only when default positioner mode
 	bool MODE_vertical = false;
 
-	bool SHOW_GUI_MoodMachine;
+	//bool bGui;
+	ofParameter<bool> bGui;
 	ofParameter<bool> SHOW_GuiUser;
 	ofParameter<bool> SHOW_GuiAdvanced;
 	ofParameter<bool> Edit_Preview;

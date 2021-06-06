@@ -68,8 +68,10 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//gui & params
-	
+	//params
+	setup_Params();
+
+	//gui
 #ifdef USE_ofxGuiExtended
 	setup_GUI_Main();
 #endif
@@ -142,7 +144,7 @@ void ofxSurfingMoods::setup()//default sizes
 	//setPosition(20, 20);//gui panel position
 
 	//workflow
-	#ifdef USE_ofxGuiExtended
+#ifdef USE_ofxGuiExtended
 	group_Advanced->getVisible().set(SHOW_GuiAdvanced);
 #endif
 
@@ -154,8 +156,8 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	#ifdef USE_ofxGuiExtended
-	//theme
+#ifdef USE_ofxGuiExtended
+//theme
 	path_Theme = "assets/theme/";
 	path_Theme += "theme_ofxGuiExtended2.json";
 	loadTheme(path_Theme);
@@ -163,6 +165,10 @@ void ofxSurfingMoods::setup()//default sizes
 	//group_TARGETS;
 	//group_CLOCK;
 #endif
+
+	//--
+
+	setup_ImGui();
 
 	//--
 }
@@ -184,6 +190,10 @@ void ofxSurfingMoods::update()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw()
 {
+	if (!bGui) return;
+
+	if (SHOW_Preview) drawPreview();
+	draw_ImGui();
 }
 
 //--------------------------------------------------------------
@@ -224,190 +234,6 @@ void ofxSurfingMoods::exit()
 	ofRemoveListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
 }
 
-
-#pragma mark ENGINE
-
-#ifdef USE_ofxGuiExtended
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup_GUI_Main()
-{
-	//-
-
-	//ofxGuiExtended panels
-
-	group_USER = gui.addPanel("__USER__");
-	//group_USER = gui.addGroup("__USER__");
-
-	group_Advanced = gui.addGroup("ADVANCED");
-	group_RANGES = group_Advanced->addGroup("RANGES LIMITS");
-	group_TARGETS = group_Advanced->addGroup("BANK TOOLS");
-	group_CLOCK = group_Advanced->addGroup("CLOCK");
-
-	//---
-
-	//params
-	setup_Params();
-
-	//--
-
-	//user
-	setup_GUI_User();
-
-	//advanced
-
-	//targets
-	setup_GUI_Target();
-
-	//ranges
-	setup_GUI_Ranges();
-
-	//-
-
-	//customize
-	setup_GUI_Customize();
-
-	//-
-}
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup_GUI_User()
-{
-	group_USER->add(params_USER);
-	group_USER->setShowHeader(true);
-}
-
-#pragma mark GUI LAYOUT
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup_GUI_Customize()
-{
-	//panels
-	gui_w = 200;
-	//widgets
-	gui_slider_mini_h = 18;
-	gui_slider_big_h = 30;
-	gui_button_big_h = 40;
-
-	////highlight important items
-	//ofColor cUser;
-	//cUser.set(64, 64, 64, 128);
-	//std::string cUserStr = ofxGui::colorToString(cUser);
-
-	//--
-
-	////gui font
-
-	//sizeTTF_Gui = 8;//font size
-	////fname = "overpass-mono-bold.otf";
-	//fname = "telegrama_render.otf";
-	////myTTF_Gui = path_Folder + "fonts/" + fname;
-	//myTTF_Gui = "assets/fonts/" + fname;
-
-	//ofFile fileF(myTTF_Gui);
-	//bool bLoadedGuiFont = fileF.exists();
-
-	//--
-
-	////all gui
-	//j_Gui =
-	//{
-	//	{"font-family", myTTF_Gui},
-	//	{"font-size", sizeTTF_Gui},
-	//	//{"padding", 50},//widgets height
-	//};
-
-	//sliders mini
-	j_itemMini =
-	{
-		{"type", "fullsize"},
-		{"height", gui_slider_mini_h},
-	};
-
-	//big buttons
-	j_itemFat =
-	{
-		//{"fill-color", "rgba(128,128,128,0.4)" },
-		{"type", "fullsize"},
-		{"height", gui_button_big_h},
-		{"text-align", "center"},
-	};
-
-	//medium buttons
-	j_itemMedium =
-	{
-		//{"fill-color", "rgba(128,128,128,0.4)" },
-		{"type", "fullsize"},
-		{"height", 22},
-		{"text-align", "right"},
-	};
-
-	//--
-
-	//widgets
-	//(group_USER->get("m1"))->;//TODO: to disable name display of MONITOR
-
-	(group_USER->getToggle("PLAY"))->setConfig(j_itemFat);
-	(group_USER->getIntSlider("COUNTER"))->unregisterMouseEvents();//disable user mouse
-	 //(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig(j_itemMini);
-
-	(group_USER->getToggle("MOOD RANGE"))->setConfig({
-		{"type", "fullsize"},
-		{"text-align", "center"},
-		{"text-color", "rgba(0,0,0,1.0)"},
-		{"border-radius", 5.0f},
-		{"height", gui_slider_big_h},
-		});
-	(group_USER->getToggle("MOOD RANGE"))->unregisterMouseEvents();
-	//(group_USER->getToggle("MOOD RANGE"))->setShowName(false);
-	//(group_USER->getToggle("MOOD RANGE"))->setEnabled(false);//hidden
-
-	refresh_MOOD_Color();
-
-	//mini
-	(group_RANGES->getIntSlider(RANGE_Selected.getName()))->setConfig(j_itemMini);
-
-	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig(j_itemMini);
-	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig(j_itemMini);
-
-	//(group_CLOCK->getFloatSlider("BPM"))->setConfig(jConf_BigBut2);
-	(group_CLOCK->getFloatSlider("BPM"))->setConfig({ { "precision", 2 } });
-	//(group_CLOCK->getIntSlider("BARS LEN"))->setConfig(jHigh);
-
-	//(group_USER->getToggle("PLAY"))->setConfig(jHigh);
-	//(group_USER->getIntSlider("STAY COUNT"))->setConfig(jHigh);
-	//(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig(jHigh);
-
-	(group_USER->getToggle("ENABLE A"))->setConfig(j_itemMedium);
-	(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
-	(group_USER->getToggle("ENABLE C"))->setConfig(j_itemMedium);
-
-	//big
-	(group_USER->getIntSlider(TARGET_Selected.getName()))->setConfig({
-		{"height", 30}
-		});
-
-	//--
-
-	////disable
-	////custom gui font to all inside gui panels
-	//if (bLoadedGuiFont)
-	//{
-	//	//gui.setConfig(j_Gui);
-	//}
-	//else
-	//{
-	//	ofLogError(__FUNCTION__) << "setup_GUI_Customize() FILE '" << myTTF_Gui << "' NOT FOUND!";
-	//}
-
-	//-
-
-	//folders expanding
-	//group_CLOCK->minimize();
-	group_TARGETS->minimize();
-	group_RANGES->minimize();
-}
-#endif
-
 //--------------------------------------------------------------
 void ofxSurfingMoods::refresh_MOOD_Color()
 {
@@ -432,81 +258,8 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 	}
 	break;
 	}
-	//ofLogVerbose(__FUNCTION__) << "colorLabel: " << ofToString(colorLabel);
-
-	//-
-	
-#ifdef USE_ofxGuiExtended
-	//colorize
-	std::string cStr = ofxGui::colorToString(colorLabel);
-	//ofLogVerbose(__FUNCTION__) << "mood color: " << cStr;
-	//"rgba(0,255,255,0.4)"
-
-	ofJson jMood;
-	jMood =
-	{
-		{"background-color", cStr},
-		{"border-color", cStr},
-		{"fill-color", cStr},
-	};
-	(group_USER->getToggle("MOOD RANGE"))->setConfig(jMood);
-
-	(group_RANGES->getIntSlider(RANGE_Selected.getName()))->setConfig({
-		{"background-color", cStr},
-		//{"border-color", cStr},
-		//{"fill-color", cStr},
-		});
-
-	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig({
-		{"background-color", cStr},
-		//{"border-color", cStr},
-		//{"fill-color", cStr},
-		});
-
-	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig({
-		{"background-color", cStr},
-		//{"border-color", cStr},
-		//{"fill-color", cStr},
-		});
-
-	(group_USER->getIntSlider(TARGET_Selected.getName()))->setConfig({
-		//{"background-color", cStr},
-		{"border-color", cStr},
-		//{"fill-color", cStr},
-		});
-
-	(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig({
-		//{"background-color", cStr},
-		{"border-color", cStr},
-		//{"fill-color", cStr},
-		});
-#endif
 }
 
-#ifdef USE_ofxGuiExtended
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup_GUI_Target()
-{
-	//target panel
-
-	group_TARGETS->add(clone_TARGETS);
-	group_TARGETS->add(bResetSort_Bank);
-	group_TARGETS->add(bReset_Bank);
-	group_TARGETS->add(bRandomize_Bank);
-
-	//-
-
-	//clock panel
-
-	group_CLOCK->add(BPM);
-	group_CLOCK->add(LEN_BARS);
-	//SHOW_timer = true;
-	//if (SHOW_timer)
-	//	group_CLOCK->add(timer);//hide timer
-	group_CLOCK->add(bReset_Settings);
-	group_CLOCK->add(SHOW_GuiUser);
-}
-#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
@@ -578,7 +331,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h)///custom positi
 {
 	//TODO: there's a little offset...
 
-	//if (SHOW_GUI_MoodMachine || SHOW_Preview)
+	//if (bGui || SHOW_Preview)
 	if (SHOW_Preview)
 	{
 		ofPushStyle();
@@ -854,7 +607,8 @@ void ofxSurfingMoods::setup_Params()
 	color_MOOD2.set(ofColor(ofColor::yellow, a));
 	color_MOOD3.set(ofColor(ofColor::green, a));
 
-	std::string spacer = "           ";
+	std::string spacer = " ";
+	//std::string spacer = "           ";
 
 	positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
 
@@ -887,6 +641,7 @@ void ofxSurfingMoods::setup_Params()
 	bReset_Settings.setSerializable(false);
 	clone_TARGETS.set("BANK CLONE>", false);
 	clone_TARGETS.setSerializable(false);
+	bGui.set("MOOD SURFER", true);
 	SHOW_GuiUser.set("SHOW USER", true);
 	SHOW_GuiAdvanced.set("SHOW ADVANCED", false);
 	SHOW_Preview.set("SHOW PREVIEW", false);
@@ -926,7 +681,7 @@ void ofxSurfingMoods::setup_Params()
 
 	//define params
 	timer_Progress.set("COMPLETE", 0, 0, 100);//%
-	RANGE_Selected.set("MOOD " + spacer + "RANGE", 0, 0, NUM_RANGES - 1);
+	RANGE_Selected.set("MOOD" + spacer + "RANGE", 0, 0, NUM_RANGES - 1);
 	//myRange.min.set("MIN PRESET", 0, 0, NUM_TARGETS - 1);//?
 	//myRange.max.set("MAX PRESET", 0, 0, NUM_TARGETS - 1);
 	myRange.name.set("MOOD", ranges[RANGE_Selected].name);
@@ -967,6 +722,7 @@ void ofxSurfingMoods::setup_Params()
 	params_STORE.add(BPM);
 	params_STORE.add(LEN_BARS);
 	params_STORE.add(SHOW_GuiUser);
+	params_STORE.add(bGui);
 	params_STORE.add(SHOW_GuiAdvanced);
 	params_STORE.add(SHOW_Preview);
 	params_STORE.add(PRESET_A_Enable);
@@ -996,6 +752,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(bRandomize_Bank);
 	params_Listeners.add(bResetSort_Bank);
 	params_Listeners.add(bReset_Bank);
+	params_Listeners.add(bGui);
 	params_Listeners.add(SHOW_GuiUser);
 	params_Listeners.add(SHOW_GuiAdvanced);
 	params_Listeners.add(Edit_Preview);
@@ -1067,19 +824,6 @@ void ofxSurfingMoods::setup_Params()
 
 	//params_USER.add(autoSaveLoad_settings);
 }
-
-#ifdef USE_ofxGuiExtended
-//ranges
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup_GUI_Ranges()
-{
-	group_RANGES->add(RANGE_Selected);
-	group_RANGES->add<ofxGuiIntSlider>(myRange.min);
-	group_RANGES->add<ofxGuiIntSlider>(myRange.max);
-	//group_RANGES->addSpacer(0, 1);
-	//group_RANGES->add(bReset_Bank);
-}
-#endif
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::load_range(int r)//recall current range margins from data vector
@@ -1288,32 +1032,14 @@ void ofxSurfingMoods::setTogglePlay()
 	}
 }
 
-#ifdef USE_ofxGuiExtended
 //--------------------------------------------------------------
-void ofxSurfingMoods::setPosition(int _x, int _y)
-{
-	setGui_UserPositon(_x, _y);
-
-	if (!MODE_vertical)//advanced panel to the right
-	{
-		setGui_AdvancedPositon(_x + 205, _y);
-	}
-	else//advanced panel to the botton
-	{
-		float h = group_USER->getHeight();
-		setGui_AdvancedPositon(_x, _y + h + 20);
-	}
-}
-#endif
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::setGui_Visible(bool enable)
+void ofxSurfingMoods::setGui_Visible(bool b)
 {
 	////TODO: global gui enabler. not implemented..
-	//SHOW_GUI_MoodMachine = enable;
-	//gui.getVisible().set(SHOW_GUI_MoodMachine);
+	bGui = b;
+	//gui.getVisible().set(bGui);
 
-	SHOW_GuiUser = enable;
+	SHOW_GuiUser = b;
 
 	//workflow
 	if (!SHOW_GuiUser && SHOW_GuiAdvanced) SHOW_GuiAdvanced = false;
@@ -1322,8 +1048,8 @@ void ofxSurfingMoods::setGui_Visible(bool enable)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_ToggleVisible()
 {
-	//SHOW_GUI_MoodMachine = !SHOW_GUI_MoodMachine;
-	//gui.getVisible().set(SHOW_GUI_MoodMachine);
+	//bGui = !bGui;
+	//gui.getVisible().set(bGui);
 
 	SHOW_GuiUser = !SHOW_GuiUser;
 }
@@ -1488,9 +1214,6 @@ void ofxSurfingMoods::clone()
 		presets_C[i] = PRESET_C_Selected;
 	}
 }
-
-
-#pragma mark TIMERS
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::timer_Range_Complete(int &args)
@@ -1681,8 +1404,6 @@ void ofxSurfingMoods::timer_Range_Started(int &args)
 }
 
 
-#pragma mark SETTINGS
-
 //--------------------------------------------------------------
 void ofxSurfingMoods::saveBanks(std::string path)
 {
@@ -1828,8 +1549,6 @@ void ofxSurfingMoods::loadSettings(std::string path)
 #endif
 }
 
-
-#pragma mark CALLBACKS
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
@@ -2187,7 +1906,6 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 	}
 }
 
-
 //--------------------------------------------------------------
 void ofxSurfingMoods::keyPressed(int key)
 {
@@ -2227,3 +1945,465 @@ void ofxSurfingMoods::keyPressed(int key)
 	}
 }
 
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_ImGui()
+{
+	//ImGuiManager.setImGuiAutodraw(true);
+	ImGuiManager.setup(gui);
+
+	//ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
+	//bool bAutoDraw = true;
+	//bool bRestore = true;
+	//bool bMouse = false;
+	//gui.setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
+
+	//auto &io = ImGui::GetIO();
+	//auto normalCharRanges = io.Fonts->GetGlyphRangesDefault();
+
+	////-
+
+	//// font
+	//std::string fontName;
+	//float fontSizeParam;
+	//fontName = "telegrama_render.otf"; //  WARNING: will crash if font not present!
+	//fontSizeParam = 11;
+
+	////-
+
+	//std::string _path = "assets/fonts/"; // assets folder
+	//customFont = gui.addFont(_path + fontName, fontSizeParam, nullptr, normalCharRanges);
+	//io.FontDefault = customFont;
+
+	//// theme
+	//ofxSurfingHelpers::ImGui_ThemeMoebiusSurfing();
+	////ofxSurfingHelpers::ImGui_ThemeModernDark();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::draw_ImGui()
+{
+	ImGuiManager.begin();
+	{
+		//--
+
+		// window 1
+
+		if (SHOW_GuiAdvanced)
+		{
+			bool bOpen1 = true;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+			ImGuiManager.beginWindow("RANGES", &bOpen1, window_flags);
+			{
+				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+				flags |= ImGuiTreeNodeFlags_Framed;
+				flags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+				ofxSurfing::AddGroup(parameters_ranges, flags);
+				//ofxImGui::AddGroup(params_STORE, flags);
+				//ofxImGui::AddGroup(params_Listeners, flags);
+			}
+			ImGuiManager.endWindow();
+		}
+
+		//--
+
+		// window 2
+
+		if(SHOW_GuiUser)
+		{
+			bool bOpen2 = true;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+			ImGuiManager.beginWindow("USER", &bOpen2, window_flags);
+			{
+				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+				flags |= ImGuiTreeNodeFlags_Framed;
+				flags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+				ofxSurfing::AddGroup(params_USER, flags);
+			}
+			ImGuiManager.endWindow();
+		}
+
+		//--
+
+		// window 3
+
+		{
+			ofxImGui::Settings mainSettings = ofxImGui::Settings();
+
+			//panels sizes
+			float xx = 10;
+			float yy = 10;
+			float ww = PANEL_WIDGETS_WIDTH;
+			float hh = 20;
+			//float hh = PANEL_WIDGETS_HEIGHT;
+
+			//widgets sizes
+			float _spcx;
+			float _spcy;
+			float _w100;
+			float _h100;
+			float _w99;
+			float _w50;
+			float _w33;
+			float _w25;
+			float _h;
+			ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+			static bool auto_resize = true;
+
+			ImGuiWindowFlags flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
+			{
+				std::string n = "TARGETS";
+				if (ofxImGui::BeginWindow(n.c_str(), mainSettings, flagsw))
+				{
+					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+					flags |= ImGuiTreeNodeFlags_Framed;
+					flags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+					//target panel
+					ofxImGui::AddParameter(clone_TARGETS);
+					ofxImGui::AddParameter(bResetSort_Bank);
+					ofxImGui::AddParameter(bReset_Bank);
+					ofxImGui::AddParameter(bRandomize_Bank);
+					//clock panel
+					ofxImGui::AddParameter(BPM);
+					ofxImGui::AddParameter(LEN_BARS);
+					//SHOW_timer = true;
+					//if (SHOW_timer)
+					//ofxImGui::AddParameter(timer);//hide timer
+					ofxImGui::AddParameter(bReset_Settings);
+					ofxImGui::AddParameter(SHOW_GuiUser);
+
+					//--
+
+					////mouse lockers
+					//bLockMouseByImGui = false;
+					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
+					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+					
+					//-
+
+					ImGuiManager.drawAdvancedSubPanel();
+
+					ofxImGui::EndWindow(mainSettings);
+				}
+			}
+			ImGui::PopStyleVar();
+		}
+	}
+	ImGuiManager.end();
+}
+
+//-
+
+// ofxGuiExtended
+
+#ifdef USE_ofxGuiExtended
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_GUI_Main()
+{
+	//-
+
+	//ofxGuiExtended panels
+
+	group_USER = gui.addPanel("__USER__");
+	//group_USER = gui.addGroup("__USER__");
+
+	group_Advanced = gui.addGroup("ADVANCED");
+	group_RANGES = group_Advanced->addGroup("RANGES LIMITS");
+	group_TARGETS = group_Advanced->addGroup("BANK TOOLS");
+	group_CLOCK = group_Advanced->addGroup("CLOCK");
+
+	//---
+
+	////params
+	//setup_Params();
+
+	//--
+
+	//user
+	setup_GUI_User();
+
+	//advanced
+
+	//targets
+	setup_GUI_Target();
+
+	//ranges
+	setup_GUI_Ranges();
+
+	//-
+
+	//customize
+	setup_GUI_Customize();
+
+	//-
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_GUI_User()
+{
+	group_USER->add(params_USER);
+	group_USER->setShowHeader(true);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_GUI_Customize()
+{
+	//panels
+	gui_w = 200;
+	//widgets
+	gui_slider_mini_h = 18;
+	gui_slider_big_h = 30;
+	gui_button_big_h = 40;
+
+	////highlight important items
+	//ofColor cUser;
+	//cUser.set(64, 64, 64, 128);
+	//std::string cUserStr = ofxGui::colorToString(cUser);
+
+	//--
+
+	////gui font
+
+	//sizeTTF_Gui = 8;//font size
+	////fname = "overpass-mono-bold.otf";
+	//fname = "telegrama_render.otf";
+	////myTTF_Gui = path_Folder + "fonts/" + fname;
+	//myTTF_Gui = "assets/fonts/" + fname;
+
+	//ofFile fileF(myTTF_Gui);
+	//bool bLoadedGuiFont = fileF.exists();
+
+	//--
+
+	////all gui
+	//j_Gui =
+	//{
+	//	{"font-family", myTTF_Gui},
+	//	{"font-size", sizeTTF_Gui},
+	//	//{"padding", 50},//widgets height
+	//};
+
+	//sliders mini
+	j_itemMini =
+	{
+		{"type", "fullsize"},
+		{"height", gui_slider_mini_h},
+	};
+
+	//big buttons
+	j_itemFat =
+	{
+		//{"fill-color", "rgba(128,128,128,0.4)" },
+		{"type", "fullsize"},
+		{"height", gui_button_big_h},
+		{"text-align", "center"},
+	};
+
+	//medium buttons
+	j_itemMedium =
+	{
+		//{"fill-color", "rgba(128,128,128,0.4)" },
+		{"type", "fullsize"},
+		{"height", 22},
+		{"text-align", "right"},
+	};
+
+	//--
+
+	//widgets
+	//(group_USER->get("m1"))->;//TODO: to disable name display of MONITOR
+
+	(group_USER->getToggle("PLAY"))->setConfig(j_itemFat);
+	(group_USER->getIntSlider("COUNTER"))->unregisterMouseEvents();//disable user mouse
+	 //(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig(j_itemMini);
+
+	(group_USER->getToggle("MOOD RANGE"))->setConfig({
+		{"type", "fullsize"},
+		{"text-align", "center"},
+		{"text-color", "rgba(0,0,0,1.0)"},
+		{"border-radius", 5.0f},
+		{"height", gui_slider_big_h},
+		});
+	(group_USER->getToggle("MOOD RANGE"))->unregisterMouseEvents();
+	//(group_USER->getToggle("MOOD RANGE"))->setShowName(false);
+	//(group_USER->getToggle("MOOD RANGE"))->setEnabled(false);//hidden
+
+	refresh_MOOD_Color();
+
+	//mini
+	(group_RANGES->getIntSlider(RANGE_Selected.getName()))->setConfig(j_itemMini);
+
+	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig(j_itemMini);
+	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig(j_itemMini);
+
+	//(group_CLOCK->getFloatSlider("BPM"))->setConfig(jConf_BigBut2);
+	(group_CLOCK->getFloatSlider("BPM"))->setConfig({ { "precision", 2 } });
+	//(group_CLOCK->getIntSlider("BARS LEN"))->setConfig(jHigh);
+
+	//(group_USER->getToggle("PLAY"))->setConfig(jHigh);
+	//(group_USER->getIntSlider("STAY COUNT"))->setConfig(jHigh);
+	//(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig(jHigh);
+
+	(group_USER->getToggle("ENABLE A"))->setConfig(j_itemMedium);
+	(group_USER->getToggle("ENABLE B"))->setConfig(j_itemMedium);
+	(group_USER->getToggle("ENABLE C"))->setConfig(j_itemMedium);
+
+	//big
+	(group_USER->getIntSlider(TARGET_Selected.getName()))->setConfig({
+		{"height", 30}
+		});
+
+	//--
+
+	////disable
+	////custom gui font to all inside gui panels
+	//if (bLoadedGuiFont)
+	//{
+	//	//gui.setConfig(j_Gui);
+	//}
+	//else
+	//{
+	//	ofLogError(__FUNCTION__) << "setup_GUI_Customize() FILE '" << myTTF_Gui << "' NOT FOUND!";
+	//}
+
+	//-
+
+	//folders expanding
+	//group_CLOCK->minimize();
+	group_TARGETS->minimize();
+	group_RANGES->minimize();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::refresh_MOOD_Color()
+{
+	ofLogVerbose(__FUNCTION__) << "refresh_MOOD_Color";
+
+	//mood color preview label
+	switch (RANGE_Selected.get())
+	{
+	case 0:
+	{
+		colorLabel.set(color_MOOD1);
+	}
+	break;
+	case 1:
+	{
+		colorLabel.set(color_MOOD2);
+	}
+	break;
+	case 2:
+	{
+		colorLabel.set(color_MOOD3);
+	}
+	break;
+	}
+	//ofLogVerbose(__FUNCTION__) << "colorLabel: " << ofToString(colorLabel);
+
+	//-
+
+	//colorize
+	std::string cStr = ofxGui::colorToString(colorLabel);
+	//ofLogVerbose(__FUNCTION__) << "mood color: " << cStr;
+	//"rgba(0,255,255,0.4)"
+
+	ofJson jMood;
+	jMood =
+	{
+		{"background-color", cStr},
+		{"border-color", cStr},
+		{"fill-color", cStr},
+	};
+	(group_USER->getToggle("MOOD RANGE"))->setConfig(jMood);
+
+	(group_RANGES->getIntSlider(RANGE_Selected.getName()))->setConfig({
+		{"background-color", cStr},
+		//{"border-color", cStr},
+		//{"fill-color", cStr},
+		});
+
+	(group_RANGES->getIntSlider("TARGET MIN"))->setConfig({
+		{"background-color", cStr},
+		//{"border-color", cStr},
+		//{"fill-color", cStr},
+		});
+
+	(group_RANGES->getIntSlider("TARGET MAX"))->setConfig({
+		{"background-color", cStr},
+		//{"border-color", cStr},
+		//{"fill-color", cStr},
+		});
+
+	(group_USER->getIntSlider(TARGET_Selected.getName()))->setConfig({
+		//{"background-color", cStr},
+		{"border-color", cStr},
+		//{"fill-color", cStr},
+		});
+
+	(group_USER->getIntSlider(RANGE_Selected.getName()))->setConfig({
+		//{"background-color", cStr},
+		{"border-color", cStr},
+		//{"fill-color", cStr},
+		});
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_GUI_Target()
+{
+	//target panel
+
+	group_TARGETS->add(clone_TARGETS);
+	group_TARGETS->add(bResetSort_Bank);
+	group_TARGETS->add(bReset_Bank);
+	group_TARGETS->add(bRandomize_Bank);
+
+	//-
+
+	//clock panel
+
+	group_CLOCK->add(BPM);
+	group_CLOCK->add(LEN_BARS);
+	//SHOW_timer = true;
+	//if (SHOW_timer)
+	//	group_CLOCK->add(timer);//hide timer
+	group_CLOCK->add(bReset_Settings);
+	group_CLOCK->add(SHOW_GuiUser);
+}
+
+
+//ranges
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup_GUI_Ranges()
+{
+	group_RANGES->add(RANGE_Selected);
+	group_RANGES->add<ofxGuiIntSlider>(myRange.min);
+	group_RANGES->add<ofxGuiIntSlider>(myRange.max);
+	//group_RANGES->addSpacer(0, 1);
+	//group_RANGES->add(bReset_Bank);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setPosition(int _x, int _y)
+{
+	setGui_UserPositon(_x, _y);
+
+	if (!MODE_vertical)//advanced panel to the right
+	{
+		setGui_AdvancedPositon(_x + 205, _y);
+	}
+	else//advanced panel to the botton
+	{
+		float h = group_USER->getHeight();
+		setGui_AdvancedPositon(_x, _y + h + 20);
+	}
+}
+#endif
