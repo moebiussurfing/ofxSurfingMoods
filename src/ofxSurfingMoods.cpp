@@ -124,7 +124,7 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//-------
 
-	//startup
+	// startup
 
 	//--
 
@@ -193,6 +193,7 @@ void ofxSurfingMoods::draw()
 	if (!bGui) return;
 
 	if (SHOW_Preview) drawPreview();
+
 	draw_ImGui();
 }
 
@@ -207,7 +208,7 @@ void ofxSurfingMoods::exit()
 {
 	//-
 
-	//preview rectangle
+	// preview rectangle
 	rectPreview.saveSettings("", path_rect, true);
 
 	//-
@@ -218,7 +219,7 @@ void ofxSurfingMoods::exit()
 
 	if (autoSaveLoad_settings)
 	{
-		//save panel settings
+		// save panel settings
 		saveSettings(path_Folder);
 		saveBanks(path_Folder);
 	}
@@ -229,7 +230,7 @@ void ofxSurfingMoods::exit()
 	ofRemoveListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 	ofRemoveListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
 
-	//timer
+	// timer
 	ofRemoveListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
 	ofRemoveListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
 }
@@ -239,7 +240,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 {
 	ofLogVerbose(__FUNCTION__) << "refresh_MOOD_Color";
 
-	//mood color preview label
+	// mood color preview label
 	switch (RANGE_Selected.get())
 	{
 	case 0:
@@ -262,7 +263,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
+void ofxSurfingMoods::drawPreview() // put to the rigth-top of user panel
 {
 	float gx, gy, gw, gh;
 	float ww, hh;
@@ -327,7 +328,7 @@ void ofxSurfingMoods::drawPreview()///put to the rigth-top of user panel
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h)///custom position and size
+void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom position and size
 {
 	//TODO: there's a little offset...
 
@@ -1949,156 +1950,150 @@ void ofxSurfingMoods::keyPressed(int key)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
 {
-	//ImGuiManager.setImGuiAutodraw(true);
-	ImGuiManager.setup(gui);
+	//guiManager.setImGuiAutodraw(true);
 
-	//ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
-	//bool bAutoDraw = true;
-	//bool bRestore = true;
-	//bool bMouse = false;
-	//gui.setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
+	guiManager.setup();
+	//guiManager.setup(gui);
 
-	//auto &io = ImGui::GetIO();
-	//auto normalCharRanges = io.Fonts->GetGlyphRangesDefault();
+	static bool bCustom2 = true;
+	if (bCustom2)
+	{
+		widgetsManager.AddWidgetConf(PLAY, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 1, 5);
 
-	////-
+		widgetsManager.AddWidgetConf(Mode_Ranged, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 3);
+		widgetsManager.AddWidgetConf(Mode_MarkovChain, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 3);
+		widgetsManager.AddWidgetConf(Mode_Manual, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 3, 5);
 
-	//// font
-	//std::string fontName;
-	//float fontSizeParam;
-	//fontName = "telegrama_render.otf"; //  WARNING: will crash if font not present!
-	//fontSizeParam = 11;
 
-	////-
-
-	//std::string _path = "assets/fonts/"; // assets folder
-	//customFont = gui.addFont(_path + fontName, fontSizeParam, nullptr, normalCharRanges);
-	//io.FontDefault = customFont;
-
-	//// theme
-	//ofxSurfingHelpers::ImGui_ThemeMoebiusSurfing();
-	////ofxSurfingHelpers::ImGui_ThemeModernDark();
+		//	widgetsManager.AddWidgetConf(bPrevious, SurfingWidgetTypes::IM_BUTTON_SMALL, true, 2);
+		//	widgetsManager.AddWidgetConf(bNext, SurfingWidgetTypes::IM_BUTTON_SMALL, false, 2, 20);
+		//	widgetsManager.AddWidgetConf(separation, SurfingWidgetTypes::IM_STEPPER);
+		//	widgetsManager.AddWidgetConf(speed, SurfingWidgetTypes::IM_DRAG, false, 1, 10);
+		//	widgetsManager.AddWidgetConf(shapeType, SurfingWidgetTypes::IM_SLIDER);
+		//	widgetsManager.AddWidgetConf(size, SurfingWidgetTypes::IM_STEPPER);
+		//	widgetsManager.AddWidgetConf(amount, SurfingWidgetTypes::IM_DRAG, false, 1, 10);
+		//	widgetsManager.AddWidgetConf(bMode1, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 2);
+		//	widgetsManager.AddWidgetConf(bMode2, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 2);
+		//	widgetsManager.AddWidgetConf(bMode3, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 2);
+		//	widgetsManager.AddWidgetConf(bMode4, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 2);
+		//	//widgetsManager.AddWidgetConf(lineWidth3, SurfingWidgetTypes::IM_DRAG); // not works?
+		//	// hide some params from any on-param-group appearance
+		//	widgetsManager.AddWidgetConf(speed3, SurfingWidgetTypes::IM_HIDDEN, false, -1, 50);
+		//	widgetsManager.AddWidgetConf(size2, SurfingWidgetTypes::IM_HIDDEN, false, -1, 50);
+		//	widgetsManager.AddWidgetConf(bPrevious, SurfingWidgetTypes::IM_HIDDEN);
+		//	widgetsManager.AddWidgetConf(bNext, SurfingWidgetTypes::IM_HIDDEN);
+			//widgetsManager.AddWidgetConf(lineWidth, SurfingWidgetTypes::IM_HIDDEN);
+	}
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui()
 {
-	ImGuiManager.begin();
+	guiManager.begin();
 	{
 		//--
 
-		// window 1
+		// 1. RANGES
 
 		if (SHOW_GuiAdvanced)
 		{
-			bool bOpen1 = true;
+			static bool bOpen1 = true;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-			ImGuiManager.beginWindow("RANGES", &bOpen1, window_flags);
+
+			guiManager.beginWindow("RANGES", &bOpen1, window_flags);
 			{
+				widgetsManager.refreshPanelShape();
+
 				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 				flags |= ImGuiTreeNodeFlags_Framed;
 				flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
 				ofxSurfing::AddGroup(parameters_ranges, flags);
-				//ofxImGui::AddGroup(params_STORE, flags);
-				//ofxImGui::AddGroup(params_Listeners, flags);
+				//ofxSurfing::AddGroup(params_STORE, flags);
+				//ofxSurfing::AddGroup(params_Listeners, flags);
 			}
-			ImGuiManager.endWindow();
+			guiManager.endWindow();
 		}
 
 		//--
 
-		// window 2
+		// 2. USER
 
-		if(SHOW_GuiUser)
+		if (SHOW_GuiUser)
 		{
-			bool bOpen2 = true;
+			static bool bOpen2 = false;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-			ImGuiManager.beginWindow("USER", &bOpen2, window_flags);
+
+			guiManager.beginWindow("USER", &bOpen2, window_flags);
 			{
+				widgetsManager.refreshPanelShape();
+
 				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 				flags |= ImGuiTreeNodeFlags_Framed;
 				flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
 				ofxSurfing::AddGroup(params_USER, flags);
 			}
-			ImGuiManager.endWindow();
+			guiManager.endWindow();
 		}
 
 		//--
 
-		// window 3
-
+		// 3. TARGETS
 		{
-			ofxImGui::Settings mainSettings = ofxImGui::Settings();
-
-			//panels sizes
+			// panels sizes
 			float xx = 10;
 			float yy = 10;
 			float ww = PANEL_WIDGETS_WIDTH;
 			float hh = 20;
-			//float hh = PANEL_WIDGETS_HEIGHT;
-
-			//widgets sizes
-			float _spcx;
-			float _spcy;
-			float _w100;
-			float _h100;
-			float _w99;
-			float _w50;
-			float _w33;
-			float _w25;
-			float _h;
-			ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
-
-			static bool auto_resize = true;
-
-			ImGuiWindowFlags flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
 			{
+				static bool bOpen3 = true;
+				ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+
+				if (guiManager.auto_resize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+
 				std::string n = "TARGETS";
-				if (ofxImGui::BeginWindow(n.c_str(), mainSettings, flagsw))
+				guiManager.beginWindow(n.c_str(), &bOpen3, window_flags);
 				{
-					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+					widgetsManager.refreshPanelShape();
 
 					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 					flags |= ImGuiTreeNodeFlags_Framed;
 					flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
-					//target panel
-					ofxImGui::AddParameter(clone_TARGETS);
-					ofxImGui::AddParameter(bResetSort_Bank);
-					ofxImGui::AddParameter(bReset_Bank);
-					ofxImGui::AddParameter(bRandomize_Bank);
-					//clock panel
-					ofxImGui::AddParameter(BPM);
-					ofxImGui::AddParameter(LEN_BARS);
+					// target panel
+					widgetsManager.Add(clone_TARGETS, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+					widgetsManager.Add(bResetSort_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+					widgetsManager.Add(bReset_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+					widgetsManager.Add(bRandomize_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1, 5);
+
+					// clock panel
+					widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_DRAG, false, 1, -1);
+					widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_STEPPER);
+					//widgetsManager.AddWidgetConf(LEN_BARS);
+
+					ofxSurfing::AddParameter(BPM);
+					ofxSurfing::AddParameter(LEN_BARS);
+
 					//SHOW_timer = true;
 					//if (SHOW_timer)
-					//ofxImGui::AddParameter(timer);//hide timer
-					ofxImGui::AddParameter(bReset_Settings);
-					ofxImGui::AddParameter(SHOW_GuiUser);
+					//ofxSurfing::AddParameter(timer); // hide timer
+
+					widgetsManager.Add(bReset_Settings, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
+					widgetsManager.Add(SHOW_GuiUser, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
 
 					//--
 
-					////mouse lockers
-					//bLockMouseByImGui = false;
-					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
-					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
-					//bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-					
-					//-
-
-					ImGuiManager.drawAdvancedSubPanel();
-
-					ofxImGui::EndWindow(mainSettings);
+					guiManager.drawAdvancedSubPanel();
 				}
+				guiManager.endWindow();
 			}
 			ImGui::PopStyleVar();
 		}
 	}
-	ImGuiManager.end();
+	guiManager.end();
 }
 
 //-

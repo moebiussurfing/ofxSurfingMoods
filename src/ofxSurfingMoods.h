@@ -17,7 +17,11 @@ TODO:
 #include "ofxGuiExtended2.h"
 #endif
 
-#include "ofxSurfingImGui.h"
+#include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
+using namespace ofxSurfing; // used to simple call inside ofxSurfing_ImGui_LayoutManager/widgetsManager
+using namespace ofxSurfingHelpers; // used to simple call inside ofxSurfing_ImGui_WidgetsButtons
+
+//-
 
 #include "ofxWindowApp.h"
 #include "ofxSimpleTimer.h"
@@ -26,7 +30,7 @@ TODO:
 
 //--
 
-#pragma mark DEFINES
+// DEFINES
 
 //--
 
@@ -78,24 +82,22 @@ class ofxSurfingMoods
 	//-
 
 public:
-	ofxSurfing_ImGui_LayoutManager ImGuiManager;
+
+	ofxSurfing_ImGui_Manager guiManager;
 	void setup_ImGui();
 	void draw_ImGui();
-	ofxImGui::Gui gui;
-	//ofxImGui::Settings mainSettings = ofxImGui::Settings();
-	//ImFont* customFont = nullptr;
-	//ofParameter<bool> bGui{ "Show Gui", true };
-	//ofParameter<bool> auto_resize{ "Auto Resize", true };
-	//ofParameter<bool> auto_lockToBorder{ "Lock GUI", false };
-	ofParameter<bool> bLockMouseByImGui{ "Mouse Locked", false };
+	//ofxImGui::Gui gui;
 
 	ofxWindowApp windowApp;
 
 	//-
 
+public:
+
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
 	};
+
 	//--------------------------------------------------------------
 	~ofxSurfingMoods() {
 		exit();
@@ -112,6 +114,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+
 	void exit();
 	void windowResized(int w, int h);
 	void keyPressed(int key);
@@ -128,7 +131,7 @@ public:
 
 public:
 	//should make an outside listener to receive changes!
-	
+
 	ofParameter<int> RANGE_Selected;
 
 	//each target/state is linked or trigs 3 other receiver selectors together: Preset A-B-C
@@ -152,24 +155,24 @@ private:
 
 	//-
 
-	//markov
+	// markov
 private:
 	ofxMC::MarkovChain markov;
-	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
+
 	ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
+	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
+	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
+
 	ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
 	ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
-	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
-	ofParameter<float> controlManual{ "CONTROL", 0,0,1.f };
+	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
 	std::string path_markovMatrix;
 
-	//-
-
 	//-------------------------------------------
 
-	//API
+	// API
 
 public:
 
@@ -230,27 +233,7 @@ public:
 
 	void setPosition(int x, int y);
 
-#ifdef USE_ofxGuiExtended
-	//--------------------------------------------------------------
-	float getGuiUserWidth()
-	{
-		return group_USER->getWidth();
-	}
-
-	//--------------------------------------------------------------
-	void setGui_AdvancedPositon(int _x, int _y)
-	{
-		group_Advanced->setPosition(_x, _y);
-	}
-
-	//--------------------------------------------------------------
-	void setGui_UserPositon(int _x, int _y)
-	{
-		group_USER->setPosition(_x, _y);
-	}
-#endif
-
-	//preview boxes bar
+	// preview boxes bar
 	//--------------------------------------------------------------
 	void setPreviewPosition(int x, int y, int w, int h)
 	{
@@ -275,12 +258,14 @@ public:
 	}
 
 private:
+
 	glm::vec2 positionPreviewBoxes;
 	float positionPreviewBoxes_Width;
 	float positionPreviewBoxes_Height;
 	bool bUseCustomPreviewPosition = false;
 
 public:
+
 	void setGui_Visible(bool enable);//TODO: global gui enabler. not implemented..
 	void setGui_ToggleVisible();
 	void setGui_AdvancedVertical_MODE(bool enable);
@@ -321,7 +306,7 @@ public:
 
 private:
 
-#pragma mark SETTNGS
+	// SETTNGS
 
 	//path for xml settings
 	string path_Folder;
@@ -343,6 +328,7 @@ private:
 	//--
 
 public:
+
 	ofParameter<bool> PLAY;
 	ofParameter<float> BPM;//bpm
 	ofParameter<int> LEN_BARS;//in bars
@@ -350,6 +336,7 @@ public:
 //----
 
 private:
+
 	ofParameter<bool> MOOD_Color_Preview{ "RANGE MOOD", false };
 	ofColor colorLabel;
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
@@ -378,11 +365,12 @@ private:
 
 	//-
 
-#pragma mark ENGINE
+	// ENGINE
 
 	//-
 
 private:
+
 	//default settings
 	int NUM_TARGETS = (int)DEFAULT_NUM_TARGETS; //TARGETS
 	int NUM_PRESETS_A = (int)DEFAULT_NUM_PRESETS; //PRESETS
@@ -408,8 +396,141 @@ private:
 
 	//-
 
+private:
+
+	ofParameter<int> timer;//timer
+	ofParameter<int> timer_Progress;//% to finish timer
+	ofParameter<int> Range_Min;//range
+	ofParameter<int> Range_Max;//range
+	void Changed_Params_Listeners(ofAbstractParameter &e);
+
+	//ofParameter<std::string> MONITOR1;
+	ofParameter<std::string> MONITOR2;
+
+	//-
+
+	//each target handles two 'sub targets' aka 'preset + pattern';
+
+	int presets_A[MAX_ITEMS];
+	int presets_B[MAX_ITEMS];
+	int presets_C[MAX_ITEMS];
+
+	ofParameter<bool> clone_TARGETS;
+	void clone();
+
+	ofJson js_targets;
+	ofJson js_tar;
+	std::string targets_subPath;
+
+	//-
+
+private:
+
+	ofParameter<bool> bReset_Settings;
+	ofParameter<bool> bResetSort_Bank;
+	ofParameter<bool> bReset_Bank;
+	ofParameter<bool> bRandomize_Bank;
+	void resetClock();
+	void resetBank(bool RANDOMIZED = false, bool SORT_RELATIVE = true);
+
+	//-
+
+	bool stopBack = true; //WORKFLOW: goes to range 0 when stops
+	bool ENABLED_MoodMachine;
+
+	//can be enabled only when default positioner mode
+	bool MODE_vertical = false;
+
+	//bool bGui;
+	ofParameter<bool> bGui;
+	ofParameter<bool> SHOW_GuiUser;
+	ofParameter<bool> SHOW_GuiAdvanced;
+	ofParameter<bool> Edit_Preview;
+	ofParameter<bool> SHOW_Preview;
+
+	//void updateLabels();
+
+	//-
+
+	// TIMER
+
+	//timer
+	ofxSimpleTimer timer_Range;
+	void timer_Range_Complete(int &args);
+	void timer_Range_Started(int &args);
+	//bool SHOW_timer;
+
+	//-
+
+	// GUI LAYOUT
+
+	//panel
+	int gui_w;
+	//widgets
+	int gui_slider_mini_h;
+	int gui_slider_big_h;
+	int gui_button_big_h;
+
+	std::string myTTF_Gui;
+	int sizeTTF_Gui;
+
+	//-
+
+	// RANGES
+
+private:
+	//ranges
+	void Changed_Ranges(ofAbstractParameter &e);
+	int RANGE_Selected_PRE;
+
+	struct range
+	{
+		ofParameter<std::string> name;
+		ofParameter<int> min;
+		ofParameter<int> max;
+	};
+	range myRange;
+
+	vector<range> ranges;
+
+	ofParameter<int> COUNT_Duration;
+	ofParameter<int> COUNTER_step;
+	ofParameter<int> COUNTER_step_FromOne;
+	bool directionUp = true;
+
+	void load_range(int r);
+	void save_range(int r);
+	ofParameter<bool> range_autoSave = true;
+	ofParameter<bool> range_autoLoad = true;
+
+	ofParameter<bool> target_autoSave = true;
+	ofParameter<bool> target_autoLoad = true;
+
+	//--
+
 #ifdef USE_ofxGuiExtended
 	//ofxGuiExtended
+
+	//--------------------------------------------------------------
+	float getGuiUserWidth()
+	{
+		return group_USER->getWidth();
+	}
+
+	//--------------------------------------------------------------
+	void setGui_AdvancedPositon(int _x, int _y)
+	{
+		group_Advanced->setPosition(_x, _y);
+	}
+
+	//--------------------------------------------------------------
+	void setGui_UserPositon(int _x, int _y)
+	{
+		group_USER->setPosition(_x, _y);
+	}
+
+	//-
+
 private:
 	void setup_GUI_Main();
 	void setup_GUI_User();
@@ -444,115 +565,5 @@ public:
 		group_Advanced->loadTheme(path_Theme);
 	}
 #endif
-
-	//-
-
-private:
-	ofParameter<int> timer;//timer
-	ofParameter<int> timer_Progress;//% to finish timer
-	ofParameter<int> Range_Min;//range
-	ofParameter<int> Range_Max;//range
-	void Changed_Params_Listeners(ofAbstractParameter &e);
-
-	//ofParameter<std::string> MONITOR1;
-	ofParameter<std::string> MONITOR2;
-
-	//-
-
-	//each target handles two 'sub targets' aka 'preset + pattern';
-
-	int presets_A[MAX_ITEMS];
-	int presets_B[MAX_ITEMS];
-	int presets_C[MAX_ITEMS];
-
-	ofParameter<bool> clone_TARGETS;
-	void clone();
-
-	ofJson js_targets;
-	ofJson js_tar;
-	std::string targets_subPath;
-
-	//-
-
-private:
-	ofParameter<bool> bReset_Settings;
-	ofParameter<bool> bResetSort_Bank;
-	ofParameter<bool> bReset_Bank;
-	ofParameter<bool> bRandomize_Bank;
-	void resetClock();
-	void resetBank(bool RANDOMIZED = false, bool SORT_RELATIVE = true);
-
-	//-
-
-	bool stopBack = true; //WORKFLOW: goes to range 0 when stops
-	bool ENABLED_MoodMachine;
-
-	//can be enabled only when default positioner mode
-	bool MODE_vertical = false;
-
-	//bool bGui;
-	ofParameter<bool> bGui;
-	ofParameter<bool> SHOW_GuiUser;
-	ofParameter<bool> SHOW_GuiAdvanced;
-	ofParameter<bool> Edit_Preview;
-	ofParameter<bool> SHOW_Preview;
-
-	//void updateLabels();
-
-	//-
-
-#pragma mark TIMER
-
-	//timer
-	ofxSimpleTimer timer_Range;
-	void timer_Range_Complete(int &args);
-	void timer_Range_Started(int &args);
-	//bool SHOW_timer;
-
-	//-
-
-#pragma mark GUI LAYOUT
-
-	//panel
-	int gui_w;
-	//widgets
-	int gui_slider_mini_h;
-	int gui_slider_big_h;
-	int gui_button_big_h;
-
-	std::string myTTF_Gui;
-	int sizeTTF_Gui;
-
-	//-
-
-#pragma mark RANGES
-
-private:
-	//ranges
-	void Changed_Ranges(ofAbstractParameter &e);
-	int RANGE_Selected_PRE;
-
-	struct range
-	{
-		ofParameter<std::string> name;
-		ofParameter<int> min;
-		ofParameter<int> max;
-	};
-	range myRange;
-
-	vector<range> ranges;
-
-	ofParameter<int> COUNT_Duration;
-	ofParameter<int> COUNTER_step;
-	ofParameter<int> COUNTER_step_FromOne;
-	bool directionUp = true;
-
-	void load_range(int r);
-	void save_range(int r);
-	ofParameter<bool> range_autoSave = true;
-	ofParameter<bool> range_autoLoad = true;
-
-	ofParameter<bool> target_autoSave = true;
-	ofParameter<bool> target_autoLoad = true;
 };
 
