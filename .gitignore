@@ -554,3 +554,4 @@ example_Basic/config.make
 example_Basic/Makefile
 example_Basic/openFrameworks-Info.plist
 example_Basic/Project.xcconfig
+examples/2_Basic_ImGui/bin/imgui.ini
