@@ -2082,7 +2082,7 @@ void ofxSurfingMoods::draw_ImGui()
 					//ofxSurfing::AddParameter(timer); // hide timer
 
 					widgetsManager.Add(bReset_Settings, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
-					widgetsManager.Add(SHOW_GuiUser, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
+					widgetsManager.Add(SHOW_GuiUser, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 1);
 
 					//--
 
