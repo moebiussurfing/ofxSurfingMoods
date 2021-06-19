@@ -678,7 +678,7 @@ void ofxSurfingMoods::setup_Params()
 	bReset_Settings.setSerializable(false);
 	clone_TARGETS.set("BANK CLONE>", false);
 	clone_TARGETS.setSerializable(false);
-	bGui.set("MOODS SURFER", true);
+	bGui.set("SURFING MOODS", true);
 
 	SHOW_GuiUser.set("SHOW USER", true);
 	SHOW_Advanced.set("SHOW ADVANCED", false);
@@ -746,14 +746,14 @@ void ofxSurfingMoods::setup_Params()
 	//---
 
 	// group params outside gui but to use listeners and xml settings
-	parameters_ranges.setName("RANGES PARAMS");
+	parameters_ranges.setName("RANGES");
 	parameters_ranges.add(RANGE_Selected);
 	parameters_ranges.add(myRange.min);
 	parameters_ranges.add(myRange.max);
 	parameters_ranges.add(COUNT_Duration);
-	parameters_ranges.add(bReset_Bank);
-	parameters_ranges.add(bResetSort_Bank);
-	parameters_ranges.add(bRandomize_Bank);
+	//parameters_ranges.add(bReset_Bank);
+	//parameters_ranges.add(bResetSort_Bank);
+	//parameters_ranges.add(bRandomize_Bank);
 
 	//---
 
@@ -2072,14 +2072,30 @@ void ofxSurfingMoods::draw_ImGui_User()
 		{
 			widgetsManager.refreshPanelShape();
 
-			// play
-			widgetsManager.Add(PLAY, SurfingWidgetTypes::IM_TOGGLE_BIG);
-			ImGui::Dummy(ImVec2(0, 2));
-
 			static bool bOpen = false;
 			ImGuiTreeNodeFlags _flagt;
 			_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
 			_flagt |= ImGuiTreeNodeFlags_Framed;
+
+			// colorize moods
+			float a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.25, 1, true);
+			ImVec4 c;
+			if (RANGE_Selected == 0) c = color_MOOD1;
+			else if (RANGE_Selected == 1) c = color_MOOD2;
+			else if (RANGE_Selected == 2) c = color_MOOD3;
+			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
+
+			//-
+
+			// play
+
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca);
+			widgetsManager.Add(PLAY, SurfingWidgetTypes::IM_TOGGLE_BIG);
+			ImGui::PopStyleColor();
+
+			//-
+
+			ImGui::Dummy(ImVec2(0, 2));
 
 			if (ImGui::TreeNodeEx("PANELS", _flagt))
 			{
@@ -2130,7 +2146,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 			//widgetsManager.Add(Mode_MarkovChain, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 3);
 			//widgetsManager.Add(Mode_Manual, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 3);
 
+			ImGui::PushStyleColor(ImGuiCol_Text, ca);
 			if (Mode_Manual) widgetsManager.Add(controlManual, SurfingWidgetTypes::IM_SLIDER);
+			ImGui::PopStyleColor();
 
 			ImGui::Dummy(ImVec2(0, 5));
 
@@ -2147,29 +2165,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//-
 
-			//// blink by timer
-			//bool b = bPlay;
-			float a;
-			//a = ofxSurfingHelpers::getFadeBlink();
-			a = 1 - timer_Range.getNormalizedProgress();
-			//timer_Progress = 100 * timer_Range.getNormalizedProgress();
-
-			//if (b) a = 1 - tn;
-			////if (b) a = ofxSurfingHelpers::getFadeBlink();
-			//else a = 1.0f;
-			//if (b) ImGui::PushStyleColor(ImGuiCol_Border, (ImVec4)ImColor::HSV(0.5f, 0.0f, 1.0f, 0.5 * a));
-			//ofxImGuiSurfing::AddBigToggle(bPlay, _w100, _h / 2, false);
-			//if (b) ImGui::PopStyleColor();
-
-			ImVec4 c;
-			if (RANGE_Selected == 0) c = color_MOOD1;
-			else if (RANGE_Selected == 1) c = color_MOOD2;
-			else if (RANGE_Selected == 2) c = color_MOOD3;
-			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
-
 			ImGui::PushStyleColor(ImGuiCol_Text, ca);
 			ImGui::Text("RANGE|STATES");
-
 
 			widgetsManager.Add(RANGE_Selected, SurfingWidgetTypes::IM_DEFAULT);
 			widgetsManager.Add(TARGET_Selected, SurfingWidgetTypes::IM_DEFAULT, false, 1, 4);
@@ -2290,7 +2287,7 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 
 					// RANGES
 					{
-						if (ImGui::TreeNodeEx("RANGES", _flagt))
+						if (ImGui::TreeNodeEx("DEBUG LIMITS", _flagt))
 						{
 							//widgetsManager.refreshPanelShape();
 
