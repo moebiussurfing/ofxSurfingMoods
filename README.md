@@ -4,11 +4,13 @@ ofxSurfingMoods
 # Overview
 **ofxSurfingMoods** is an **openFrameworks** addon that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
 
-There is **three Moods** that we call **Ranges** too.  
-Every **State** is named **Target**, and every **Target** can be linked to three **Presets receivers (A-B-C)**.  
+There is **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
+Each Range has Three States. Each **State** is also named **Target**.  
+Every **Target** can be linked to three **Presets receivers (A-B-C)**.  
 
 Each **Preset receiver (A-B-C)** has 9 available **Presets/indexes**.  
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**.  
+
 (Linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/Triggering Video/Sounds...etc*)
 
 There is an internal **BPM Clock** and customizable timers and counters, to configure the global speeds or how much time we want to stay walking into the *Mood States*.  
@@ -39,24 +41,29 @@ Available float to force select a **Mood/Range**, and to *walk'n'randomize* **St
 - Colored Preview panel to display the workflow during runtime. Also, customizable layout using the mouse.
 
 ## Usage
- - Look into **OF_ADDON/example_Basic**.
+ - Look into **OF_ADDON/examples/**.
 
 ## Dependencies
-Add to your project:  
-- **ofxGuiExtended2** (https://github.com/moebiussurfing/ofxGuiExtended2)  
+Add to **PROJECT GENERATOR**:  
+* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+* [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) from @**Daandelange**  
 
 Already included in *OF_ADDON/libs*. No need to add manually:
 - **ofxMarkovChain** (https://github.com/elaye/ofxMarkovChain)
 - **ofxSimpleTimer** (https://github.com/HeliosInteractive/ofxSimpleTimer)
 - **ofxScaleDragRect** (https://github.com/roymacdonald/ofxScaleDragRect)
 
-## Tested systems
-- **Windows10** / **VS2017** / **OF ~0.11**
-- **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
+## Tested Systems
+* **Windows 10** / **VS 2017** / **OF ~0.11**
 
 ## Author
-Addon by **@moebiusSurfing**  
-*(ManuMolina). 2020.*
+An addon by **@moebiusSurfing**  
+*( ManuMolina ) 2021*  
+
+[Twitter](https://twitter.com/moebiussurfing/)  
+[Instagram](https://www.instagram.com/moebiussurfing/)  
+[YouTube](https://www.youtube.com/channel/UCzUw96_wjmNxyIoFXf84hQg)  
 
 ## License
-*MIT License.*
+[**MIT License**](https://github.com/LICENSE)

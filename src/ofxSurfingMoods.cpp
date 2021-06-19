@@ -644,11 +644,6 @@ void ofxSurfingMoods::setup_Params()
 	color_MOOD2.set(ofColor(ofColor::yellow, a));
 	color_MOOD3.set(ofColor(ofColor::green, a));
 
-	//std::string spacer = " ";
-	//std::string spacer = "           ";
-
-	//positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
-
 	//-
 
 	// 1. setup_GUI_Target
