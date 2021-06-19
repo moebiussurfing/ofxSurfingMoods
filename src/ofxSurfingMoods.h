@@ -366,8 +366,8 @@ private:
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
 	void refresh_MOOD_Color();
 
-	ofParameter<std::string> labelRange{ "RANGE", "" };
-	ofParameter<std::string> labelTarget{ "TARGET", "" };
+	//ofParameter<std::string> labelRange{ "RANGE", "" };
+	//ofParameter<std::string> labelTarget{ "TARGET", "" };
 
 	// blink
 	bool bBlink = false;

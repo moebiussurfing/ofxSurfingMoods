@@ -644,7 +644,7 @@ void ofxSurfingMoods::setup_Params()
 	color_MOOD2.set(ofColor(ofColor::yellow, a));
 	color_MOOD3.set(ofColor(ofColor::green, a));
 
-	std::string spacer = " ";
+	//std::string spacer = " ";
 	//std::string spacer = "           ";
 
 	//positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
@@ -660,7 +660,7 @@ void ofxSurfingMoods::setup_Params()
 	timer.set("TIMER", 1000, 1, 60000);//ms
 	timer.setSerializable(false);
 
-	TARGET_Selected.set("STATE" + spacer + "TARGET", 0, 0, NUM_TARGETS - 1);//target
+	TARGET_Selected.set("STATE TARGET", 0, 0, NUM_TARGETS - 1);//target
 
 	PRESET_A_Enable.set("ENABLE A", true);
 	PRESET_B_Enable.set("ENABLE B", true);
@@ -722,7 +722,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// define params
 	timer_Progress.set("COMPLETE", 0, 0, 100);//%
-	RANGE_Selected.set("MOOD" + spacer + "RANGE", 0, 0, NUM_RANGES - 1);
+	RANGE_Selected.set("RANGE MOOD", 0, 0, NUM_RANGES - 1);
 	//myRange.min.set("MIN PRESET", 0, 0, NUM_TARGETS - 1);//?
 	//myRange.max.set("MAX PRESET", 0, 0, NUM_TARGETS - 1);
 	myRange.name.set("MOOD", ranges[RANGE_Selected].name);
