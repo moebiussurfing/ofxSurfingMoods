@@ -22,6 +22,7 @@ TODO:
 
 //-
 
+#include "ofxSurfingHelpers.h"
 #include "ofxWindowApp.h"
 #include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
@@ -102,6 +103,7 @@ public:
 	void draw_ImGui();
 private:
 	void draw_ImGui_User();
+	void draw_ImGui_Advanced();
 
 private:
 	//ofxImGui::Gui gui;
@@ -175,9 +177,9 @@ private:
 private:
 	ofxMC::MarkovChain markov;
 
-	ofParameter<bool> Mode_Ranged{ "MODE RANGED", false };
-	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
-	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
+	ofParameter<bool> Mode_Ranged{ "A MODE RANGED", false };
+	ofParameter<bool> Mode_MarkovChain{ "B MODE MARKOV", false };
+	ofParameter<bool> Mode_Manual{ "C MODE MANUAL", false };
 
 	void refresModeshWorkflow() {
 		if (!Mode_Manual && !Mode_MarkovChain && !Mode_Ranged)
@@ -321,7 +323,7 @@ public:
 	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
 	{
-		SHOW_AdvancedRanges = b;
+		SHOW_Advanced = b;
 	}
 
 	//-------------------------------------------
@@ -467,8 +469,8 @@ public:
 
 private:
 	ofParameter<bool> SHOW_GuiUser;
-	ofParameter<bool> SHOW_AdvancedRanges;
-	ofParameter<bool> SHOW_Clocks;
+	ofParameter<bool> SHOW_Advanced;
+	//ofParameter<bool> SHOW_Clocks;
 	ofParameter<bool> Edit_Preview;
 	ofParameter<bool> SHOW_Preview;
 	ofParameter<bool> bUseCustomPreviewPosition;
