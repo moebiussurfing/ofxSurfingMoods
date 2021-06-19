@@ -678,7 +678,7 @@ void ofxSurfingMoods::setup_Params()
 	bReset_Settings.setSerializable(false);
 	clone_TARGETS.set("BANK CLONE>", false);
 	clone_TARGETS.setSerializable(false);
-	bGui.set("MOOD SURFER", true);
+	bGui.set("MOODS SURFER", true);
 
 	SHOW_GuiUser.set("SHOW USER", true);
 	SHOW_Advanced.set("SHOW ADVANCED", false);
