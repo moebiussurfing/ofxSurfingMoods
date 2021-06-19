@@ -4,17 +4,23 @@
 
 #include "ofxSurfingMoods.h"
 
-#include "ofxColorGradient.h"//for this example only
-#include "ofxWindowApp.h"
+#include "ofxColorGradient.h" // for the example only
+#include "ofxWindowApp.h" // for the example only
 
 /*
+	
 	NOTE:
-	1.	You can start testing by moving the Target slide
+	
+	1. You can start testing by moving the Target slide
 	with the player stopped.
 	Each target is linked to 3 Presets that you can set.
-	2.	Then, pick a Mode and hit Play.
+	
+	2. Then, pick a Mode and hit Play.
+
 	3. On Mode Manual, you can drag the Control slider to set a Range. The machine must be playing.
+
 */
+
 
 class ofApp: public ofBaseApp{
 

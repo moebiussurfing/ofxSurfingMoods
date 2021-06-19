@@ -1,13 +1,14 @@
 
 #pragma once
+
 #include "ofMain.h"
 
 /*
 
 TODO:
 
-+ fix preview box (merge double click with drag rect)
-+ use WindowOpen scheme to add helper to set patram types
++ fix save/load settings
++ fix preview box full (merge double click with drag rect)
 
 */
 
@@ -18,8 +19,6 @@ TODO:
 #endif
 
 #include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
-using namespace ofxSurfing; // used to simple call inside ofxSurfing_ImGui_LayoutManager/widgetsManager
-using namespace ofxSurfingHelpers; // used to simple call inside ofxSurfing_ImGui_WidgetsButtons
 
 //-
 
@@ -77,31 +76,44 @@ using namespace ofxSurfingHelpers; // used to simple call inside ofxSurfing_ImGu
 
 //--
 
-class ofxSurfingMoods
+//class ofxSurfingMoods
+class ofxSurfingMoods : public ofBaseApp
 {
-	//-
-
-public:
-
-	ofxSurfing_ImGui_Manager guiManager;
-	void setup_ImGui();
-	void draw_ImGui();
-	//ofxImGui::Gui gui;
-
-	ofxWindowApp windowApp;
-
 	//-
 
 public:
 
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
+		bAutoDraw = false;
 	};
 
 	//--------------------------------------------------------------
 	~ofxSurfingMoods() {
 		exit();
 	};
+
+	//-
+
+public:
+	ofxSurfing_ImGui_Manager guiManager;
+	void setup_ImGui();
+	void draw_ImGui();
+	void draw_ImGui_User();
+
+private:
+	//ofxImGui::Gui gui;
+	bool bAutoDraw; // must be false when multiple ImGui instances created!
+
+public:
+	// Force autodraw
+	//--------------------------------------------------------------
+	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
+
+	//-
+
+private:
+	ofxWindowApp windowApp;
 
 	//-
 
@@ -115,6 +127,8 @@ public:
 	void update();
 	void draw();
 
+	void startup();
+
 	void exit();
 	void windowResized(int w, int h);
 	void keyPressed(int key);
@@ -123,18 +137,18 @@ public:
 	void drawPreview();
 	void drawPreview(int x, int  y, int  w, int  h);
 
-	ofParameter<glm::vec2> positionGui_Engine;
+	//ofParameter<glm::vec2> positionGui_Engine;
 
 	//--
 
 #pragma mark API
 
 public:
-	//should make an outside listener to receive changes!
+	// should make an outside listener to receive changes!
 
 	ofParameter<int> RANGE_Selected;
 
-	//each target/state is linked or trigs 3 other receiver selectors together: Preset A-B-C
+	// each target/state is linked or trigs 3 other receiver selectors together: Preset A-B-C
 	ofParameter<int> TARGET_Selected;//current target. allways starts from 0
 
 	ofParameter<int> PRESET_A_Selected;
@@ -163,6 +177,13 @@ private:
 	ofParameter<bool> Mode_MarkovChain{ "MODE MARKOV", false };
 	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
 
+	void refresModeshWorkflow() {
+		if (!Mode_Manual && !Mode_MarkovChain &&!Mode_Ranged)
+		{
+			Mode_Manual = true;
+		}
+	};
+
 	ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
 	ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
 	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
@@ -177,7 +198,7 @@ private:
 public:
 
 	void setup(int numTargets, int numPresets, int limit1, int limit2);
-	//all 3 preset have the same size, usualy 8 
+	// all 3 preset have the same size, usualy 8 
 
 	void play();
 	void stop();
@@ -262,7 +283,6 @@ private:
 	glm::vec2 positionPreviewBoxes;
 	float positionPreviewBoxes_Width;
 	float positionPreviewBoxes_Height;
-	bool bUseCustomPreviewPosition = false;
 
 public:
 
@@ -299,7 +319,7 @@ public:
 	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
 	{
-		SHOW_GuiAdvanced = b;
+		SHOW_AdvancedRanges = b;
 	}
 
 	//-------------------------------------------
@@ -308,7 +328,7 @@ private:
 
 	// SETTNGS
 
-	//path for xml settings
+	// path for xml settings
 	string path_Folder;
 
 	std::string filename_Settings;
@@ -345,12 +365,12 @@ private:
 	ofParameter<std::string> labelRange{ "RANGE", "" };
 	ofParameter<std::string> labelTarget{ "TARGET", "" };
 
-	//blink
+	// blink
 	bool bBlink = false;
 	int blinkCounterFrames = 0;
 	float blinkDuration;
 
-	//labels
+	// labels
 	ofTrueTypeFont myFont;
 	std::string myTTF;
 	int sizeTTF;
@@ -358,7 +378,7 @@ private:
 
 	void setup_Params();
 
-	//this function can be used to trig ranges jumps externally without using the internal timer.
+	// this function can be used to trig ranges jumps externally without using the internal timer.
 	void runEngineModeRange();
 
 	bool BLOCK_CALLBACK_Feedback = false;
@@ -371,19 +391,19 @@ private:
 
 private:
 
-	//default settings
-	int NUM_TARGETS = (int)DEFAULT_NUM_TARGETS; //TARGETS
-	int NUM_PRESETS_A = (int)DEFAULT_NUM_PRESETS; //PRESETS
-	int NUM_PRESETS_B = (int)DEFAULT_NUM_PRESETS; //PRESETS
-	int NUM_PRESETS_C = (int)DEFAULT_NUM_PRESETS; //PRESETS
+	// default settings
+	int NUM_TARGETS = (int)DEFAULT_NUM_TARGETS; // TARGETS
+	int NUM_PRESETS_A = (int)DEFAULT_NUM_PRESETS; // PRESETS
+	int NUM_PRESETS_B = (int)DEFAULT_NUM_PRESETS; // PRESETS
+	int NUM_PRESETS_C = (int)DEFAULT_NUM_PRESETS; // PRESETS
 
 	//-
 
-	//ranges delimiters
+	// ranges delimiters
 
-	//range 0: starts at target 0
+	// range 0: starts at target 0
 
-	//range 1: starts at target rLimit1
+	// range 1: starts at target rLimit1
 	int rLimit1 = (int)DEFAULT_RANGE_LIMIT_1;
 
 	//range 2: starts at target rLimit2
@@ -398,10 +418,10 @@ private:
 
 private:
 
-	ofParameter<int> timer;//timer
-	ofParameter<int> timer_Progress;//% to finish timer
-	ofParameter<int> Range_Min;//range
-	ofParameter<int> Range_Max;//range
+	ofParameter<int> timer; // timer
+	ofParameter<int> timer_Progress; // % to finish timer
+	ofParameter<int> Range_Min; // range
+	ofParameter<int> Range_Max; //range
 	void Changed_Params_Listeners(ofAbstractParameter &e);
 
 	//ofParameter<std::string> MONITOR1;
@@ -444,9 +464,12 @@ private:
 	//bool bGui;
 	ofParameter<bool> bGui;
 	ofParameter<bool> SHOW_GuiUser;
-	ofParameter<bool> SHOW_GuiAdvanced;
+	ofParameter<bool> SHOW_AdvancedRanges;
+	ofParameter<bool> SHOW_Clocks;
 	ofParameter<bool> Edit_Preview;
 	ofParameter<bool> SHOW_Preview;
+	ofParameter<bool> bUseCustomPreviewPosition;
+	//bool bUseCustomPreviewPosition = false;
 
 	//void updateLabels();
 
@@ -563,7 +586,7 @@ public:
 		//path_Theme += "theme_ofxGuiExtended2.json";
 		group_USER->loadTheme(path_Theme);
 		group_Advanced->loadTheme(path_Theme);
-	}
+}
 #endif
 };
 

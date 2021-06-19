@@ -57,15 +57,6 @@ void ofxSurfingMoods::setup()//default sizes
 		ofLogError(__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
 	}
 
-	//-
-
-	//preview rectangle
-	bUseCustomPreviewPosition = true;
-	path_rect = path_Folder + "ofxSurfingMoods_";
-	//rectPreview.loadSettings("", path_rect, true);
-
-	//rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
-
 	//--
 
 	//params
@@ -122,19 +113,44 @@ void ofxSurfingMoods::setup()//default sizes
 
 	load_range(RANGE_Selected);
 
+	//-
+
+	setup_ImGui();
+
+	//--
+
+	startup();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::startup()
+{
+
 	//-------
 
 	// startup
 
+	//-
+
+	// preview rectangle
+	//bUseCustomPreviewPosition = false;
+	bUseCustomPreviewPosition = true;
+
+	path_rect = path_Folder + "ofxSurfingMoods_";
+	//if (bUseCustomPreviewPosition) 
+	rectPreview.loadSettings("", path_rect, true);
+
+	//rectPreview.setRect(25, 650, 700, 50); // initialize when no settings file created yet.
+
 	//--
 
-	//load bank targets
+	// load bank targets
 	if (autoSaveLoad_settings.get())
 	{
 		loadBanks(path_Folder);
 	}
 
-	//load panel settings
+	// load panel settings
 	if (autoSaveLoad_settings.get())
 	{
 		loadSettings(path_Folder);
@@ -143,9 +159,9 @@ void ofxSurfingMoods::setup()//default sizes
 	setGui_AdvancedVertical_MODE(false);
 	//setPosition(20, 20);//gui panel position
 
-	//workflow
+	// workflow
 #ifdef USE_ofxGuiExtended
-	group_Advanced->getVisible().set(SHOW_GuiAdvanced);
+	group_Advanced->getVisible().set(SHOW_AdvancedRanges);
 #endif
 
 	//--
@@ -156,6 +172,7 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
+	/*
 #ifdef USE_ofxGuiExtended
 //theme
 	path_Theme = "assets/theme/";
@@ -165,10 +182,7 @@ void ofxSurfingMoods::setup()//default sizes
 	//group_TARGETS;
 	//group_CLOCK;
 #endif
-
-	//--
-
-	setup_ImGui();
+	*/
 
 	//--
 }
@@ -212,11 +226,11 @@ void ofxSurfingMoods::exit()
 	rectPreview.saveSettings("", path_rect, true);
 
 	//-
-
+	/*
 #ifdef USE_ofxGuiExtended
 	positionGui_Engine = glm::vec2(group_USER->getPosition().x, group_USER->getPosition().y);
 #endif
-
+	*/
 	if (autoSaveLoad_settings)
 	{
 		// save panel settings
@@ -238,7 +252,7 @@ void ofxSurfingMoods::exit()
 //--------------------------------------------------------------
 void ofxSurfingMoods::refresh_MOOD_Color()
 {
-	ofLogVerbose(__FUNCTION__) << "refresh_MOOD_Color";
+	ofLogVerbose(__FUNCTION__);
 
 	// mood color preview label
 	switch (RANGE_Selected.get())
@@ -265,8 +279,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 //--------------------------------------------------------------
 void ofxSurfingMoods::drawPreview() // put to the rigth-top of user panel
 {
-	float gx, gy, gw, gh;
-	float ww, hh;
+	float gx, gy, gw, gh, ww, hh, pad;
 
 	////custom
 	//if (bUseCustomPreviewPosition)
@@ -277,7 +290,7 @@ void ofxSurfingMoods::drawPreview() // put to the rigth-top of user panel
 	//	hh = positionPreviewBoxes_Height;
 	//}
 
-	////custom
+	//// custom
 	// preview rectangle
 	if (bUseCustomPreviewPosition)
 	{
@@ -287,28 +300,36 @@ void ofxSurfingMoods::drawPreview() // put to the rigth-top of user panel
 		hh = rectPreview.getHeight();
 	}
 
-	//default
+	// default
 	else
 	{
+		pad = 10;
+		gw = ofGetWidth() - 2 * pad;
+		gx = pad;
+		gy = pad;
+		ww = gw;
+		hh = 50;
 
-#ifdef USE_ofxGuiExtended
-		//advanced panel to the right
-		gw = group_USER->getWidth() + 5;
-		gx = group_USER->getPosition().x + gw + 5;
-		gy = group_USER->getPosition().y + 4;
-		ww = 400;
-		hh = 30;
-#endif
+		/*
+		#ifdef USE_ofxGuiExtended
+				//advanced panel to the right
+				gw = group_USER->getWidth() + 5;
+				gx = group_USER->getPosition().x + gw + 5;
+				gy = group_USER->getPosition().y + 4;
+				ww = 400;
+				hh = 30;
+		#endif
+		*/
 	}
 
-	//horizontal by default
-	if (!MODE_vertical && !bUseCustomPreviewPosition)
-	{
-		gx = gx + gw;
-	}
-	else
-	{
-	}
+	////horizontal by default
+	//if (!MODE_vertical && !bUseCustomPreviewPosition)
+	//{
+	//	gx = gx + gw;
+	//}
+	//else
+	//{
+	//}
 
 	//-
 
@@ -414,7 +435,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 			break;
 			}
 
-			//range box
+			// range box
 			ofFill();
 			ofDrawRectRounded(_x, y, _w, h, ro);
 
@@ -426,7 +447,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 			////ofDrawRectangle(_x, y, _w, h);
 		}
 
-		//target boxes
+		// target boxes
 		for (int t = 0; t < NUM_TARGETS; t++)
 		{
 			if (t >= 0 && t < rLimit1)
@@ -448,11 +469,11 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 			wb = sizes - padBox;
 			hb = h - padBox;
 
-			//target box
+			// target box
 			ofFill();
 			ofDrawRectRounded(xb, yb, wb, hb, ro);
 
-			//text label
+			// text label
 			ofSetColor(0);
 			float xOff = 3;
 			float yOff = 5;
@@ -468,9 +489,9 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 
 		//-
 
-		//selected box
+		// selected box
 
-		//blink disabling box draw
+		// blink disabling box draw
 		if (bBlink)
 		{
 			blinkCounterFrames++;
@@ -480,7 +501,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 			}
 		}
 
-		//filled box
+		// filled box
 		ofFill();
 		float blinkFactor = 0.4f;
 		if (!bBlink)
@@ -491,7 +512,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel,
 			sizes - padSel, h - padSel, ro);
 
-		//border
+		// border
 		ofNoFill();
 		ofSetLineWidth(line);
 		if (!bBlink)
@@ -503,7 +524,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 
 		//--
 
-		//complete timer progress
+		// complete timer progress
 		//TODO: hardcoded limits
 		if (RANGE_Selected >= 0 && RANGE_Selected < 3)
 		{
@@ -535,7 +556,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 			//ofNoFill();
 			//ofDrawRectRounded(x - padBg * 0.5f, y - padBg * 0.5f + h + padH, w + padBg, _h + padBg, ro2);
 
-			//complete progress range
+			// complete progress range
 			if (RANGE_Selected == 0)
 			{
 				ofSetColor(color_MOOD1);
@@ -549,11 +570,11 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 				ofSetColor(color_MOOD3);
 			}
 
-			//colored progress
+			// colored progress
 			ofFill();
 			ofDrawRectRounded(x, y + h + padH, _w, _h, ro2);
 
-			//mark all range steps with vertical lines
+			// mark all range steps with vertical lines
 			ofNoFill();
 			//ofSetColor(255);
 			ofSetLineWidth(line + 1.0f);
@@ -566,7 +587,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 
 			//-
 
-			//manual control line
+			// manual control line
 			if (Mode_Manual)
 			{
 				ofNoFill();
@@ -580,7 +601,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 
 		//-
 
-		////markov debug preview
+		//// markov debug preview
 		//float ww =300;
 		//float hh =300;
 		//if(i == 0){
@@ -602,7 +623,7 @@ void ofxSurfingMoods::drawPreview(int x, int  y, int  w, int  h) // custom posit
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_Params()
 {
-	//colors to show moods (ranges)
+	// colors to show moods (ranges)
 	int a = 128;
 	color_MOOD1.set(ofColor(ofColor::red, a));
 	color_MOOD2.set(ofColor(ofColor::yellow, a));
@@ -611,11 +632,11 @@ void ofxSurfingMoods::setup_Params()
 	std::string spacer = " ";
 	//std::string spacer = "           ";
 
-	positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
+	//positionGui_Engine.set("Gui Panel Position", glm::vec2(500, 500), glm::vec2(0), glm::vec2(1920, 1080));
 
 	//-
 
-	//1. setup_GUI_Target
+	// 1. setup_GUI_Target
 
 	PLAY.set("PLAY", false);
 
@@ -630,7 +651,7 @@ void ofxSurfingMoods::setup_Params()
 	PRESET_B_Enable.set("ENABLE B", true);
 	PRESET_C_Enable.set("ENABLE C", true);
 
-	//presets margins
+	// presets margins
 
 	PRESET_A_Selected.set("PRESET A", 0, 0, NUM_PRESETS_A - 1);
 	PRESET_B_Selected.set("PRESET B", 0, 0, NUM_PRESETS_B - 1);
@@ -643,23 +664,27 @@ void ofxSurfingMoods::setup_Params()
 	clone_TARGETS.set("BANK CLONE>", false);
 	clone_TARGETS.setSerializable(false);
 	bGui.set("MOOD SURFER", true);
+
 	SHOW_GuiUser.set("SHOW USER", true);
-	SHOW_GuiAdvanced.set("SHOW ADVANCED", false);
+	SHOW_AdvancedRanges.set("SHOW ADVANCED", false);
+	SHOW_Clocks.set("SHOW CLOCKS", false);
 	SHOW_Preview.set("SHOW PREVIEW", false);
+	bUseCustomPreviewPosition.set("Custom", false);
+
 	Edit_Preview.set("EDIT PREVIEW", false);
 
-	//disabled
+	// disabled
 	////labels to monitor
 	////MONITOR1.set("", "");//monitor
 	////MONITOR1.setSerializable(false);
 	//MONITOR2.set("", "");//monitor
 	//MONITOR2.setSerializable(false);
 
-	MOOD_Color_Preview.setName("MOOD RANGE");
+	//MOOD_Color_Preview.setName("MOOD RANGE");
 
 	//----
 
-	//3. setup_GUI_Ranges
+	// 3. setup_GUI_Ranges
 	//init ranges vector
 	ranges.resize(NUM_RANGES);
 
@@ -678,9 +703,9 @@ void ofxSurfingMoods::setup_Params()
 
 	//--
 
-	//RANGES
+	// RANGES
 
-	//define params
+	// define params
 	timer_Progress.set("COMPLETE", 0, 0, 100);//%
 	RANGE_Selected.set("MOOD" + spacer + "RANGE", 0, 0, NUM_RANGES - 1);
 	//myRange.min.set("MIN PRESET", 0, 0, NUM_TARGETS - 1);//?
@@ -705,7 +730,7 @@ void ofxSurfingMoods::setup_Params()
 
 	//---
 
-	//group params outside gui but to use listeners and xml settings
+	// group params outside gui but to use listeners and xml settings
 	parameters_ranges.setName("RANGES PARAMS");
 	parameters_ranges.add(RANGE_Selected);
 	parameters_ranges.add(myRange.min);
@@ -717,15 +742,17 @@ void ofxSurfingMoods::setup_Params()
 
 	//---
 
-	//store params (grouped only to save/load, not to allow on gui or callbacks)
+	// store params (grouped only to save/load, not to allow on gui or callbacks)
 	params_STORE.setName("MoodMachine_params_STORE");
 	params_STORE.add(COUNT_Duration);
 	params_STORE.add(BPM);
 	params_STORE.add(LEN_BARS);
-	params_STORE.add(SHOW_GuiUser);
 	params_STORE.add(bGui);
-	params_STORE.add(SHOW_GuiAdvanced);
+	params_STORE.add(SHOW_GuiUser);
+	params_STORE.add(SHOW_Clocks);
+	params_STORE.add(SHOW_AdvancedRanges);
 	params_STORE.add(SHOW_Preview);
+	params_STORE.add(bUseCustomPreviewPosition);
 	params_STORE.add(PRESET_A_Enable);
 	params_STORE.add(PRESET_B_Enable);
 	params_STORE.add(PRESET_C_Enable);
@@ -736,14 +763,15 @@ void ofxSurfingMoods::setup_Params()
 	params_STORE.add(Mode_AvoidRepeat);
 	params_STORE.add(Mode_Manual);
 	params_STORE.add(controlManual);
-	params_STORE.add(positionGui_Engine);
+	//params_STORE.add(positionGui_Engine);
+	params_STORE.add(guiManager.params_Advanced);
 	//params_STORE.add(autoSaveLoad_settings);
 
 	autoSaveLoad_settings.setSerializable(false);
 
 	//-
 
-	//group params for callback listener only
+	// group params for callback listener only
 	params_Listeners.setName("MoodMachine_params");
 
 	params_Listeners.add(PLAY);
@@ -755,7 +783,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(bReset_Bank);
 	params_Listeners.add(bGui);
 	params_Listeners.add(SHOW_GuiUser);
-	params_Listeners.add(SHOW_GuiAdvanced);
+	params_Listeners.add(SHOW_AdvancedRanges);
 	params_Listeners.add(Edit_Preview);
 	params_Listeners.add(SHOW_Preview);
 	params_Listeners.add(TARGET_Selected);
@@ -772,11 +800,11 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(Mode_AvoidRepeat);
 	params_Listeners.add(Mode_Manual);
 	params_Listeners.add(controlManual);
-	params_Listeners.add(positionGui_Engine);
+	//params_Listeners.add(positionGui_Engine);
 
 	//----
 
-	//2. setup_GUI_User
+	// 2. setup_GUI_User
 
 	//user
 	//params_USER.setName("USER");
@@ -801,7 +829,7 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(COUNTER_step_FromOne);
 
 	//params_USER.add(labelRange);
-	params_USER.add(MOOD_Color_Preview);
+	//params_USER.add(MOOD_Color_Preview);
 	params_USER.add(RANGE_Selected);
 
 	params_USER.add(TARGET_Selected);
@@ -821,13 +849,13 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(Edit_Preview);
 
 	params_USER.add(SHOW_Preview);
-	params_USER.add(SHOW_GuiAdvanced);
+	params_USER.add(SHOW_AdvancedRanges);
 
 	//params_USER.add(autoSaveLoad_settings);
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::load_range(int r)//recall current range margins from data vector
+void ofxSurfingMoods::load_range(int r) // recall current range margins from data vector
 {
 	ofLogNotice(__FUNCTION__) << r;
 
@@ -927,9 +955,9 @@ void ofxSurfingMoods::stopMachine()
 	RANGE_Selected_PRE = -1;
 
 	RANGE_Selected = 0;
-	TARGET_Selected = ranges[RANGE_Selected].min;//set the target to the first target pos of the range
+	TARGET_Selected = ranges[RANGE_Selected].min; // set the target to the first target pos of the range
 
-	//markov
+	// markov
 	ofxMC::Matrix mat(path_markovMatrix);
 	markov.setup(mat, 0);
 }
@@ -988,7 +1016,7 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 }
 
 
-//player
+// player
 //--------------------------------------------------------------
 void ofxSurfingMoods::stop()
 {
@@ -1043,7 +1071,7 @@ void ofxSurfingMoods::setGui_Visible(bool b)
 	SHOW_GuiUser = b;
 
 	//workflow
-	if (!SHOW_GuiUser && SHOW_GuiAdvanced) SHOW_GuiAdvanced = false;
+	if (!SHOW_GuiUser && SHOW_AdvancedRanges) SHOW_AdvancedRanges = false;
 }
 
 //--------------------------------------------------------------
@@ -1076,19 +1104,19 @@ void ofxSurfingMoods::setBarsScale(int bars)
 //--------------------------------------------------------------
 void ofxSurfingMoods::runEngineModeRange()
 {
-	//this function can be used to trig ranges jumps externally without using the internal timer.
+	// this function can be used to trig ranges jumps externally without using the internal timer.
 
 	int _RANGE_Selected_PRE = RANGE_Selected.get();
 
 	//-
 
-	//1. mode random
+	// 1. mode random
 
 	//-
 
-	//2. mode back loop:
+	// 2. mode back loop:
 
-	//count times and cycle
+	// count times and cycle
 	COUNTER_step++;
 	COUNTER_step = COUNTER_step % COUNT_Duration;
 	COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
@@ -1107,11 +1135,11 @@ void ofxSurfingMoods::runEngineModeRange()
 		}
 
 		//TODO:
-		//2. routine type B:  0-1-2 .. 0-1-2 ..
+		// 2. routine type B:  0-1-2 .. 0-1-2 ..
 
 		//-
 
-		//move on
+		// move on
 		if (directionUp)
 		{
 			RANGE_Selected = RANGE_Selected + 1;
@@ -1126,15 +1154,15 @@ void ofxSurfingMoods::runEngineModeRange()
 
 	//-
 
-	//do randomize between min/max ranges
+	// do randomize between min/max ranges
 
-	if (!Mode_StartLocked.get())//allows start from any target
+	if (!Mode_StartLocked.get()) // allows start from any target
 	{
-		if (!Mode_AvoidRepeat.get())// allows repeat target
+		if (!Mode_AvoidRepeat.get()) // allows repeat target
 		{
 			TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 		}
-		else//avoids repeat same target
+		else // avoids repeat same target
 		{
 			int _pre = TARGET_Selected.get();
 			TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
@@ -1145,7 +1173,7 @@ void ofxSurfingMoods::runEngineModeRange()
 				TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 
 				count++;
-				if (count > 5)//max attemps to avoid infinite loops...
+				if (count > 5) // max attemps to avoid infinite loops...
 				{
 					if (Range_Min != _pre) TARGET_Selected = Range_Min;
 					else TARGET_Selected = Range_Max;
@@ -1157,11 +1185,11 @@ void ofxSurfingMoods::runEngineModeRange()
 
 	}
 
-	//force start from first
-	//when changed range, first step will be locked to the min from range
+	// force start from first
+	// when changed range, first step will be locked to the min from range
 	else
 	{
-		//range changed
+		// range changed
 		if (RANGE_Selected.get() != _RANGE_Selected_PRE)
 		{
 			TARGET_Selected = Range_Min.get();
@@ -1172,7 +1200,7 @@ void ofxSurfingMoods::runEngineModeRange()
 			{
 				TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 			}
-			else//avoids repeat same target
+			else// avoids repeat same target
 			{
 				int _pre = TARGET_Selected.get();
 				TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
@@ -1180,12 +1208,12 @@ void ofxSurfingMoods::runEngineModeRange()
 				int count = 0;
 				int MAX_TRIES = 5;
 
-				while (TARGET_Selected.get() == _pre)//not changed
+				while (TARGET_Selected.get() == _pre)// not changed
 				{
 					TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 
 					count++;
-					if (count > MAX_TRIES)//max attemps to avoid infinite loops...
+					if (count > MAX_TRIES)// max attemps to avoid infinite loops...
 					{
 						if (Range_Min != _pre) TARGET_Selected = Range_Min;
 						else TARGET_Selected = Range_Max;
@@ -1544,10 +1572,11 @@ void ofxSurfingMoods::loadSettings(std::string path)
 	{
 		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
 	}
-
-#ifdef USE_ofxGuiExtended
-	group_USER->setPosition(positionGui_Engine.get().x, positionGui_Engine.get().y);
-#endif
+	/*
+//#ifdef USE_ofxGuiExtended
+//	group_USER->setPosition(positionGui_Engine.get().x, positionGui_Engine.get().y);
+//#endif
+*/
 }
 
 
@@ -1561,7 +1590,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		if (WIDGET != "COMPLETE")
 			ofLogVerbose(__FUNCTION__) << WIDGET << " : " << e;
 
-		if (WIDGET == "PLAY")
+		if (WIDGET == PLAY.getName())
 		{
 			if (PLAY)
 			{
@@ -1574,14 +1603,14 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 				COUNTER_step = 0;
 				COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
-
+/*
 #ifdef USE_ofxGuiExtended
 				(group_USER->getIntSlider("COUNTER"))->setEnabled(true);//hidden
 				(group_USER->getIntSlider("COMPLETE"))->setEnabled(true);//hidden
 #endif
-
-				//workflow
-				//enable some mode
+*/
+//workflow
+//enable some mode
 				if (!Mode_MarkovChain && !Mode_Manual && !Mode_Ranged)
 				{
 					Mode_Ranged = true;
@@ -1597,11 +1626,12 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				COUNTER_step = 0;
 				COUNTER_step_FromOne = 0;
 				RANGE_Selected = 0;
-
-#ifdef USE_ofxGuiExtended
-				(group_USER->getIntSlider("COUNTER"))->setEnabled(false);//hidden
-				(group_USER->getIntSlider("COMPLETE"))->setEnabled(false);//hidden
-#endif
+				/*
+				#ifdef USE_ofxGuiExtended
+								(group_USER->getIntSlider("COUNTER"))->setEnabled(false);//hidden
+								(group_USER->getIntSlider("COMPLETE"))->setEnabled(false);//hidden
+				#endif
+				*/
 			}
 		}
 
@@ -1746,31 +1776,33 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		}
 
 		//gui
-		else if (WIDGET == "SHOW ADVANCED")
+		else if (WIDGET == SHOW_AdvancedRanges.getName())
 		{
+			/*
+	#ifdef USE_ofxGuiExtended
+				group_Advanced->getVisible().set(SHOW_AdvancedRanges);
 
-#ifdef USE_ofxGuiExtended
-			group_Advanced->getVisible().set(SHOW_GuiAdvanced);
-
-			//workflow
-			auto p = group_USER->getShape().getTopRight();
-			if (!MODE_vertical)//advanced panel to the right
-			{
-				setGui_AdvancedPositon(p.x + 5, p.y);
-			}
-			else//advanced panel to the botton
-			{
-				auto p = group_USER->getShape().getBottomLeft();
-				setGui_AdvancedPositon(p.x, p.y + 10);
-			}
-#endif
+				//workflow
+				auto p = group_USER->getShape().getTopRight();
+				if (!MODE_vertical)//advanced panel to the right
+				{
+					setGui_AdvancedPositon(p.x + 5, p.y);
+				}
+				else//advanced panel to the botton
+				{
+					auto p = group_USER->getShape().getBottomLeft();
+					setGui_AdvancedPositon(p.x, p.y + 10);
+				}
+	#endif
+			*/
 		}
-		else if (WIDGET == "SHOW USER")
+		else if (WIDGET == SHOW_GuiUser.getName())
 		{
-
-#ifdef USE_ofxGuiExtended
-			group_USER->getVisible().set(SHOW_GuiUser);
-#endif
+			/*
+	#ifdef USE_ofxGuiExtended
+				group_USER->getVisible().set(SHOW_GuiUser);
+	#endif
+			*/
 		}
 		else if (WIDGET == "SHOW PREVIEW")
 		{
@@ -1788,7 +1820,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			}
 		}
 
-		//modes
+		// modes
 		else if (WIDGET == Mode_MarkovChain.getName())
 		{
 			if (Mode_MarkovChain)
@@ -1796,6 +1828,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_Manual = false;
 				Mode_Ranged = false;
 			}
+			else refresModeshWorkflow();
 		}
 		else if (WIDGET == Mode_Ranged.getName())
 		{
@@ -1804,6 +1837,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_Manual = false;
 				Mode_MarkovChain = false;
 			}
+			else refresModeshWorkflow();
 		}
 		else if (WIDGET == Mode_Manual.getName())
 		{
@@ -1812,21 +1846,23 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				Mode_Ranged = false;
 				Mode_MarkovChain = false;
 			}
-
+			else refresModeshWorkflow();
+			/*
 #ifdef USE_ofxGuiExtended
 			(group_USER->getFloatSlider(controlManual.getName()))->setEnabled(Mode_Manual.get());
 #endif
+			*/
 		}
 		else if (WIDGET == controlManual.getName())
 		{
-			//workflow
+			// workflow
 			if (!PLAY.get()) {
 				PLAY = true;
 			}
 		}
 
-		//workflow
-
+		// workflow
+		/*
 #ifdef USE_ofxGuiExtended
 		else if (WIDGET == PRESET_A_Enable.getName())
 		{
@@ -1841,6 +1877,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			(group_USER->getIntSlider(PRESET_C_Selected.getName()))->setEnabled(PRESET_C_Enable.get());
 		}
 #endif
+		*/
 	}
 }
 
@@ -1857,9 +1894,9 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 			ofLogNotice(__FUNCTION__) << RANGE_Selected;
 
 			//TODO
-			//split to functions to disable autosave when playing mode..
+			// split to functions to disable autosave when playing mode..
 
-			//auto save previous
+			// auto save previous
 			if (RANGE_Selected != RANGE_Selected_PRE)
 			{
 				int r;
@@ -1891,15 +1928,16 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 
 		else if (name == "STAY COUNT")
 		{
-
+			/*
 #ifdef USE_ofxGuiExtended
 			//re scale slider limit
 			(group_USER->getIntSlider("COUNTER"))->setMax(COUNT_Duration);
 #endif
+			*/
 
-			//avoid rescale timers error on preview
+			// avoid rescale timers error on preview
 
-			//workflow
+			// workflow
 			bool bPre = isPlaying();
 			stop();
 			if (bPre)play();
@@ -1950,8 +1988,7 @@ void ofxSurfingMoods::keyPressed(int key)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
 {
-	//guiManager.setImGuiAutodraw(true);
-
+	guiManager.setImGuiAutodraw(bAutoDraw);
 	guiManager.setup();
 	//guiManager.setup(gui);
 
@@ -1982,7 +2019,128 @@ void ofxSurfingMoods::setup_ImGui()
 		//	widgetsManager.AddWidgetConf(size2, SurfingWidgetTypes::IM_HIDDEN, false, -1, 50);
 		//	widgetsManager.AddWidgetConf(bPrevious, SurfingWidgetTypes::IM_HIDDEN);
 		//	widgetsManager.AddWidgetConf(bNext, SurfingWidgetTypes::IM_HIDDEN);
-			//widgetsManager.AddWidgetConf(lineWidth, SurfingWidgetTypes::IM_HIDDEN);
+		//  widgetsManager.AddWidgetConf(lineWidth, SurfingWidgetTypes::IM_HIDDEN);
+
+	}
+	//guiManager.bAutoResize = false;
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::draw_ImGui_User()
+{
+	// USER
+
+	if (SHOW_GuiUser)
+	{
+		static bool bOpen2 = false;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		//guiManager.beginWindow("USER GROUP", NULL, window_flags);
+		//{
+		//	// group
+		//	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+		//	flags |= ImGuiTreeNodeFlags_Framed;
+		//	//flags |= ImGuiTreeNodeFlags_DefaultOpen;
+		//	ofxImGuiSurfing::AddGroup(params_USER, flags);
+		//}
+		//guiManager.endWindow();
+
+		//-
+
+		guiManager.beginWindow("SURFING MOODS", &bOpen2, window_flags);
+		{
+			widgetsManager.refreshPanelShape();
+
+			// play
+			widgetsManager.Add(PLAY, SurfingWidgetTypes::IM_TOGGLE_BIG);
+			ImGui::Dummy(ImVec2(0, 2));
+
+			static bool bOpen = false;
+			ImGuiTreeNodeFlags _flagt;
+			_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+			_flagt |= ImGuiTreeNodeFlags_Framed;
+
+			if (ImGui::TreeNodeEx("PANELS", _flagt))
+			{
+				widgetsManager.refreshPanelShape();
+
+				widgetsManager.Add(SHOW_AdvancedRanges, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+				widgetsManager.Add(SHOW_Clocks, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+				if (ImGui::TreeNodeEx("PREVIEW", _flagt))
+				{
+					widgetsManager.refreshPanelShape();
+					float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+					float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
+					float _h = BUTTON_BIG_HEIGHT;
+
+					widgetsManager.Add(SHOW_Preview, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+					widgetsManager.Add(Edit_Preview, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+
+					if (ImGui::Button("Reset", ImVec2(_w100, _h / 2)))
+					{
+						//bUseCustomPreviewPosition = false;
+
+						float gx, gy, gw, gh, ww, hh, pad;
+						pad = 10;
+						gw = ofGetWidth() - 2 * pad;
+						gx = pad;
+						gy = pad;
+						ww = gw;
+						hh = 50;
+						rectPreview.setRect(gx, gy, gw, hh); // initialize
+					}
+					//ImGui::SameLine();
+					//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
+					ofxImGuiSurfing::AddToggleRoundedButton(bUseCustomPreviewPosition);
+					//if (ImGui::Button("Lock", ImVec2(_w50, _h / 2)))
+					//{}
+				}
+				ImGui::Dummy(ImVec2(0, 5));
+				ImGui::TreePop();
+			}
+
+			widgetsManager.Add(Mode_Ranged, SurfingWidgetTypes::IM_TOGGLE_BIG);
+			widgetsManager.Add(Mode_MarkovChain, SurfingWidgetTypes::IM_TOGGLE_BIG);
+			widgetsManager.Add(Mode_Manual, SurfingWidgetTypes::IM_TOGGLE_BIG);
+
+			//widgetsManager.Add(Mode_Ranged, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 3);
+			//widgetsManager.Add(Mode_MarkovChain, SurfingWidgetTypes::IM_TOGGLE_BIG, true, 3);
+			//widgetsManager.Add(Mode_Manual, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 3);
+
+			if (Mode_Manual) widgetsManager.Add(controlManual, SurfingWidgetTypes::IM_SLIDER);
+
+			ImGui::Dummy(ImVec2(0, 5));
+
+			widgetsManager.Add(COUNT_Duration, SurfingWidgetTypes::IM_SLIDER);
+			widgetsManager.Add(timer_Progress, SurfingWidgetTypes::IM_SLIDER);
+			widgetsManager.Add(COUNTER_step_FromOne, SurfingWidgetTypes::IM_SLIDER, false, 1, 4);
+
+			widgetsManager.Add(Mode_StartLocked, SurfingWidgetTypes::IM_TOGGLE_SMALL, true, 2);
+			widgetsManager.Add(Mode_AvoidRepeat, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 2);
+
+			ImGui::Dummy(ImVec2(0, 2));
+
+			//widgetsManager.Add(MOOD_Color_Preview, SurfingWidgetTypes::IM_DEFAULT);
+
+			ImGui::Text("RANGE | STATE");
+			widgetsManager.Add(RANGE_Selected, SurfingWidgetTypes::IM_DEFAULT);
+			widgetsManager.Add(TARGET_Selected, SurfingWidgetTypes::IM_DEFAULT, false, 1, 4);
+
+			widgetsManager.Add(PRESET_A_Enable, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+			widgetsManager.Add(PRESET_B_Enable, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+			widgetsManager.Add(PRESET_C_Enable, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1, 4);
+
+			if (PRESET_A_Enable) widgetsManager.Add(PRESET_A_Selected, SurfingWidgetTypes::IM_DEFAULT);
+			if (PRESET_B_Enable) widgetsManager.Add(PRESET_B_Selected, SurfingWidgetTypes::IM_DEFAULT);
+			if (PRESET_C_Enable) widgetsManager.Add(PRESET_C_Selected, SurfingWidgetTypes::IM_DEFAULT, false, 1, 4);
+
+			//--
+
+			ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+			guiManager.drawAdvancedSubPanel();
+		}
+		guiManager.endWindow();
 	}
 }
 
@@ -1991,106 +2149,110 @@ void ofxSurfingMoods::draw_ImGui()
 {
 	guiManager.begin();
 	{
+		draw_ImGui_User();
+
 		//--
 
-		// 1. RANGES
+		// RANGES
 
-		if (SHOW_GuiAdvanced)
+		if (SHOW_AdvancedRanges)
 		{
 			static bool bOpen1 = true;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+			if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-			guiManager.beginWindow("RANGES", &bOpen1, window_flags);
+			guiManager.beginWindow("MOODS ADVANCED", &bOpen1, window_flags);
 			{
-				widgetsManager.refreshPanelShape();
+				//widgetsManager.refreshPanelShape();
 
 				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 				flags |= ImGuiTreeNodeFlags_Framed;
 				flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
-				ofxSurfing::AddGroup(parameters_ranges, flags);
-				//ofxSurfing::AddGroup(params_STORE, flags);
-				//ofxSurfing::AddGroup(params_Listeners, flags);
+				ofxImGuiSurfing::AddGroup(parameters_ranges, flags);
+				//ofxImGuiSurfing::AddGroup(params_STORE, flags);
+				//ofxImGuiSurfing::AddGroup(params_Listeners, flags);
 			}
 			guiManager.endWindow();
 		}
 
 		//--
 
-		// 2. USER
-
-		if (SHOW_GuiUser)
+		// TARGETS
 		{
-			static bool bOpen2 = false;
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-
-			guiManager.beginWindow("USER", &bOpen2, window_flags);
+			if (SHOW_Clocks)
 			{
-				widgetsManager.refreshPanelShape();
+				// panels sizes
+				float xx = 10;
+				float yy = 10;
+				float ww = PANEL_WIDGETS_WIDTH;
+				float hh = 20;
 
-				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-				flags |= ImGuiTreeNodeFlags_Framed;
-				flags |= ImGuiTreeNodeFlags_DefaultOpen;
-
-				ofxSurfing::AddGroup(params_USER, flags);
-			}
-			guiManager.endWindow();
-		}
-
-		//--
-
-		// 3. TARGETS
-		{
-			// panels sizes
-			float xx = 10;
-			float yy = 10;
-			float ww = PANEL_WIDGETS_WIDTH;
-			float hh = 20;
-
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
-			{
-				static bool bOpen3 = true;
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-
-				if (guiManager.auto_resize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-
-				std::string n = "TARGETS";
-				guiManager.beginWindow(n.c_str(), &bOpen3, window_flags);
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
 				{
-					widgetsManager.refreshPanelShape();
+					static bool bOpen = true;
+					ImGuiTreeNodeFlags _flagt;
+					ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+					if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-					flags |= ImGuiTreeNodeFlags_Framed;
-					flags |= ImGuiTreeNodeFlags_DefaultOpen;
+					std::string n = "MOODS CLOCKS";
+					guiManager.beginWindow(n.c_str(), &bOpen, window_flags);
+					{
+						widgetsManager.Add(SHOW_GuiUser, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 1);
 
-					// target panel
-					widgetsManager.Add(clone_TARGETS, SurfingWidgetTypes::IM_TOGGLE_SMALL);
-					widgetsManager.Add(bResetSort_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
-					widgetsManager.Add(bReset_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
-					widgetsManager.Add(bRandomize_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1, 5);
+						//-
 
-					// clock panel
-					widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_DRAG, false, 1, -1);
-					widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_STEPPER);
-					//widgetsManager.AddWidgetConf(LEN_BARS);
+						bOpen = true;
+						_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+						_flagt |= ImGuiTreeNodeFlags_Framed;
 
-					ofxSurfing::AddParameter(BPM);
-					ofxSurfing::AddParameter(LEN_BARS);
+						if (ImGui::TreeNodeEx("CLOCK", _flagt))
+						{
+							widgetsManager.refreshPanelShape();
 
-					//SHOW_timer = true;
-					//if (SHOW_timer)
-					//ofxSurfing::AddParameter(timer); // hide timer
+							// clock panel
+							widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_DRAG, false, 1, -1);
+							widgetsManager.AddWidgetConf(BPM, SurfingWidgetTypes::IM_STEPPER);
+							//widgetsManager.AddWidgetConf(LEN_BARS);
 
-					widgetsManager.Add(bReset_Settings, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
-					widgetsManager.Add(SHOW_GuiUser, SurfingWidgetTypes::IM_TOGGLE_BIG, false, 1);
+							ofxImGuiSurfing::AddParameter(BPM);
+							ofxImGuiSurfing::AddParameter(LEN_BARS);
 
-					//--
+							widgetsManager.Add(bReset_Settings, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1);
 
-					guiManager.drawAdvancedSubPanel();
+							ImGui::TreePop();
+						}
+
+						//SHOW_timer = true;
+						//if (SHOW_timer)
+						//ofxImGuiSurfing::AddParameter(timer); // hide timer
+
+						bOpen = false;
+						_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+						_flagt |= ImGuiTreeNodeFlags_Framed;
+
+						if (ImGui::TreeNodeEx("TOOLS", _flagt))
+						{
+							widgetsManager.refreshPanelShape();
+
+							// target panel
+							widgetsManager.Add(clone_TARGETS, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+							widgetsManager.Add(bResetSort_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+							widgetsManager.Add(bReset_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL);
+							widgetsManager.Add(bRandomize_Bank, SurfingWidgetTypes::IM_TOGGLE_SMALL, false, 1, 5);
+
+							ImGui::TreePop();
+						}
+
+						//--
+
+						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+						guiManager.drawAdvancedSubPanel();
+					}
+					guiManager.endWindow();
 				}
-				guiManager.endWindow();
+				ImGui::PopStyleVar();
 			}
-			ImGui::PopStyleVar();
 		}
 	}
 	guiManager.end();
@@ -2099,7 +2261,7 @@ void ofxSurfingMoods::draw_ImGui()
 //-
 
 // ofxGuiExtended
-
+/*
 #ifdef USE_ofxGuiExtended
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_GUI_Main()
@@ -2402,3 +2564,4 @@ void ofxSurfingMoods::setPosition(int _x, int _y)
 	}
 }
 #endif
+*/
