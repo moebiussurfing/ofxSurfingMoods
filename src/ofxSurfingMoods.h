@@ -58,7 +58,7 @@ TODO:
 
 //ofApp Example:
 //customize ranges/sizes (TODO: maybe not working..)
-//moodMachine.setup(9, 9, 3, 6);
+//moodsSurfer.setup(9, 9, 3, 6);
 ////9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
 ////3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
 
@@ -68,7 +68,7 @@ TODO:
 //int h = 50;
 //int x = ofGetWidth() / 2. - w * 0.5;
 //int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
-//moodMachine.drawPreview(x, y, w, h);
+//moodsSurfer.drawPreview(x, y, w, h);
 
 //--
 
@@ -95,10 +95,12 @@ public:
 
 	//-
 
-public:
+private:
 	ofxSurfing_ImGui_Manager guiManager;
 	void setup_ImGui();
+public:
 	void draw_ImGui();
+private:
 	void draw_ImGui_User();
 
 private:
@@ -178,7 +180,7 @@ private:
 	ofParameter<bool> Mode_Manual{ "MODE MANUAL", false };
 
 	void refresModeshWorkflow() {
-		if (!Mode_Manual && !Mode_MarkovChain &&!Mode_Ranged)
+		if (!Mode_Manual && !Mode_MarkovChain && !Mode_Ranged)
 		{
 			Mode_Manual = true;
 		}
@@ -288,7 +290,7 @@ public:
 
 	void setGui_Visible(bool enable);//TODO: global gui enabler. not implemented..
 	void setGui_ToggleVisible();
-	void setGui_AdvancedVertical_MODE(bool enable);
+	//void setGui_AdvancedVertical_MODE(bool enable);
 
 	//--------------------------------------------------------------
 	void setNextTarget()
@@ -445,7 +447,6 @@ private:
 	//-
 
 private:
-
 	ofParameter<bool> bReset_Settings;
 	ofParameter<bool> bResetSort_Bank;
 	ofParameter<bool> bReset_Bank;
@@ -459,10 +460,12 @@ private:
 	bool ENABLED_MoodMachine;
 
 	//can be enabled only when default positioner mode
-	bool MODE_vertical = false;
+	//bool MODE_vertical = false;
 
-	//bool bGui;
+public:
 	ofParameter<bool> bGui;
+
+private:
 	ofParameter<bool> SHOW_GuiUser;
 	ofParameter<bool> SHOW_AdvancedRanges;
 	ofParameter<bool> SHOW_Clocks;
@@ -586,7 +589,7 @@ public:
 		//path_Theme += "theme_ofxGuiExtended2.json";
 		group_USER->loadTheme(path_Theme);
 		group_Advanced->loadTheme(path_Theme);
-}
+	}
 #endif
 };
 

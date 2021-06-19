@@ -125,7 +125,6 @@ void ofxSurfingMoods::setup()//default sizes
 //--------------------------------------------------------------
 void ofxSurfingMoods::startup()
 {
-
 	//-------
 
 	// startup
@@ -137,10 +136,10 @@ void ofxSurfingMoods::startup()
 	bUseCustomPreviewPosition = true;
 
 	path_rect = path_Folder + "ofxSurfingMoods_";
-	//if (bUseCustomPreviewPosition) 
-	rectPreview.loadSettings("", path_rect, true);
 
-	//rectPreview.setRect(25, 650, 700, 50); // initialize when no settings file created yet.
+	//TODO: crash
+	//bool b = rectPreview.loadSettings("", path_rect, true);
+	//if (!b) rectPreview.setRect(25, 650, 700, 50); // initialize when no settings file created yet.
 
 	//--
 
@@ -156,7 +155,7 @@ void ofxSurfingMoods::startup()
 		loadSettings(path_Folder);
 	}
 
-	setGui_AdvancedVertical_MODE(false);
+	//setGui_AdvancedVertical_MODE(false);
 	//setPosition(20, 20);//gui panel position
 
 	// workflow
@@ -226,11 +225,13 @@ void ofxSurfingMoods::exit()
 	rectPreview.saveSettings("", path_rect, true);
 
 	//-
+
 	/*
 #ifdef USE_ofxGuiExtended
 	positionGui_Engine = glm::vec2(group_USER->getPosition().x, group_USER->getPosition().y);
 #endif
 	*/
+
 	if (autoSaveLoad_settings)
 	{
 		// save panel settings
@@ -1083,11 +1084,11 @@ void ofxSurfingMoods::setGui_ToggleVisible()
 	SHOW_GuiUser = !SHOW_GuiUser;
 }
 
-//--------------------------------------------------------------
-void ofxSurfingMoods::setGui_AdvancedVertical_MODE(bool enable)
-{
-	MODE_vertical = enable;
-}
+////--------------------------------------------------------------
+//void ofxSurfingMoods::setGui_AdvancedVertical_MODE(bool enable)
+//{
+//	MODE_vertical = enable;
+//}
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setBpm(float bpm)
@@ -1572,7 +1573,8 @@ void ofxSurfingMoods::loadSettings(std::string path)
 	{
 		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
 	}
-	/*
+
+/*
 //#ifdef USE_ofxGuiExtended
 //	group_USER->setPosition(positionGui_Engine.get().x, positionGui_Engine.get().y);
 //#endif
@@ -2147,6 +2149,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui()
 {
+	if (!bGui) return;
+
 	guiManager.begin();
 	{
 		draw_ImGui_User();
