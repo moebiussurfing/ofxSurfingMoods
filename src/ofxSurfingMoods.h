@@ -7,6 +7,7 @@
 
 TODO:
 
++ fix counter and stay count margins/preview
 + fix save/load settings
 + fix preview box full (merge double click with drag rect)
 

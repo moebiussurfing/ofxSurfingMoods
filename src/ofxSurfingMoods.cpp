@@ -779,6 +779,8 @@ void ofxSurfingMoods::setup_Params()
 
 	autoSaveLoad_settings.setSerializable(false);
 
+	PLAY.setSerializable(false);
+
 	//-
 
 	// group params for callback listener only
@@ -1866,10 +1868,10 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		}
 		else if (WIDGET == controlManual.getName())
 		{
-			// workflow
-			if (!PLAY.get()) {
-				PLAY = true;
-			}
+			//// workflow
+			//if (!PLAY.get()) {
+			//	PLAY = true;
+			//}
 		}
 
 		// workflow
@@ -1948,10 +1950,10 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 
 			// avoid rescale timers error on preview
 
-			// workflow
-			bool bPre = isPlaying();
-			stop();
-			if (bPre)play();
+			//// workflow
+			//bool bPre = isPlaying();
+			//stop();
+			//if (bPre)play();
 		}
 	}
 }
