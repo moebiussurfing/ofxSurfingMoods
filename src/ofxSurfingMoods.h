@@ -7,6 +7,7 @@
 
 TODO:
 
++ link bpm ptr. allow don't break the timers/progress
 + fix counter and stay count margins/preview
 + fix save/load settings
 + fix preview box full (merge double click with drag rect)
@@ -70,7 +71,7 @@ TODO:
 //int h = 50;
 //int x = ofGetWidth() / 2. - w * 0.5;
 //int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
-//moodsSurfer.drawPreview(x, y, w, h);
+//moodsSurfer.draw_PreviewWidget(x, y, w, h);
 
 //--
 
@@ -139,8 +140,8 @@ public:
 	void keyPressed(int key);
 
 	//preview
-	void drawPreview();
-	void drawPreview(int x, int  y, int  w, int  h);
+	void draw_PreviewWidget();
+	void draw_PreviewWidget(int x, int  y, int  w, int  h);
 
 	//ofParameter<glm::vec2> positionGui_Engine;
 
@@ -191,7 +192,7 @@ private:
 
 	ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
 	ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
-	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
+	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
 	std::string path_markovMatrix;
@@ -235,10 +236,27 @@ public:
 	//-
 
 public:
+	//TODO: link
+	float *bpmPtr = NULL;
+	void setBpmPtr(float &_bpmPtr) {
+		bpmPtr = &_bpmPtr;
+	};
 
 	void setBpm(float bpm);
 	void setBarsScale(int bars);
 
+	// to run external timers
+	// we will receive each incomming ticks.
+	// that will inform to step-next
+private:
+	ofParameter<bool> bTickMode{ "Tick Mode", false };
+	//bool bTickMode = false;
+public:
+	void setTickMode(bool b) { bTickMode = b; };
+	void doBeatTick();
+	void doRunStep();
+
+public:
 	//--------------------------------------------------------------
 	float getBPM()
 	{
@@ -275,12 +293,12 @@ public:
 	//--------------------------------------------------------------
 	void setPreviewVisible(bool b)
 	{
-		SHOW_Preview = b;
+		bGui_PreviewWidget = b;
 	}
 	//--------------------------------------------------------------
 	void setPreviewToggleVisible()
 	{
-		SHOW_Preview = !SHOW_Preview;
+		bGui_PreviewWidget = !bGui_PreviewWidget;
 	}
 
 private:
@@ -315,16 +333,16 @@ public:
 		TARGET_Selected = t;
 	}
 
-	//--------------------------------------------------------------
-	void setShowGuiUser(bool b)
-	{
-		SHOW_GuiUser = b;
-	}
+	////--------------------------------------------------------------
+	//void setShowGuiUser(bool b)
+	//{
+	//	SHOW_GuiUser = b;
+	//}
 
 	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
 	{
-		SHOW_Advanced = b;
+		bGui_Advanced = b;
 	}
 
 	//-------------------------------------------
@@ -384,7 +402,7 @@ private:
 	void setup_Params();
 
 	// this function can be used to trig ranges jumps externally without using the internal timer.
-	void runEngineModeRange();
+	void doRunEngineStep();
 
 	bool BLOCK_CALLBACK_Feedback = false;
 
@@ -469,12 +487,12 @@ public:
 	ofParameter<bool> bGui;
 
 private:
-	ofParameter<bool> SHOW_GuiUser;
-	ofParameter<bool> SHOW_Advanced;
-	//ofParameter<bool> SHOW_Clocks;
-	ofParameter<bool> Edit_Preview;
-	ofParameter<bool> SHOW_Preview;
+	ofParameter<bool> bGui_Advanced;
+	ofParameter<bool> bEdit_PreviewWidget;
+	ofParameter<bool> bGui_PreviewWidget;
 	ofParameter<bool> bUseCustomPreviewPosition;
+	//ofParameter<bool> SHOW_GuiUser;
+	//ofParameter<bool> SHOW_Clocks;
 	//bool bUseCustomPreviewPosition = false;
 
 	//void updateLabels();
