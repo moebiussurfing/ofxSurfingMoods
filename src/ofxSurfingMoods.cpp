@@ -757,15 +757,15 @@ void ofxSurfingMoods::setup_Params()
 	bClone_TARGETS.setSerializable(false);
 	bGui.set("MOODS SURFING", true);
 
-	//SHOW_GuiUser.set("SHOW USER", true);
-	//SHOW_Clocks.set("SHOW CLOCKS", false);
 	bGui_Advanced.set("Moods Advanced", false);
 	bGui_ManualSlider.set("Manual Slider", false);
 	bGui_ManualSliderHeader.set("Slider Header", true);
 	bGui_PreviewWidget.set("Show Preview Widget", false);
 	bUseCustomPreviewPosition.set("Custom", false);
-
 	bEdit_PreviewWidget.set("Edit Preview Widget", false);
+
+	//SHOW_GuiUser.set("SHOW USER", true);
+	//SHOW_Clocks.set("SHOW CLOCKS", false);
 
 	// disabled
 	////labels to monitor
