@@ -106,6 +106,7 @@ public:
 private:
 	void draw_ImGui_User();
 	void draw_ImGui_Advanced();
+	void draw_ImGui_ManualSlider();
 
 private:
 	//ofxImGui::Gui gui;
@@ -179,22 +180,29 @@ private:
 private:
 	ofxMC::MarkovChain markov;
 
-	ofParameter<bool> Mode_Ranged{ "A MODE RANGED", false };
-	ofParameter<bool> Mode_MarkovChain{ "B MODE MARKOV", false };
-	ofParameter<bool> Mode_Manual{ "C MODE MANUAL", false };
+	ofParameter<bool> MODE_Ranged{ "A MODE RANGED", false };
+	ofParameter<bool> MODE_MarkovChain{ "B MODE MARKOV", false };
+	ofParameter<bool> MODE_Manual{ "C MODE MANUAL", false };
 
 	void refresModeshWorkflow() {
-		if (!Mode_Manual && !Mode_MarkovChain && !Mode_Ranged)
+		if (!MODE_Manual && !MODE_MarkovChain && !MODE_Ranged)
 		{
-			Mode_Manual = true;
+			MODE_Manual = true;
 		}
 	};
 
-	ofParameter<bool> Mode_StartLocked{ "START LOCKED", false };
-	ofParameter<bool> Mode_AvoidRepeat{ "AVOID REPEAT", false };
+	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };
+	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", false };
+
 	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
+
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
+	
+
+		ofColor cRange;
+		ofColor cRangeRaw;
+
 	std::string path_markovMatrix;
 
 	//-------------------------------------------
@@ -375,7 +383,7 @@ public:
 	ofParameter<bool> PLAY;
 	ofParameter<float> BPM;//bpm
 	ofParameter<int> LEN_BARS;//in bars
-
+	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
 //----
 
 private:
@@ -488,6 +496,8 @@ public:
 
 private:
 	ofParameter<bool> bGui_Advanced;
+	ofParameter<bool> bGui_ManualSlider;
+	ofParameter<bool> bGui_ManualSliderHeader;
 	ofParameter<bool> bEdit_PreviewWidget;
 	ofParameter<bool> bGui_PreviewWidget;
 	ofParameter<bool> bUseCustomPreviewPosition;
@@ -540,9 +550,11 @@ private:
 
 	vector<range> ranges;
 
-	ofParameter<int> COUNT_Duration;
+	ofParameter<int> COUNT_Duration; // the one setted by the user
+
 	ofParameter<int> COUNTER_step;
 	ofParameter<int> COUNTER_step_FromOne;
+
 	bool directionUp = true;
 
 	void load_range(int r);
