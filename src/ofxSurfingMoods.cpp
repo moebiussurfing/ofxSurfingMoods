@@ -226,7 +226,7 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 //--------------------------------------------------------------
 void ofxSurfingMoods::windowResized(int w, int h)
 {
-
+	doResetPreviewWidget();
 }
 
 //--------------------------------------------------------------
@@ -750,10 +750,11 @@ void ofxSurfingMoods::setup_Params()
 
 	Range_Min.set("MIN TARGET", 0, 0, NUM_TARGETS - 1);
 	Range_Max.set("MAX TARGET", NUM_TARGETS - 1, 0, NUM_TARGETS - 1);
+
 	bReset_Settings.set("RESET CLOCK", false);
 	bReset_Settings.setSerializable(false);
-	clone_TARGETS.set("BANK CLONE>", false);
-	clone_TARGETS.setSerializable(false);
+	bClone_TARGETS.set("BANK CLONE>", false);
+	bClone_TARGETS.setSerializable(false);
 	bGui.set("MOODS SURFING", true);
 
 	//SHOW_GuiUser.set("SHOW USER", true);
@@ -761,10 +762,10 @@ void ofxSurfingMoods::setup_Params()
 	bGui_Advanced.set("Moods Advanced", false);
 	bGui_ManualSlider.set("Manual Slider", false);
 	bGui_ManualSliderHeader.set("Slider Header", true);
-	bGui_PreviewWidget.set("Show Preview", false);
+	bGui_PreviewWidget.set("Show Preview Widget", false);
 	bUseCustomPreviewPosition.set("Custom", false);
 
-	bEdit_PreviewWidget.set("EDIT PREVIEW WIDGET", false);
+	bEdit_PreviewWidget.set("Edit Preview Widget", false);
 
 	// disabled
 	////labels to monitor
@@ -887,7 +888,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(bEdit_PreviewWidget);
 	params_Listeners.add(bGui_PreviewWidget);
 	params_Listeners.add(TARGET_Selected);
-	params_Listeners.add(clone_TARGETS);
+	params_Listeners.add(bClone_TARGETS);
 	params_Listeners.add(PRESET_A_Selected);
 	params_Listeners.add(PRESET_B_Selected);
 	params_Listeners.add(PRESET_C_Selected);
@@ -1756,11 +1757,11 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		}
 
-		else if (WIDGET == clone_TARGETS.getName())
+		else if (WIDGET == bClone_TARGETS.getName())
 		{
-			if (clone_TARGETS)
+			if (bClone_TARGETS)
 			{
-				clone_TARGETS = false;
+				bClone_TARGETS = false;
 				clone();
 			}
 		}
@@ -2456,8 +2457,6 @@ void ofxSurfingMoods::draw_ImGui_User()
 				ImGui::Dummy(ImVec2(0, 5));
 
 				ImGui::TextColored(ImGui::GetStyle().Colors[ImGuiCol_TextDisabled], "TARGET > PRESETS");
-				//ImGui::Text("TARGET > PRESETS");
-
 				ImGui::Dummy(ImVec2(0, 2));
 
 				widgetsManager.Add(PRESET_A_Enable, SurfingTypes::OFX_IM_TOGGLE_SMALL);
@@ -2475,64 +2474,67 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 				ImGui::Dummy(ImVec2(0, 5));
 
-				ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
-				if (MODE_Manual)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
-				if (MODE_Manual && bGui_ManualSlider)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
-
 				static bool bExtra;
 				ofxImGuiSurfing::ToggleRoundedButton("Extra", &bExtra);
 				if (bExtra)
 				{
 					ImGui::Indent();
-
-					ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
-
 					{
+						ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
+						ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
 						if (bGui_PreviewWidget)
 						{
-							if (ImGui::TreeNodeEx("PREVIEW WIDGET", _flagt))
+							//if (ImGui::TreeNodeEx("PREVIEW WIDGET", _flagt))
+							ImGui::Indent();
 							{
 								widgetsManager.refreshPanelShape();
-
 								float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
 								float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
 								float _h = BUTTON_BIG_HEIGHT;
 
 								//widgetsManager.Add(bGui_PreviewWidget, SurfingTypes::OFX_IM_TOGGLE_SMALL);
-								widgetsManager.Add(bEdit_PreviewWidget, SurfingTypes::OFX_IM_TOGGLE_SMALL);
 
-								if (ImGui::Button("Reset", ImVec2(_w100, _h / 2)))
-								{
-									//bUseCustomPreviewPosition = false;
+								ofxImGuiSurfing::AddToggleRoundedButton(bEdit_PreviewWidget);
+								//widgetsManager.Add(bEdit_PreviewWidget, SurfingTypes::OFX_IM_TOGGLE_SMALL);
+								if (ImGui::Button("Reset"/*, ImVec2(_w100, _h / 2)*/)) { doResetPreviewWidget(); }
 
-									float gx, gy, gw, gh, ww, hh, pad;
-									pad = 10;
-									gw = ofGetWidth() - 2 * pad;
-									gx = pad;
-									gy = pad;
-									ww = gw;
-									hh = 50;
-									rectPreview.setRect(gx, gy, gw, hh); // initialize
-								}
 								//ImGui::SameLine();
 								//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
 								ofxImGuiSurfing::AddToggleRoundedButton(bUseCustomPreviewPosition);
 
-								ImGui::TreePop();
+								//ImGui::TreePop();
 							}
-							ImGui::Dummy(ImVec2(0, 5));
+							ImGui::Unindent();
 						}
+						//ImGui::Dummy(ImVec2(0, 5));
+
+						if (MODE_Manual)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
+						if (MODE_Manual && bGui_ManualSlider)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
+
+						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+						guiManager.drawAdvancedSubPanel(false);
 					}
-
-					ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-					guiManager.drawAdvancedSubPanel();
-
 					ImGui::Unindent();
 				}
 			}
 		}
-		guiManager.endWindow();
 	}
+	guiManager.endWindow();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::doResetPreviewWidget()
+{
+	//bUseCustomPreviewPosition = false;
+
+	float gx, gy, gw, gh, ww, hh, pad;
+	pad = 10;
+	gw = ofGetWidth() - 2 * pad;
+	gx = pad;
+	gy = pad;
+	ww = gw;
+	hh = 50;
+	rectPreview.setRect(gx, gy, gw, hh); // initialize
 }
 
 //--------------------------------------------------------------
@@ -2594,7 +2596,7 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 							widgetsManager.refreshPanelShape();
 
 							// target panel
-							widgetsManager.Add(clone_TARGETS, SurfingTypes::OFX_IM_TOGGLE_SMALL);
+							widgetsManager.Add(bClone_TARGETS, SurfingTypes::OFX_IM_TOGGLE_SMALL);
 							widgetsManager.Add(bResetSort_Bank, SurfingTypes::OFX_IM_TOGGLE_SMALL);
 							widgetsManager.Add(bReset_Bank, SurfingTypes::OFX_IM_TOGGLE_SMALL);
 							widgetsManager.Add(bRandomize_Bank, SurfingTypes::OFX_IM_TOGGLE_SMALL, false, 1, 5);
@@ -2897,7 +2899,7 @@ void ofxSurfingMoods::setup_GUI_Target()
 {
 	//target panel
 
-	group_TARGETS->add(clone_TARGETS);
+	group_TARGETS->add(bClone_TARGETS);
 	group_TARGETS->add(bResetSort_Bank);
 	group_TARGETS->add(bReset_Bank);
 	group_TARGETS->add(bRandomize_Bank);

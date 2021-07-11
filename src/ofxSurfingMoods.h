@@ -278,6 +278,8 @@ public:
 	void doBeatTick();
 	void doRunStep();
 
+	void doResetPreviewWidget();
+
 public:
 
 	//--------------------------------------------------------------
@@ -482,7 +484,7 @@ private:
 	int presets_B[MAX_ITEMS];
 	int presets_C[MAX_ITEMS];
 
-	ofParameter<bool> clone_TARGETS;
+	ofParameter<bool> bClone_TARGETS;
 	void clone();
 
 	ofJson js_targets;

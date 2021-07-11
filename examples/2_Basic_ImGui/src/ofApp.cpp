@@ -3,8 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofSetFrameRate(60);
-
 	ofSetCircleResolution(100);
 
 	//-
@@ -16,18 +14,18 @@ void ofApp::setup()
 
 	//--
 
-	// callbacks listeners from moodMachine
-	moodMachine.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
-	moodMachine.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
+	// callbacks listeners from moods
+	moods.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
+	moods.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
 
-	moodMachine.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
-	moodMachine.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
-	moodMachine.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
+	moods.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
+	moods.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
+	moods.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
 
 	//--
 
-	moodMachine.setImGuiAutodraw(true); // -> required if no other ImGui instances are instantiated
-	moodMachine.setup();
+	moods.setImGuiAutodraw(true); // -> required if no other ImGui instances are instantiated
+	moods.setup();
 
 	// default structure is:
 	// 3 moods/ranges (with 3 targets each)
@@ -38,18 +36,8 @@ void ofApp::setup()
 }
 
 //--------------------------------------------------------------
-void ofApp::update()
-{
-	moodMachine.update();
-}
-
-//--------------------------------------------------------------
 void ofApp::draw()
 {
-	if (bGui) moodMachine.draw();
-
-	//-
-
 	// circle colored by Preset A
 	ofPushStyle();
 	ofSetColor(colorCircle);
@@ -68,32 +56,14 @@ void ofApp::draw()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-	moodMachine.keyPressed(key);
+	moods.keyPressed(key);
 
 	if (key == OF_KEY_F1) { bGui = !bGui; }
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h)
-{
-	moodMachine.windowResized(w, h);
-}
 
-//--------------------------------------------------------------
-void ofApp::exit()
-{
-	//callbacks listeners from moodMachine
-	moodMachine.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
-	moodMachine.TARGET_Selected.removeListener(this, &ofApp::Changed_Mood_TARGET);
-	moodMachine.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);
-	moodMachine.PRESET_B_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_B);
-	moodMachine.PRESET_C_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_C);
-}
-
-
-//--------------------------------------------------------------
-
-// callbacks to look inside the moodMachine
+// callbacks to look inside the moods
 
 // we can apply current targets and presets to whatever we want into our OF_APP.
 // we can modify other things depending on mood range too.
@@ -145,4 +115,21 @@ void ofApp::Changed_Mood_RANGE(int &targetVal)
 	{
 		ofBackground(ofColor::lightGreen);
 	}
+}
+
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h)
+{
+	moods.windowResized(w, h);
+}
+
+//--------------------------------------------------------------
+void ofApp::exit()
+{
+	//callbacks listeners from moods
+	moods.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
+	moods.TARGET_Selected.removeListener(this, &ofApp::Changed_Mood_TARGET);
+	moods.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);
+	moods.PRESET_B_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_B);
+	moods.PRESET_C_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_C);
 }
