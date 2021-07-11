@@ -88,11 +88,17 @@ public:
 
 	//--------------------------------------------------------------
 	ofxSurfingMoods() {
+		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
+		ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+
 		bAutoDraw = false;
 	};
 
 	//--------------------------------------------------------------
 	~ofxSurfingMoods() {
+		ofRemoveListener(ofEvents().update, this, &ofxSurfingMoods::update);
+		ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+
 		exit();
 	};
 
@@ -131,16 +137,16 @@ private:
 public:
 
 	void setup();
-	void update();
-	void draw();
-
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
 	void startup();
-
 	void exit();
 	void windowResized(int w, int h);
 	void keyPressed(int key);
 
-	//preview
+private:
+
+	// preview widget
 	void draw_PreviewWidget();
 	void draw_PreviewWidget(int x, int  y, int  w, int  h);
 
@@ -151,6 +157,7 @@ public:
 #pragma mark API
 
 public:
+
 	// should make an outside listener to receive changes!
 
 	ofParameter<int> RANGE_Selected;
@@ -177,7 +184,9 @@ private:
 	//-
 
 	// markov
+
 private:
+
 	ofxMC::MarkovChain markov;
 
 	ofParameter<bool> MODE_Ranged{ "A MODE RANGED", false };
@@ -198,10 +207,10 @@ private:
 
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
-	
 
-		ofColor cRange;
-		ofColor cRangeRaw;
+
+	ofColor cRange;
+	ofColor cRangeRaw;
 
 	std::string path_markovMatrix;
 
@@ -244,6 +253,7 @@ public:
 	//-
 
 public:
+
 	//TODO: link
 	float *bpmPtr = NULL;
 	void setBpmPtr(float &_bpmPtr) {
@@ -256,15 +266,20 @@ public:
 	// to run external timers
 	// we will receive each incomming ticks.
 	// that will inform to step-next
+
 private:
+
 	ofParameter<bool> bTickMode{ "Tick Mode", false };
 	//bool bTickMode = false;
+
 public:
+
 	void setTickMode(bool b) { bTickMode = b; };
 	void doBeatTick();
 	void doRunStep();
 
 public:
+
 	//--------------------------------------------------------------
 	float getBPM()
 	{
@@ -384,7 +399,8 @@ public:
 	ofParameter<float> BPM;//bpm
 	ofParameter<int> LEN_BARS;//in bars
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
-//----
+
+	//----
 
 private:
 
@@ -476,6 +492,7 @@ private:
 	//-
 
 private:
+
 	ofParameter<bool> bReset_Settings;
 	ofParameter<bool> bResetSort_Bank;
 	ofParameter<bool> bReset_Bank;
@@ -492,9 +509,11 @@ private:
 	//bool MODE_vertical = false;
 
 public:
+
 	ofParameter<bool> bGui;
 
 private:
+
 	ofParameter<bool> bGui_Advanced;
 	ofParameter<bool> bGui_ManualSlider;
 	ofParameter<bool> bGui_ManualSliderHeader;
@@ -536,6 +555,7 @@ private:
 	// RANGES
 
 private:
+
 	//ranges
 	void Changed_Ranges(ofAbstractParameter &e);
 	int RANGE_Selected_PRE;
@@ -591,6 +611,7 @@ private:
 	//-
 
 private:
+
 	void setup_GUI_Main();
 	void setup_GUI_User();
 	void setup_GUI_Target();
@@ -612,9 +633,11 @@ private:
 	ofJson /*j_Gui,*/ j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
 
 private:
+
 	std::string path_Theme;
 
 public:
+
 	//--------------------------------------------------------------
 	void loadTheme(std::string _path) {
 		path_Theme = _path;
@@ -622,7 +645,7 @@ public:
 		//path_Theme += "theme_ofxGuiExtended2.json";
 		group_USER->loadTheme(path_Theme);
 		group_Advanced->loadTheme(path_Theme);
-	}
+}
 #endif
 };
 

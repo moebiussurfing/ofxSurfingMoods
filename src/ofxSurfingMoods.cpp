@@ -185,7 +185,7 @@ void ofxSurfingMoods::startup()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::update()
+void ofxSurfingMoods::update(ofEventArgs & args)
 {
 	//if (MODE_MarkovChain)
 	//{
@@ -214,7 +214,7 @@ void ofxSurfingMoods::update()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::draw()
+void ofxSurfingMoods::draw(ofEventArgs & args)
 {
 	if (!bGui) return;
 
@@ -1978,10 +1978,18 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		}
 		else if (WIDGET == controlManual.getName())
 		{
-			//// workflow
-			//if (!PLAY.get()) {
-			//	PLAY = true;
-			//}
+			// workflow
+			if (!bTickMode)
+			{
+				if (!PLAY.get())
+				{
+					PLAY = true;
+				}
+			}
+			else if (!bExternalLocked.get())
+			{
+				bExternalLocked = true;
+			}
 		}
 
 		// workflow
@@ -2416,7 +2424,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 				widgetsManager.Add(MODE_AvoidRepeat, SurfingTypes::OFX_IM_TOGGLE_SMALL, false, 2);
 
 			}
-				ImGui::Dummy(ImVec2(0, 5));
+			ImGui::Dummy(ImVec2(0, 5));
 
 			//widgetsManager.Add(MOOD_Color_Preview, SurfingTypes::OFX_IM_DEFAULT);
 
@@ -2457,9 +2465,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 				widgetsManager.Add(PRESET_C_Enable, SurfingTypes::OFX_IM_TOGGLE_SMALL, false, 1, 4);
 			}
 
-				if (PRESET_A_Enable) widgetsManager.Add(PRESET_A_Selected, SurfingTypes::OFX_IM_DEFAULT);
-				if (PRESET_B_Enable) widgetsManager.Add(PRESET_B_Selected, SurfingTypes::OFX_IM_DEFAULT);
-				if (PRESET_C_Enable) widgetsManager.Add(PRESET_C_Selected, SurfingTypes::OFX_IM_DEFAULT, false, 1, 4);
+			if (PRESET_A_Enable) widgetsManager.Add(PRESET_A_Selected, SurfingTypes::OFX_IM_DEFAULT);
+			if (PRESET_B_Enable) widgetsManager.Add(PRESET_B_Selected, SurfingTypes::OFX_IM_DEFAULT);
+			if (PRESET_C_Enable) widgetsManager.Add(PRESET_C_Selected, SurfingTypes::OFX_IM_DEFAULT, false, 1, 4);
 
 			//--
 

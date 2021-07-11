@@ -2,7 +2,7 @@ ofxSurfingMoods
 =============================
 
 # Overview
-**ofxSurfingMoods** is an **openFrameworks** addon that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
+An **openFrameworks** add-on that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
 
 There is **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
 Each Range has Three States. Each **State** is also named **Target**.  
@@ -50,9 +50,9 @@ Add to **PROJECT GENERATOR**:
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) from @**Daandelange**  
 
 Already included in *OF_ADDON/libs*. No need to add manually:
-- **ofxMarkovChain** (https://github.com/elaye/ofxMarkovChain)
-- **ofxSimpleTimer** (https://github.com/HeliosInteractive/ofxSimpleTimer)
-- **ofxScaleDragRect** (https://github.com/roymacdonald/ofxScaleDragRect)
+- [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
+- [ofxSimpleTimer](https://github.com/HeliosInteractive/ofxSimpleTimer)
+- [ofxScaleDragRect](https://github.com/roymacdonald/ofxScaleDragRect)
 
 ## Tested Systems
 * **Windows 10** / **VS 2017** / **OF ~0.11**
