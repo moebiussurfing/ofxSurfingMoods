@@ -113,6 +113,9 @@ private:
 	void draw_ImGui_User();
 	void draw_ImGui_Advanced();
 	void draw_ImGui_ManualSlider();
+	
+	ofParameter<bool> bResetSlider{ "Reset Slider",false };
+	ofParameter<bool> bResetPreviewWidget{ "Reset Preview",false };
 
 private:
 	//ofxImGui::Gui gui;
@@ -148,7 +151,12 @@ private:
 
 	// preview widget
 	void draw_PreviewWidget();
+	void update_PreviewColors();
 	void draw_PreviewWidget(int x, int  y, int  w, int  h);
+
+	ofColor cBg; 
+	ofColor cBord; 
+	ofColor c1, c2, c3;
 
 	//ofParameter<glm::vec2> positionGui_Engine;
 

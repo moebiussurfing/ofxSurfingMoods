@@ -218,6 +218,7 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 {
 	if (!bGui) return;
 
+	update_PreviewColors();
 	if (bGui_PreviewWidget) draw_PreviewWidget();
 
 	draw_ImGui();
@@ -363,6 +364,38 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 }
 
 //--------------------------------------------------------------
+void ofxSurfingMoods::update_PreviewColors()
+{
+	const int NUM_Ranges = (int)NUM_RANGES;
+
+	int aBg = 140;
+	int aRg = 24;
+	int aSel = 48;
+
+	cBg.set(ofColor(ofColor::black, aBg));
+	cBord.set(ofColor(ofColor::black, 164));
+
+	c1.set(ofColor(color_MOOD1, aRg));
+	c2.set(ofColor(color_MOOD2, aRg));
+	c3.set(ofColor(color_MOOD3, aRg));
+
+	// color for manual control value
+	const float rangeSz = 1.f / (float)NUM_Ranges;
+	if (controlManual < rangeSz)
+	{
+		cRangeRaw = color_MOOD1;
+	}
+	else if (controlManual < 2 * rangeSz)
+	{
+		cRangeRaw = color_MOOD2;
+	}
+	else if (controlManual < 3 * rangeSz)
+	{
+		cRangeRaw = color_MOOD3;
+	}
+}
+
+//--------------------------------------------------------------
 void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custom position and size
 {
 	//if (bGui || bGui_PreviewWidget)
@@ -389,30 +422,6 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		int aBg = 140;
 		int aRg = 24;
 		int aSel = 48;
-
-		ofColor cBg{ ofColor(ofColor::black, aBg) };
-		ofColor cBord{ ofColor(ofColor::black, 164) };
-
-		ofColor c1, c2, c3;
-		c1.set(ofColor(color_MOOD1, aRg));
-		c2.set(ofColor(color_MOOD2, aRg));
-		c3.set(ofColor(color_MOOD3, aRg));
-
-		// color for manual control value
-		const float rangeSz = 1.f / (float)NUM_Ranges;
-		if (controlManual < rangeSz)
-		{
-			cRangeRaw = color_MOOD1;
-		}
-		else if (controlManual < 2 * rangeSz)
-		{
-			cRangeRaw = color_MOOD2;
-		}
-		else if (controlManual < 3 * rangeSz)
-		{
-			cRangeRaw = color_MOOD3;
-		}
-
 		//-
 
 		// progress bar
@@ -2172,17 +2181,35 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 	if (bGui_ManualSlider && MODE_Manual)
 	{
 		// panels sizes
-		float ww = 20;
-		float hh = 100;
-		float xx = ofGetWidth() / 2 - ww / 2;
-		float yy = ofGetHeight() / 2 - hh / 2;
+		static float ww;
+		static float hh;
+		static float xx;
+		static float yy;
 
 		ImGuiCond flagsCond = ImGuiCond_None;
 		flagsCond |= ImGuiCond_FirstUseEver;
+
+		if (bResetSlider) {
+			bResetSlider = false;
+
+			//ww = 200;
+			//hh = 200;
+			//xx = ofGetWidth() / 2 - ww / 2;
+			//yy = ofGetHeight() / 2 - hh / 2;
+			int padx = 10;
+			int pady1 = 20;
+			int pady2 = 50;
+			ww = 200;
+			xx = ofGetWidth() - ww - padx;
+			yy = pady1;
+			hh = ofGetHeight() - pady1 - pady2;
+
+			flagsCond = ImGuiCond_None;
+		}
 		ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsCond);
 		ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsCond);
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(40, 200));
 		{
 			static bool bOpen = true;
 			ImGuiTreeNodeFlags _flagt;
@@ -2190,6 +2217,7 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 			window_flags |= ImGuiWindowFlags_NoBackground;
 			window_flags |= ImGuiWindowFlags_NoScrollbar;
+
 			if (!bGui_ManualSliderHeader) window_flags |= ImGuiWindowFlags_NoTitleBar;
 			//window_flags |= ImGuiWindowFlags_NoCollapse;
 			//window_flags |= ImGuiWindowFlags_NoDecoration;
@@ -2198,10 +2226,11 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 
 			//std::string n = bGui_ManualSlider.getName();
 			std::string n = "Control";
-			guiManager.beginWindow(n.c_str(), (bool*)&bGui_ManualSlider.get(), window_flags);
 			//guiManager.beginWindow(bGui_ManualSlider, window_flags);
+			guiManager.beginWindow(n.c_str(), (bool*)&bGui_ManualSlider.get(), window_flags);
 			{
 				auto c = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+				//ImVec4 cBg = ImVec4(c.x, c.y, c.z, 0.5);
 				ImVec4 cBg = ImVec4(c.x, c.y, c.z, c.w * 0.2);
 				ImGui::PushStyleColor(ImGuiCol_SliderGrab, cRange);
 				ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, cRangeRaw);
@@ -2496,7 +2525,11 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 								ofxImGuiSurfing::AddToggleRoundedButton(bEdit_PreviewWidget);
 								//guiManager.Add(bEdit_PreviewWidget, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL);
-								if (ImGui::Button("Reset"/*, ImVec2(_w100, _h / 2)*/)) { doResetPreviewWidget(); }
+								if (ofxImGuiSurfing::AddToggleRoundedButton(bResetPreviewWidget)) {
+									bResetPreviewWidget = false;
+									doResetPreviewWidget();
+								}
+								//if (ImGui::Button("Reset"/*, ImVec2(_w100, _h / 2)*/)) { doResetPreviewWidget(); }
 
 								//ImGui::SameLine();
 								//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
@@ -2508,8 +2541,20 @@ void ofxSurfingMoods::draw_ImGui_User()
 						}
 						//ImGui::Dummy(ImVec2(0, 5));
 
-						if (MODE_Manual)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
-						if (MODE_Manual && bGui_ManualSlider)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
+						if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
+						if (bGui_ManualSlider)
+						{
+							ImGui::Indent();
+							if (MODE_Manual && bGui_ManualSlider)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
+							//if (bGui_ManualSliderHeader) 
+							{
+								if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
+								{
+									bResetSlider = true;
+								}
+							}
+							ImGui::Unindent();
+						}
 
 						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
 						guiManager.drawAdvancedSubPanel(false);
