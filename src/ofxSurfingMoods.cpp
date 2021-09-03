@@ -72,10 +72,12 @@ void ofxSurfingMoods::setup()//default sizes
 	//params
 	setup_Params();
 
+	/*
 	//gui
 #ifdef USE_ofxGuiExtended
 	setup_GUI_Main();
 #endif
+	*/
 
 	//--
 
@@ -113,7 +115,7 @@ void ofxSurfingMoods::setup()//default sizes
 	ENABLED_MoodMachine = true;
 	bIsPlaying = false;
 	timer = 0;
-	PLAY = false;
+	bPLAY = false;
 
 	TARGET_Selected_PRE = -1;
 	RANGE_Selected_PRE = -1;
@@ -166,10 +168,12 @@ void ofxSurfingMoods::startup()
 	//setGui_AdvancedVertical_MODE(false);
 	//setPosition(20, 20);//gui panel position
 
+	/*
 	// workflow
 #ifdef USE_ofxGuiExtended
 	group_Advanced->getVisible().set(bGui_Advanced);
 #endif
+	*/
 
 	//--
 
@@ -235,8 +239,8 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 
 	//-
 
-	// ImGui
-	draw_ImGui();
+	//// ImGui
+	//draw_ImGui(); // -> TODO: fails when other ImGui instances...
 }
 
 //--------------------------------------------------------------
@@ -753,7 +757,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// 1. setup_GUI_Target
 
-	PLAY.set("PLAY", false);
+	bPLAY.set("PLAY", false);
 
 	BPM.set("BPM", 120, 30, 400);//bmp
 	LEN_BARS.set("BARS LEN", 1, 1, 16);//bars
@@ -782,7 +786,7 @@ void ofxSurfingMoods::setup_Params()
 	bGui.set("MOODS SURFING", true);
 
 	bGui_Advanced.set("Moods Advanced", false);
-	bGui_ManualSlider.set("Manual Slider", false);
+	bGui_ManualSlider.set("Show Manual Slider", false);
 	bGui_ManualSliderHeader.set("Slider Header", true);
 	bGui_PreviewWidget.set("Show Preview Widget", false);
 	bUseCustomPreviewPosition.set("Custom", false);
@@ -891,14 +895,14 @@ void ofxSurfingMoods::setup_Params()
 
 	autoSaveLoad_settings.setSerializable(false);
 
-	PLAY.setSerializable(false);
+	bPLAY.setSerializable(false);
 
 	//-
 
 	// group params for callback listener only
 	params_Listeners.setName("MoodMachine_params");
 
-	params_Listeners.add(PLAY);
+	params_Listeners.add(bPLAY);
 	params_Listeners.add(bTickMode);
 	params_Listeners.add(BPM);
 	params_Listeners.add(LEN_BARS);
@@ -935,7 +939,7 @@ void ofxSurfingMoods::setup_Params()
 	//params_USER.setName("USER");
 	params_USER.setName("MOOD MACHINE");//change display name
 
-	params_USER.add(PLAY);
+	params_USER.add(bPLAY);
 
 	params_USER.add(MODE_Ranged);
 	params_USER.add(MODE_MarkovChain);
@@ -1152,9 +1156,9 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 //--------------------------------------------------------------
 void ofxSurfingMoods::stop()
 {
-	if (ENABLED_MoodMachine && PLAY)
+	if (ENABLED_MoodMachine && bPLAY)
 	{
-		PLAY = false;
+		bPLAY = false;
 
 		if (stopBack)
 		{
@@ -1166,9 +1170,9 @@ void ofxSurfingMoods::stop()
 //--------------------------------------------------------------
 void ofxSurfingMoods::play()
 {
-	if (ENABLED_MoodMachine && !PLAY)
+	if (ENABLED_MoodMachine && !bPLAY)
 	{
-		PLAY = true;
+		bPLAY = true;
 	}
 }
 
@@ -1177,7 +1181,7 @@ void ofxSurfingMoods::setTogglePlay()
 {
 	if (ENABLED_MoodMachine)
 	{
-		if (PLAY)
+		if (bPLAY)
 		{
 			stop();
 
@@ -1385,7 +1389,7 @@ void ofxSurfingMoods::clone()
 //--------------------------------------------------------------
 void ofxSurfingMoods::doRunStep()
 {
-	if (PLAY || (bTickMode && bExternalLocked))
+	if (bPLAY || (bTickMode && bExternalLocked))
 	{
 		//RESTART
 		if (!bTickMode) timer_Range.start(false);
@@ -1736,9 +1740,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		if (WIDGET != "COMPLETE")
 			ofLogVerbose(__FUNCTION__) << WIDGET << " : " << e;
 
-		if (WIDGET == PLAY.getName())
+		if (WIDGET == bPLAY.getName())
 		{
-			if (PLAY)
+			if (bPLAY)
 			{
 				//  60,000 / BPM = MS
 				timer = LEN_BARS * (BPM_BAR_RATIO * (60000 / BPM));
@@ -1772,6 +1776,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				COUNTER_step = 0;
 				COUNTER_step_FromOne = 0;
 				RANGE_Selected = 0;
+
 				/*
 				#ifdef USE_ofxGuiExtended
 								(group_USER->getIntSlider("COUNTER"))->setEnabled(false);//hidden
@@ -1878,7 +1883,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		else if (WIDGET == timer.getName())
 		{
-			if (PLAY)
+			if (bPLAY)
 			{
 				timer_Range.setup(timer);
 			}
@@ -2000,6 +2005,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				MODE_MarkovChain = false;
 			}
 			else refresModeshWorkflow();
+
 			/*
 #ifdef USE_ofxGuiExtended
 			(group_USER->getFloatSlider(controlManual.getName()))->setEnabled(MODE_Manual.get());
@@ -2011,9 +2017,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			// workflow
 			if (!bTickMode)
 			{
-				if (!PLAY.get())
+				if (!bPLAY.get())
 				{
-					PLAY = true;
+					bPLAY = true;
 				}
 			}
 			else if (!bExternalLocked.get())
@@ -2159,7 +2165,6 @@ void ofxSurfingMoods::setup_ImGui()
 	////guiManager.setup(gui);
 
 	guiManager.setSettingsPathLabel("ofxSurfingMoods");
-	guiManager.setAutoSaveSettings(true);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//--
@@ -2170,7 +2175,7 @@ void ofxSurfingMoods::setup_ImGui()
 	if (bCustom2)
 	{
 		guiManager.clearStyles();
-		guiManager.AddStyle(PLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, false, 1, 5);
+		guiManager.AddStyle(bPLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, false, 1, 5);
 
 		guiManager.AddStyle(MODE_Ranged, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
 		guiManager.AddStyle(MODE_MarkovChain, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
@@ -2311,7 +2316,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ca);
 			ImGui::PushStyleColor(ImGuiCol_Button, ca);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca);
-			if (!bTickMode) guiManager.Add(PLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
+			if (!bTickMode) guiManager.Add(bPLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
 			else
 			{
 				if (guiManager.Add(bExternalLocked, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG))

@@ -31,6 +31,10 @@ void ofApp::draw()
 	ofSetColor(64, 200);
 	ofDrawCircle(x, y, r);
 	ofPopStyle();
+
+	//-
+
+	moods.draw_ImGui();
 }
 
 //--------------------------------------------------------------

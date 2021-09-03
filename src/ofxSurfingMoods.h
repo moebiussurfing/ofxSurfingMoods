@@ -7,9 +7,9 @@
 
 TODO:
 
-+ ImGui fails when multiple instance
+++ fix link bpm ptr. allow don't break the timers/progress
+	better slider
 
-+ link bpm ptr. allow don't break the timers/progress
 + fix counter and stay count margins/preview
 + fix save/load settings
 + fix preview box full (merge double click with drag rect)
@@ -17,17 +17,18 @@ TODO:
 */
 
 
+/*
 //#define USE_ofxGuiExtended
 #ifdef USE_ofxGuiExtended // -> Deprecated
 #include "ofxGuiExtended2.h"
 #endif
+*/
 
 #include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
 
 //-
 
 #include "ofxSurfingHelpers.h"
-#include "ofxWindowApp.h"
 #include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
 #include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
@@ -59,6 +60,8 @@ TODO:
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
 
+//-
+
 // snippets:
 
 // ofApp Example:
@@ -82,7 +85,6 @@ TODO:
 //--
 
 //class ofxSurfingMoods : public ofBaseApp
-
 class ofxSurfingMoods
 
 {
@@ -114,7 +116,6 @@ private:
 	void setup_ImGui();
 
 public:
-
 	void draw_ImGui();
 
 private:
@@ -139,20 +140,17 @@ public:
 	//-
 
 private:
-	//ofxWindowApp windowApp;
-
-	//-
-
-private:
 
 	ofxInteractiveRect rectPreview = { "_PreviewRect" };
 	std::string path_rect;
 
 public:
 	void setup();
+
 private:
 	void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
+
 public:
 	void startup();
 	void exit();
@@ -175,8 +173,6 @@ private:
 	//ofParameter<glm::vec2> positionGui_Engine;
 
 	//--
-
-#pragma mark API
 
 public:
 
@@ -216,6 +212,7 @@ private:
 	ofParameter<bool> MODE_MarkovChain{ "B MODE MARKOV", false };
 	ofParameter<bool> MODE_Manual{ "C MODE MANUAL", false };
 
+	//--------------------------------------------------------------
 	void refresModeshWorkflow() {
 		if (!MODE_Manual && !MODE_MarkovChain && !MODE_Ranged)
 		{
@@ -259,13 +256,13 @@ public:
 	//--------------------------------------------------------------
 	bool isPlaying()
 	{
-		return PLAY.get();
+		return bPLAY.get();
 	}
 
 	//--------------------------------------------------------------
 	//bool isPLAY()
 	//{
-	//	return PLAY.get();
+	//	return bPLAY.get();
 	//}
 	//--------------------------------------------------------------
 	//	bool isPlaying()
@@ -420,7 +417,7 @@ private:
 
 public:
 
-	ofParameter<bool> PLAY;
+	ofParameter<bool> bPLAY;
 	ofParameter<float> BPM;//bpm
 	ofParameter<int> LEN_BARS;//in bars
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
@@ -612,6 +609,7 @@ private:
 
 	//--
 
+	/*
 #ifdef USE_ofxGuiExtended
 	//ofxGuiExtended
 
@@ -655,7 +653,7 @@ private:
 
 	//theme
 	void setup_GUI_Customize();
-	ofJson /*j_Gui,*/ j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
+	ofJson j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
 
 private:
 
@@ -672,5 +670,6 @@ public:
 		group_Advanced->loadTheme(path_Theme);
 	}
 #endif
+	*/
 };
 

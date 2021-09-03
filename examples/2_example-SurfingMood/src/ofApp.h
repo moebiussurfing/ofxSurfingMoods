@@ -13,11 +13,12 @@
 	
 	1. You can start testing by moving the Target slide
 	with the player stopped.
-	Each target is linked to 3 Presets that you can configure.
+	Each target is linked to 3 Presets that you can configure or to disable.
 	
 	2. Then, pick a Mode and hit Play.
 
-	3. On Mode Manual, you can drag the Control slider to set a Range. The machine must be playing.
+	3. On Mode Manual, you can drag the Control slider to set a Range. 
+	The machine must be playing, and wil be wlaking between the 'mood' states.
 
 */
 
@@ -40,7 +41,8 @@ public:
 
 
 	//-------------------------
-	// Snippet to copy/paste ->
+
+	// Snippet to copy/paste to you project ->
 
 	// Surfing Moods
     ofxSurfingMoods moods;
