@@ -197,6 +197,8 @@ void ofxSurfingMoods::startup()
 //--------------------------------------------------------------
 void ofxSurfingMoods::update(ofEventArgs & args)
 {
+	update_PreviewColors();
+
 	//if (MODE_MarkovChain)
 	//{
 	//	i++;
@@ -228,9 +230,12 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 {
 	if (!bGui) return;
 
-	update_PreviewColors();
+	//update_PreviewColors();
 	if (bGui_PreviewWidget) draw_PreviewWidget();
 
+	//-
+
+	// ImGui
 	draw_ImGui();
 }
 
@@ -2270,6 +2275,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 	// USER
 
 	//if (SHOW_GuiUser)
+	if (bGui)
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
@@ -2604,6 +2610,9 @@ void ofxSurfingMoods::doResetPreviewWidget()
 void ofxSurfingMoods::draw_ImGui()
 {
 	if (!bGui) return;
+
+	//TODO:
+	//return;
 
 	guiManager.begin();
 	{

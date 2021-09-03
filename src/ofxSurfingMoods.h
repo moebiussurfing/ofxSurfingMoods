@@ -7,6 +7,8 @@
 
 TODO:
 
++ ImGui fails when multiple instance
+
 + link bpm ptr. allow don't break the timers/progress
 + fix counter and stay count margins/preview
 + fix save/load settings
@@ -16,7 +18,7 @@ TODO:
 
 
 //#define USE_ofxGuiExtended
-#ifdef USE_ofxGuiExtended
+#ifdef USE_ofxGuiExtended // -> Deprecated
 #include "ofxGuiExtended2.h"
 #endif
 
@@ -36,37 +38,37 @@ TODO:
 
 //--
 
-#define MAX_ITEMS 16//reserve max for arrays creations
-#define NUM_RANGES 3//TARGET RANGES
+#define MAX_ITEMS 16 // reserve max for arrays creations
+#define NUM_RANGES 3 // TARGET RANGES
 
-//with default 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
-#define DEFAULT_NUM_TARGETS 9//TARGETS
-#define DEFAULT_NUM_PRESETS 9//PRESETS
-#define DEFAULT_RANGE_LIMIT_1 3//divisor between range 0 and range 1
-#define DEFAULT_RANGE_LIMIT_2 6//divisor between range 1 and range 2
+// with default 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+#define DEFAULT_NUM_TARGETS 9 // TARGETS
+#define DEFAULT_NUM_PRESETS 9 // PRESETS
+#define DEFAULT_RANGE_LIMIT_1 3 // divisor between range 0 and range 1
+#define DEFAULT_RANGE_LIMIT_2 6 // divisor between range 1 and range 2
 
 //--
 
-//with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
-//#define DEFAULT_NUM_TARGETS 16//TARGETS
-//#define DEFAULT_NUM_PRESETS 8//PRESETS
-//#define DEFAULT_RANGE_LIMIT_1 4//divisor between range 0 and range 1
-//#define DEFAULT_RANGE_LIMIT_2 11//divisor between range 1 and range 2
-//NOTE:
+// with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
+//#define DEFAULT_NUM_TARGETS 16 // TARGETS
+//#define DEFAULT_NUM_PRESETS 8 // PRESETS
+//#define DEFAULT_RANGE_LIMIT_1 4 // divisor between range 0 and range 1
+//#define DEFAULT_RANGE_LIMIT_2 11 // divisor between range 1 and range 2
+// NOTE:
 //range 0 = presets 0-3
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
 
-//snippets:
+// snippets:
 
-//ofApp Example:
-//customize ranges/sizes (TODO: maybe not working..)
+// ofApp Example:
+// customize ranges/sizes (TODO: maybe not working..)
 //moodsSurfer.setup(9, 9, 3, 6);
-////9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
-////3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
+//// 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+//// 3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
 
-//ofApp Example:
-////customized position: bottom centered
+// ofApp Example:
+//// customized position: bottom centered
 //int w = 500;
 //int h = 50;
 //int x = ofGetWidth() / 2. - w * 0.5;
@@ -75,12 +77,14 @@ TODO:
 
 //--
 
-#define BPM_BAR_RATIO 4 //TO SCALE TIMER/BPM
+#define BPM_BAR_RATIO 4 // TO SCALE TIMER/BPM
 
 //--
 
-//class ofxSurfingMoods
-class ofxSurfingMoods : public ofBaseApp
+//class ofxSurfingMoods : public ofBaseApp
+
+class ofxSurfingMoods
+
 {
 	//-
 
@@ -91,7 +95,7 @@ public:
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
 		ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
 
-		bAutoDraw = false;
+		//bAutoDraw = false;
 	};
 
 	//--------------------------------------------------------------
@@ -105,23 +109,29 @@ public:
 	//-
 
 private:
+
 	ofxSurfing_ImGui_Manager guiManager;
 	void setup_ImGui();
+
 public:
+
 	void draw_ImGui();
+
 private:
 	void draw_ImGui_User();
 	void draw_ImGui_Advanced();
 	void draw_ImGui_ManualSlider();
-	
+
 	ofParameter<bool> bResetSlider{ "Reset Slider",false };
 	ofParameter<bool> bResetPreviewWidget{ "Reset Preview",false };
 
 private:
+
 	//ofxImGui::Gui gui;
 	bool bAutoDraw; // must be false when multiple ImGui instances created!
 
 public:
+
 	// Force autodraw
 	//--------------------------------------------------------------
 	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
@@ -129,19 +139,21 @@ public:
 	//-
 
 private:
-	ofxWindowApp windowApp;
+	//ofxWindowApp windowApp;
 
 	//-
 
 private:
+
 	ofxInteractiveRect rectPreview = { "_PreviewRect" };
 	std::string path_rect;
 
 public:
-
 	void setup();
+private:
 	void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
+public:
 	void startup();
 	void exit();
 	void windowResized(int w, int h);
@@ -151,12 +163,13 @@ private:
 	bool bMarkovFileFound = false;
 
 	// preview widget
+private:
 	void draw_PreviewWidget();
 	void update_PreviewColors();
 	void draw_PreviewWidget(int x, int  y, int  w, int  h);
 
-	ofColor cBg; 
-	ofColor cBord; 
+	ofColor cBg;
+	ofColor cBord;
 	ofColor c1, c2, c3;
 
 	//ofParameter<glm::vec2> positionGui_Engine;
@@ -185,6 +198,7 @@ public:
 	//--
 
 private:
+
 	ofParameterGroup params_Listeners;
 	ofParameterGroup params_STORE;
 	ofParameterGroup params_USER;
@@ -309,7 +323,7 @@ public:
 		TARGET_Selected = t;
 	}
 
-	void setPosition(int x, int y);
+	//void setPosition(int x, int y);
 
 	// preview boxes bar
 	//--------------------------------------------------------------
@@ -367,23 +381,23 @@ public:
 		TARGET_Selected = t;
 	}
 
-	////--------------------------------------------------------------
-	//void setShowGuiUser(bool b)
-	//{
-	//	SHOW_GuiUser = b;
-	//}
-
 	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
 	{
 		bGui_Advanced = b;
 	}
 
+	////--------------------------------------------------------------
+	//void setShowGuiUser(bool b)
+	//{
+	//	SHOW_GuiUser = b;
+	//}
+
 	//-------------------------------------------
 
 private:
 
-	// SETTNGS
+	// Settngs
 
 	// path for xml settings
 	string path_Folder;
@@ -443,7 +457,7 @@ private:
 
 	//-
 
-	// ENGINE
+	// Engine
 
 	//-
 
@@ -464,7 +478,7 @@ private:
 	// range 1: starts at target rLimit1
 	int rLimit1 = (int)DEFAULT_RANGE_LIMIT_1;
 
-	//range 2: starts at target rLimit2
+	// range 2: starts at target rLimit2
 	int rLimit2 = (int)DEFAULT_RANGE_LIMIT_2;
 
 	//-
@@ -479,7 +493,7 @@ private:
 	ofParameter<int> timer; // timer
 	ofParameter<int> timer_Progress; // % to finish timer
 	ofParameter<int> Range_Min; // range
-	ofParameter<int> Range_Max; //range
+	ofParameter<int> Range_Max; // range
 	void Changed_Params_Listeners(ofAbstractParameter &e);
 
 	//ofParameter<std::string> MONITOR1;
@@ -487,7 +501,7 @@ private:
 
 	//-
 
-	//each target handles two 'sub targets' aka 'preset + pattern';
+	// each target handles two 'sub targets' aka 'preset + pattern';
 
 	int presets_A[MAX_ITEMS];
 	int presets_B[MAX_ITEMS];
@@ -513,10 +527,10 @@ private:
 
 	//-
 
-	bool stopBack = true; //WORKFLOW: goes to range 0 when stops
+	bool stopBack = true; // WORKFLOW: goes to range 0 when stops
 	bool ENABLED_MoodMachine;
 
-	//can be enabled only when default positioner mode
+	// can be enabled only when default positioner mode
 	//bool MODE_vertical = false;
 
 public:
@@ -539,9 +553,9 @@ private:
 
 	//-
 
-	// TIMER
+	// Timer
 
-	//timer
+	// timer
 	ofxSimpleTimer timer_Range;
 	void timer_Range_Complete(int &args);
 	void timer_Range_Started(int &args);
@@ -549,11 +563,11 @@ private:
 
 	//-
 
-	// GUI LAYOUT
+	// Gui layout
 
-	//panel
+	// panel
 	int gui_w;
-	//widgets
+	// widgets
 	int gui_slider_mini_h;
 	int gui_slider_big_h;
 	int gui_button_big_h;
@@ -563,11 +577,11 @@ private:
 
 	//-
 
-	// RANGES
+	// Ranges
 
 private:
 
-	//ranges
+	// ranges
 	void Changed_Ranges(ofAbstractParameter &e);
 	int RANGE_Selected_PRE;
 
@@ -656,7 +670,7 @@ public:
 		//path_Theme += "theme_ofxGuiExtended2.json";
 		group_USER->loadTheme(path_Theme);
 		group_Advanced->loadTheme(path_Theme);
-}
+	}
 #endif
 };
 

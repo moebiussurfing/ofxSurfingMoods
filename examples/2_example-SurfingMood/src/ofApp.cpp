@@ -5,12 +5,12 @@ void ofApp::setup()
 {
 	ofSetCircleResolution(100);
 
-	//-
-
 	// circle gradient colors to visualize Preset A index
 	gradient.addColor(ofColor::red);
 	gradient.addColor(ofColor::yellow);
 	gradient.addColor(ofColor::green);
+
+	//-
 
 	setupMoods();
 }
@@ -18,7 +18,7 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	// circle colored by Preset A
+	// circle colored by Preset A value/index
 	ofPushStyle();
 	ofSetColor(colorCircle);
 	ofFill();
@@ -53,17 +53,16 @@ void ofApp::exit()
 	exitMoods();
 }
 
-
 //----
 
 
 //-------------------------
-// Snippet to copy/paste ->
+// Full Snippet to copy/paste to your project ->
+
 // Surfing Moods
 //
 //setupMoods();
 //exitMoods();
-
 
 //--------------------------------------------------------------
 void ofApp::setupMoods()
@@ -106,7 +105,7 @@ void ofApp::Changed_Mood_PRESET_A(int &targetVal)
 {
 	ofLogNotice(__FUNCTION__) << targetVal;
 
-	// change the circle color reflecting the Preset A index
+	// Change the circle color reflecting the Preset A index
 	float val = ofMap(targetVal, 0, 8, 0.f, 1.f);
 	colorCircle = gradient.getColorAtPercent(val);
 }
