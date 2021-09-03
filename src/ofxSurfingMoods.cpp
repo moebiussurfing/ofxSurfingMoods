@@ -42,8 +42,18 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//markov
 	path_markovMatrix = path_Folder + "markov/" + "transitionMatrix.txt";
-	ofxMC::Matrix mat(path_markovMatrix);
-	markov.setup(mat, 0);
+
+	//avoid crash
+	ofFile file;
+	file.open(path_markovMatrix);
+	bMarkovFileFound = file.exists();
+	if (bMarkovFileFound) {
+		ofxMC::Matrix mat(path_markovMatrix);
+		markov.setup(mat, 0);
+	}
+	else {
+		ofLogError(__FUNCTION__) << "Markov file " << path_markovMatrix << " not found!";
+	}
 
 	//--
 
@@ -1072,8 +1082,11 @@ void ofxSurfingMoods::stopMachine()
 	TARGET_Selected = ranges[RANGE_Selected].min; // set the target to the first target pos of the range
 
 	// markov
-	ofxMC::Matrix mat(path_markovMatrix);
-	markov.setup(mat, 0);
+	if (bMarkovFileFound)
+	{
+		ofxMC::Matrix mat(path_markovMatrix);
+		markov.setup(mat, 0);
+	}
 }
 
 //--------------------------------------------------------------
@@ -1477,66 +1490,68 @@ void ofxSurfingMoods::doRunStep()
 
 		else if (MODE_MarkovChain.get())
 		{
-			int _RANGE_Selected_PRE = RANGE_Selected.get();
+			if (bMarkovFileFound) {
+				int _RANGE_Selected_PRE = RANGE_Selected.get();
 
-			//count times and cycle
-			COUNTER_step++;
-			COUNTER_step = COUNTER_step % COUNT_Duration;
-			COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
+				//count times and cycle
+				COUNTER_step++;
+				COUNTER_step = COUNTER_step % COUNT_Duration;
+				COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
 
-			//type A: mode stay amount of counter
-			//if (COUNTER_step == 0)
-			//type B: ignoring counter. just 1
-			{
-				markov.update();
-				TARGET_Selected = markov.getState();
-
-				//--
-
-				//range not changed
-				if (RANGE_Selected.get() == _RANGE_Selected_PRE)
+				//type A: mode stay amount of counter
+				//if (COUNTER_step == 0)
+				//type B: ignoring counter. just 1
 				{
-					if (MODE_AvoidRepeat.get())//avoids repeat same target
+					markov.update();
+					TARGET_Selected = markov.getState();
+
+					//--
+
+					//range not changed
+					if (RANGE_Selected.get() == _RANGE_Selected_PRE)
 					{
-						int _pre = TARGET_Selected.get();
-
-						markov.update();
-						TARGET_Selected = markov.getState();
-
-						int count = 0;
-						int MAX_TRIES = 100;
-
-						while (TARGET_Selected.get() == _pre)//not changed
+						if (MODE_AvoidRepeat.get())//avoids repeat same target
 						{
+							int _pre = TARGET_Selected.get();
+
 							markov.update();
 							TARGET_Selected = markov.getState();
 
-							count++;
-							if (count > MAX_TRIES)//max attemps to avoid infinite loops...
+							int count = 0;
+							int MAX_TRIES = 100;
+
+							while (TARGET_Selected.get() == _pre)//not changed
 							{
-								// do not renew
-								break;
+								markov.update();
+								TARGET_Selected = markov.getState();
+
+								count++;
+								if (count > MAX_TRIES)//max attemps to avoid infinite loops...
+								{
+									// do not renew
+									break;
+								}
 							}
 						}
 					}
-				}
 
-				//--
+					//--
 
-				ofLogNotice(__FUNCTION__) << "TARGET: " << TARGET_Selected;
+					ofLogNotice(__FUNCTION__) << "TARGET: " << TARGET_Selected;
 
-				// TODO: only implemented to 3 ranges..
-				if (TARGET_Selected >= ranges[0].min && TARGET_Selected <= ranges[0].max) {
-					RANGE_Selected = 0;
-				}
-				else if (TARGET_Selected >= ranges[1].min && TARGET_Selected <= ranges[1].max) {
-					RANGE_Selected = 1;
-				}
-				else if (TARGET_Selected >= ranges[2].min && TARGET_Selected <= ranges[2].max) {
-					RANGE_Selected = 2;
-				}
+					// TODO: only implemented to 3 ranges..
+					if (TARGET_Selected >= ranges[0].min && TARGET_Selected <= ranges[0].max) {
+						RANGE_Selected = 0;
+					}
+					else if (TARGET_Selected >= ranges[1].min && TARGET_Selected <= ranges[1].max) {
+						RANGE_Selected = 1;
+					}
+					else if (TARGET_Selected >= ranges[2].min && TARGET_Selected <= ranges[2].max) {
+						RANGE_Selected = 2;
+					}
 
-				//ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
+					//ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
+				}
 			}
 		}
 	}
@@ -2134,9 +2149,13 @@ void ofxSurfingMoods::keyPressed(int key)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
 {
-	guiManager.setImGuiAutodraw(bAutoDraw);
-	guiManager.setup();
-	//guiManager.setup(gui);
+	//guiManager.setImGuiAutodraw(bAutoDraw);
+	//guiManager.setup();
+	////guiManager.setup(gui);
+
+	guiManager.setSettingsPathLabel("ofxSurfingMoods");
+	guiManager.setAutoSaveSettings(true);
+	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//--
 
@@ -2145,12 +2164,12 @@ void ofxSurfingMoods::setup_ImGui()
 	static bool bCustom2 = true;
 	if (bCustom2)
 	{
+		guiManager.clearStyles();
 		guiManager.AddStyle(PLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, false, 1, 5);
 
 		guiManager.AddStyle(MODE_Ranged, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
 		guiManager.AddStyle(MODE_MarkovChain, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
 		guiManager.AddStyle(MODE_Manual, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, false, 3, 5);
-
 
 		//	guiManager.AddStyle(bPrevious, SurfingImGuiTypes::OFX_IM_BUTTON_SMALL, true, 2);
 		//	guiManager.AddStyle(bNext, SurfingImGuiTypes::OFX_IM_BUTTON_SMALL, false, 2, 20);
@@ -2170,7 +2189,6 @@ void ofxSurfingMoods::setup_ImGui()
 		//	guiManager.AddStyle(bPrevious, SurfingImGuiTypes::OFX_IM_HIDDEN);
 		//	guiManager.AddStyle(bNext, SurfingImGuiTypes::OFX_IM_HIDDEN);
 		//  guiManager.AddStyle(lineWidth, SurfingImGuiTypes::OFX_IM_HIDDEN);
-
 	}
 	//guiManager.bAutoResize = false;
 }
@@ -2380,7 +2398,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 					guiManager.refresh();
 
 					guiManager.Add(MODE_Ranged, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
-					guiManager.Add(MODE_MarkovChain, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
+					if (bMarkovFileFound) guiManager.Add(MODE_MarkovChain, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
 					guiManager.Add(MODE_Manual, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
 					ImGui::TreePop();
 				}

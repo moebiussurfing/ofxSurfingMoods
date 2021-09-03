@@ -12,27 +12,7 @@ void ofApp::setup()
 	gradient.addColor(ofColor::yellow);
 	gradient.addColor(ofColor::green);
 
-	//--
-
-	// callbacks listeners from moods
-	moods.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
-	moods.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
-
-	moods.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
-	moods.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
-	moods.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
-
-	//--
-
-	moods.setImGuiAutodraw(true); // -> required if no other ImGui instances are instantiated
-	moods.setup();
-
-	// default structure is:
-	// 3 moods/ranges (with 3 targets each)
-	// 9 states/targets.
-	// 9 presets for each preset receiver A-B-C.
-	// splitting the 3 moods/ranges:
-	// limit 0-1 target 3, limit 1-2 target 6.
+	setupMoods();
 }
 
 //--------------------------------------------------------------
@@ -62,11 +42,58 @@ void ofApp::keyPressed(int key)
 }
 
 //--------------------------------------------------------------
+void ofApp::windowResized(int w, int h)
+{
+	moods.windowResized(w, h);
+}
 
-// callbacks to look inside the moods
+//--------------------------------------------------------------
+void ofApp::exit()
+{
+	exitMoods();
+}
 
-// we can apply current targets and presets to whatever we want into our OF_APP.
-// we can modify other things depending on mood range too.
+
+//----
+
+
+//-------------------------
+// Snippet to copy/paste ->
+// Surfing Moods
+//
+//setupMoods();
+//exitMoods();
+
+
+//--------------------------------------------------------------
+void ofApp::setupMoods()
+{
+	// Callbacks listeners from moods
+	moods.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
+	moods.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
+
+	moods.PRESET_A_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_A);
+	moods.PRESET_B_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_B);
+	moods.PRESET_C_Selected.addListener(this, &ofApp::Changed_Mood_PRESET_C);
+
+	//--
+
+	moods.setImGuiAutodraw(true); // -> Required if no other ImGui instances are instantiated
+	moods.setup();
+
+	// Default structure is:
+	// 3 Moods/ranges (with 3 targets each)
+	// 9 States/targets.
+	// 9 Presets for each preset receiver A-B-C.
+	// Splitting the 3 moods/ranges:
+	// Limit 0-1 target 3, limit 1-2 target 6.
+}
+
+//--------------------------------------------------------------
+
+// Callbacks to look inside the moods
+// We can apply current targets and presets to whatever we want into our OF_APP.
+// We can modify other things depending on mood range too.
 
 //--------------------------------------------------------------
 void ofApp::Changed_Mood_TARGET(int &targetVal)
@@ -101,7 +128,7 @@ void ofApp::Changed_Mood_RANGE(int &targetVal)
 {
 	ofLogNotice(__FUNCTION__) << targetVal;
 
-	// change the background color reflecting the Mood/Range
+	// Change the background color reflecting the Mood/Range
 
 	if (targetVal == 0)
 	{
@@ -118,15 +145,9 @@ void ofApp::Changed_Mood_RANGE(int &targetVal)
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h)
+void ofApp::exitMoods()
 {
-	moods.windowResized(w, h);
-}
-
-//--------------------------------------------------------------
-void ofApp::exit()
-{
-	//callbacks listeners from moods
+	// Callbacks listeners from moods
 	moods.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
 	moods.TARGET_Selected.removeListener(this, &ofApp::Changed_Mood_TARGET);
 	moods.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);

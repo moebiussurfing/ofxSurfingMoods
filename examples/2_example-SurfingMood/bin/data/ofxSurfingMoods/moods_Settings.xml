@@ -1,28 +1,29 @@
 <?xml version="1.0"?>
 <MoodMachine_params_STORE>
-	<STAY_COUNT>1</STAY_COUNT>
+	<STAY_COUNT>4</STAY_COUNT>
 	<BPM>120</BPM>
 	<BARS_LEN>1</BARS_LEN>
 	<MOODS_SURFING>1</MOODS_SURFING>
 	<Moods_Advanced>0</Moods_Advanced>
 	<Manual_Slider>1</Manual_Slider>
-	<Slider_Header>0</Slider_Header>
+	<Slider_Header>1</Slider_Header>
 	<Show_Preview_Widget>1</Show_Preview_Widget>
-	<Custom>0</Custom>
+	<Custom>1</Custom>
 	<ENABLE_A>1</ENABLE_A>
 	<ENABLE_B>0</ENABLE_B>
 	<ENABLE_C>0</ENABLE_C>
 	<STATE_TARGET>8</STATE_TARGET>
 	<B_MODE_MARKOV>0</B_MODE_MARKOV>
 	<A_MODE_RANGED>0</A_MODE_RANGED>
-	<START_LOCKED>1</START_LOCKED>
-	<AVOID_REPEAT>1</AVOID_REPEAT>
+	<START_LOCKED>0</START_LOCKED>
+	<AVOID_REPEAT>0</AVOID_REPEAT>
 	<C_MODE_MANUAL>1</C_MODE_MANUAL>
-	<MANUAL_CONTROL>0.688</MANUAL_CONTROL>
-	<ADVANCED>
-		<Advanced>1</Advanced>
+	<MANUAL_CONTROL>0.892</MANUAL_CONTROL>
+	<Params_Advanced>
 		<Auto_Resize>1</Auto_Resize>
-		<Extra>0</Extra>
-		<Minimize>0</Minimize>
-	</ADVANCED>
+		<Minimize>1</Minimize>
+		<Advanced>0</Advanced>
+		<Keys>1</Keys>
+		<Debug>0</Debug>
+	</Params_Advanced>
 </MoodMachine_params_STORE>

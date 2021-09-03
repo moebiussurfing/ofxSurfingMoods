@@ -148,6 +148,7 @@ public:
 	void keyPressed(int key);
 
 private:
+	bool bMarkovFileFound = false;
 
 	// preview widget
 	void draw_PreviewWidget();

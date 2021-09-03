@@ -13,7 +13,7 @@
 	
 	1. You can start testing by moving the Target slide
 	with the player stopped.
-	Each target is linked to 3 Presets that you can set.
+	Each target is linked to 3 Presets that you can configure.
 	
 	2. Then, pick a Mode and hit Play.
 
@@ -31,21 +31,28 @@ public:
     void exit();
     void keyPressed(int key);
     void windowResized(int w, int h);
+	ofxWindowApp windowApp;
 
+    // scene circle colors
+    ofxColorGradient<ofColor> gradient;
+    ofColor colorCircle;
+	bool bGui = true;;
+
+
+	//-------------------------
+	// Snippet to copy/paste ->
+
+	// Surfing Moods
     ofxSurfingMoods moods;
+    void setupMoods();
+    void exitMoods();
 
-    // callbacks from moods
+    // Callbacks from moods
     void Changed_Mood_TARGET(int & targetVal);
 	void Changed_Mood_PRESET_A(int & targetVal);
     void Changed_Mood_PRESET_B(int & targetVal);
     void Changed_Mood_PRESET_C(int & targetVal);
 	void Changed_Mood_RANGE(int & targetVal);
 
-    // scene circle colors
-    ofxColorGradient<ofColor> gradient;
-    ofColor colorCircle;
-
-	bool bGui = true;;
-
-	ofxWindowApp windowApp;
+	//----
 };
