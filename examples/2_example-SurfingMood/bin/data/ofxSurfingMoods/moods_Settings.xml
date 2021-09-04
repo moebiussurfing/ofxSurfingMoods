@@ -7,12 +7,12 @@
 	<Moods_Advanced>0</Moods_Advanced>
 	<Show_Manual_Slider>1</Show_Manual_Slider>
 	<Slider_Header>0</Slider_Header>
-	<Show_Preview_Widget>1</Show_Preview_Widget>
-	<Custom>1</Custom>
+	<Show_Preview_Widget>0</Show_Preview_Widget>
+	<Custom>0</Custom>
 	<ENABLE_A>1</ENABLE_A>
 	<ENABLE_B>0</ENABLE_B>
 	<ENABLE_C>0</ENABLE_C>
-	<STATE_TARGET>4</STATE_TARGET>
+	<STATE_TARGET>5</STATE_TARGET>
 	<B_MODE_MARKOV>0</B_MODE_MARKOV>
 	<A_MODE_RANGED>1</A_MODE_RANGED>
 	<START_LOCK-1st>0</START_LOCK-1st>

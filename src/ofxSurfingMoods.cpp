@@ -315,6 +315,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 {
 	float gx, gy, gw, gh, ww, hh, pad;
+	pad = 10;
 
 	////custom
 	//if (bUseCustomPreviewPosition)
@@ -338,7 +339,6 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 	// default
 	else
 	{
-		pad = 10;
 		gw = ofGetWidth() - 2 * pad;
 		gx = pad;
 		gy = pad;
@@ -373,14 +373,15 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 	//-
 
 	// preview rectangle
-	if (bEdit_PreviewWidget)
-	{
-		ofPushStyle();
-		ofSetColor(128, 64);
-		ofDrawRectangle(rectPreview);
-		rectPreview.draw();
-		ofPopStyle();
-	}
+	if (bUseCustomPreviewPosition)
+		if (bEdit_PreviewWidget)
+		{
+			ofPushStyle();
+			ofSetColor(128, 64);
+			ofDrawRectangle(rectPreview);
+			rectPreview.draw();
+			ofPopStyle();
+		}
 }
 
 //--------------------------------------------------------------
@@ -2523,7 +2524,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			//ImGui::Dummy(ImVec2(0, 2));
 
 			guiManager.Add(RANGE_Selected, SurfingImGuiTypes::OFX_IM_INACTIVE);
-				
+
 			ImGui::Spacing();
 			//ImGui::Dummy(ImVec2(0, 5));
 			guiManager.Add(TARGET_Selected, SurfingImGuiTypes::OFX_IM_DEFAULT, false, 1, 4);
@@ -2572,37 +2573,43 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 								//guiManager.Add(bGui_PreviewWidget, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL);
 
-								ofxImGuiSurfing::AddToggleRoundedButton(bEdit_PreviewWidget);
-								//guiManager.Add(bEdit_PreviewWidget, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL);
-								if (ofxImGuiSurfing::AddToggleRoundedButton(bResetPreviewWidget)) {
-									bResetPreviewWidget = false;
-									doResetPreviewWidget();
-								}
-								//if (ImGui::Button("Reset"/*, ImVec2(_w100, _h / 2)*/)) { doResetPreviewWidget(); }
-
-								//ImGui::SameLine();
-								//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
 								ofxImGuiSurfing::AddToggleRoundedButton(bUseCustomPreviewPosition);
+								if (bUseCustomPreviewPosition) {
+									ofxImGuiSurfing::AddToggleRoundedButton(bEdit_PreviewWidget);
+									//guiManager.Add(bEdit_PreviewWidget, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL);
+									if (ofxImGuiSurfing::AddToggleRoundedButton(bResetPreviewWidget)) {
+										bResetPreviewWidget = false;
+										doResetPreviewWidget();
+									}
+									//if (ImGui::Button("Reset"/*, ImVec2(_w100, _h / 2)*/)) { doResetPreviewWidget(); }
 
-								//ImGui::TreePop();
+									//ImGui::SameLine();
+									//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
+
+									//ImGui::TreePop();
+								}
 							}
 							ImGui::Unindent();
 						}
 						//ImGui::Dummy(ImVec2(0, 5));
 
-						if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
-						if (bGui_ManualSlider)
-						{
-							ImGui::Indent();
-							if (MODE_Manual && bGui_ManualSlider)ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
-							//if (bGui_ManualSliderHeader) 
+						if (MODE_Manual) {
+							ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
+							if (bGui_ManualSlider)
 							{
-								if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
+								ImGui::Indent();
 								{
-									bResetSlider = true;
+									ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
+									//if (bGui_ManualSliderHeader) 
+									{
+										if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
+										{
+											bResetSlider = true;
+										}
+									}
 								}
+								ImGui::Unindent();
 							}
-							ImGui::Unindent();
 						}
 
 						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
