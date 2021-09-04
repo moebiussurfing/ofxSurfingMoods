@@ -6,10 +6,20 @@
 
 ## can exclude some sttings files
 
-#*.XML
-#*.xml
-#*.JSON
-#*.json
+## macOS files
+config.make
+Makefile
+openFrameworks-Info.plist
+Project.xcconfig
+icon.rc
+
+*.ps1
+*.bat
+*.ini
+*.XML
+*.xml
+*.JSON
+*.json
 
 #*/bin/*
 #!*/bin/data/
@@ -550,8 +560,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-example_Basic/config.make
-example_Basic/Makefile
-example_Basic/openFrameworks-Info.plist
-example_Basic/Project.xcconfig
-examples/2_Basic_ImGui/bin/imgui.ini
