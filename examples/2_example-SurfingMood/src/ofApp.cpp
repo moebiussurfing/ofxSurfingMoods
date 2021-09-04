@@ -81,7 +81,6 @@ void ofApp::setupMoods()
 
 	//--
 
-	moods.setImGuiAutodraw(true); // -> Required if no other ImGui instances are instantiated
 	moods.setup();
 
 	// Default structure is:

@@ -97,6 +97,8 @@ public:
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
 		ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
 
+		rectPreview.setAutoSave(false);
+
 		//bAutoDraw = false;
 	};
 
@@ -289,12 +291,12 @@ public:
 
 private:
 
-	ofParameter<bool> bTickMode{ "Clock External", false };
-	//bool bTickMode = false;
+	ofParameter<bool> bClockExternal{ "Clock External", false };
+	//bool bClockExternal = false;
 
 public:
 
-	void setTickMode(bool b) { bTickMode = b; };
+	void setTickMode(bool b) { bClockExternal = b; };
 	void doBeatTick();
 	void doRunStep();
 
