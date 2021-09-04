@@ -1,10 +1,7 @@
-ofxSurfingMoods
-=============================
-
 # Overview
 An **openFrameworks** add-on that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
 
-There is **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
+There are **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
 Each Range has Three States. Each **State** is also named **Target**.  
 Every **Target** can be linked to three **Presets receivers (A-B-C)**.  
 
@@ -17,9 +14,8 @@ There is an internal **BPM Clock** and customizable timers and counters, to conf
 
 ## Screenshots
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
-
-**VIDEO/GIF**:  
-https://imgur.com/a/MtI4NL7
+<!-- **VIDEO/GIF**:  
+https://imgur.com/a/MtI4NL7 -->
 
 ## Features
 - Three different **Modes**:
@@ -52,7 +48,6 @@ Add to **PROJECT GENERATOR**:
 Already included in *OF_ADDON/libs*. No need to add manually:
 - [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
 - [ofxSimpleTimer](https://github.com/HeliosInteractive/ofxSimpleTimer)
-- [ofxScaleDragRect](https://github.com/roymacdonald/ofxScaleDragRect)
 
 ## Tested Systems
 * **Windows 10** / **VS 2017** / **OF ~0.11**
@@ -60,10 +55,6 @@ Already included in *OF_ADDON/libs*. No need to add manually:
 ## Author
 An addon by **@moebiusSurfing**  
 *( ManuMolina ) 2021*  
-
-[Twitter](https://twitter.com/moebiussurfing/)  
-[Instagram](https://www.instagram.com/moebiussurfing/)  
-[YouTube](https://www.youtube.com/channel/UCzUw96_wjmNxyIoFXf84hQg)  
 
 ## License
 [**MIT License**](https://github.com/LICENSE)
