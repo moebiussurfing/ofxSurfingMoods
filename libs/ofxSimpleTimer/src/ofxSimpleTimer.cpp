@@ -19,6 +19,12 @@ void ofxSimpleTimer::setup ( unsigned long delayInMillis, string _name , int _ev
 	eventId = _eventId ;
 
 }
+
+void ofxSimpleTimer::setTime( unsigned long delayInMillis)
+{
+    delayMillis = delayInMillis ;
+}
+
 void ofxSimpleTimer::reset(){
 	startTimeMillis = 0.0f ;
     bIsRunning = false ;

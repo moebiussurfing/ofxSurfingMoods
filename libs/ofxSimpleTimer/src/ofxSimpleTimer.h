@@ -24,7 +24,7 @@ class ofxSimpleTimer {
         
         void setup ( unsigned long delayInMillis , string _name = "noName" , int eventId = 18 ) ;
         void update( ) ;
-    
+		void setTime(unsigned long delayInMillis);
         void draw ( float x , float y ) ;
         
 		void reset(); 

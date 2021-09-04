@@ -80,7 +80,7 @@ TODO:
 
 //--
 
-#define BPM_BAR_RATIO 4 // TO SCALE TIMER/BPM
+#define BPM_BAR_RATIO 4 // TO SCALE TIMER/bpmSpeed
 
 //--
 
@@ -220,7 +220,7 @@ private:
 		}
 	};
 
-	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };
+	ofParameter<bool> MODE_StartLocked{ "START LOCK-1st", false };
 	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", false };
 
 	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
@@ -289,7 +289,7 @@ public:
 
 private:
 
-	ofParameter<bool> bTickMode{ "Tick Mode", false };
+	ofParameter<bool> bTickMode{ "Clock External", false };
 	//bool bTickMode = false;
 
 public:
@@ -305,7 +305,7 @@ public:
 	//--------------------------------------------------------------
 	float getBPM()
 	{
-		return BPM.get();
+		return bpmSpeed.get();
 	}
 
 	//--------------------------------------------------------------
@@ -418,7 +418,7 @@ private:
 public:
 
 	ofParameter<bool> bPLAY;
-	ofParameter<float> BPM;//bpm
+	ofParameter<float> bpmSpeed;//bpm
 	ofParameter<int> LEN_BARS;//in bars
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
 
