@@ -222,8 +222,8 @@ private:
 		}
 	};
 
-	ofParameter<bool> MODE_StartLocked{ "START LOCK-1st", false };
-	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", false };
+	ofParameter<bool> MODE_StartLocked{ "START LOCK-1st", false};
+	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true};
 
 	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
 
