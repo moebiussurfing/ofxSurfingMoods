@@ -5,7 +5,6 @@ void ofApp::setup()
 {
 	ofSetCircleResolution(100);
 
-	// circle gradient colors to visualize Preset A index
 	gradient.addColor(ofColor::red);
 	gradient.addColor(ofColor::yellow);
 	gradient.addColor(ofColor::green);
@@ -18,7 +17,7 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	// circle colored by Preset A value/index
+	// Circle will be filled with gradient colors to visualize Preset A index
 	ofPushStyle();
 	ofSetColor(colorCircle);
 	ofFill();
@@ -34,14 +33,13 @@ void ofApp::draw()
 
 	//-
 
+	// Gui
 	moods.draw_ImGui();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-	moods.keyPressed(key);
-
 	if (key == OF_KEY_F1) { bGui = !bGui; }
 }
 
@@ -98,49 +96,49 @@ void ofApp::setupMoods()
 // We can modify other things depending on mood range too.
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_TARGET(int &targetVal)
+void ofApp::Changed_Mood_TARGET(int &targetIndex)
 {
-	ofLogNotice(__FUNCTION__) << targetVal;
+	ofLogNotice(__FUNCTION__) << targetIndex;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_A(int &targetVal)
+void ofApp::Changed_Mood_PRESET_A(int &targetIndex)
 {
-	ofLogNotice(__FUNCTION__) << targetVal;
+	ofLogNotice(__FUNCTION__) << targetIndex;
 
 	// Change the circle color reflecting the Preset A index
-	float val = ofMap(targetVal, 0, 8, 0.f, 1.f);
+	float val = ofMap(targetIndex, 0, 8, 0.f, 1.f);
 	colorCircle = gradient.getColorAtPercent(val);
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_B(int &targetVal)
+void ofApp::Changed_Mood_PRESET_B(int &targetIndex)
 {
-	ofLogNotice(__FUNCTION__) << targetVal;
+	ofLogNotice(__FUNCTION__) << targetIndex;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_C(int &targetVal)
+void ofApp::Changed_Mood_PRESET_C(int &targetIndex)
 {
-	ofLogNotice(__FUNCTION__) << targetVal;
+	ofLogNotice(__FUNCTION__) << targetIndex;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_RANGE(int &targetVal)
+void ofApp::Changed_Mood_RANGE(int &targetIndex)
 {
-	ofLogNotice(__FUNCTION__) << targetVal;
+	ofLogNotice(__FUNCTION__) << targetIndex;
 
 	// Change the background color reflecting the Mood/Range
 
-	if (targetVal == 0)
+	if (targetIndex == 0)
 	{
 		ofBackground(ofColor::indianRed);
 	}
-	else if (targetVal == 1)
+	else if (targetIndex == 1)
 	{
 		ofBackground(ofColor::yellow);
 	}
-	else if (targetVal == 2)
+	else if (targetIndex == 2)
 	{
 		ofBackground(ofColor::lightGreen);
 	}

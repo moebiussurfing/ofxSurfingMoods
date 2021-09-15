@@ -1,6 +1,122 @@
 
 #include "ofxSurfingMoods.h"
 
+
+// keys
+//--------------------------------------------------------------
+void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
+{
+	const int &key = eventArgs.key;
+
+	//--
+
+	// key enabler
+	if (0)
+		if (key == 'k')
+		{
+			bKeys = !bKeys;
+			ofLogNotice(__FUNCTION__) << "KEYS: " << (bKeys ? "ON" : "OFF");
+
+			if (!bKeys)
+			{
+				ofLogNotice(__FUNCTION__) << "ALL KEYS DISABLED. PRESS 'k' TO ENABLE GAIN!";
+			}
+			else
+			{
+				ofLogNotice(__FUNCTION__) << "KEYS ENABLED BACK";
+			}
+		}
+
+	//--
+
+	// disabler for all keys. (independent from bActive)
+	if (!bKeys) return;
+
+	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
+
+	// modifiers
+	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+
+	static bool debug = false;
+	if (debug)
+	{
+		ofLogNotice(__FUNCTION__) << "mod_COMMAND: " << (mod_COMMAND ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_CONTROL: " << (mod_CONTROL ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_ALT: " << (mod_ALT ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_SHIFT: " << (mod_SHIFT ? "ON" : "OFF");
+	}
+
+	//-
+
+	if (!bKeys) return;
+
+	if (key == ' ')
+	{
+		setTogglePlay();
+	}
+
+	else if (key == 'p')
+	{
+		play();
+	}
+
+	else if (key == 's')
+	{
+		stop();
+	}
+
+	else if (key == 'g')
+	{
+		setGui_ToggleVisible();
+	}
+
+	else if (key == '1')
+	{
+		setRange(0);
+	}
+
+	else if (key == '2')
+	{
+		setRange(1);
+	}
+
+	else if (key == '3')
+	{
+		setRange(2);
+	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::keyReleased(ofKeyEventArgs &eventArgs)
+{
+	const int &key = eventArgs.key;
+	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
+
+	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::addKeysListeners()
+{
+	ofLogNotice(__FUNCTION__);
+	ofAddListener(ofEvents().keyPressed, this, &ofxSurfingMoods::keyPressed);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::removeKeysListeners()
+{
+	ofLogNotice(__FUNCTION__);
+	ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingMoods::keyPressed);
+}
+
+//-
+
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup(int numTargets, int numPresets, int limit1, int limit2)
 {
@@ -213,7 +329,7 @@ void ofxSurfingMoods::update(ofEventArgs & args)
 
 	//-
 
-	if (!bClockExternal)
+	if (!bModeClockExternal)
 	{
 		timer_Range.update();
 		timer_Progress = 100 * timer_Range.getNormalizedProgress();
@@ -265,7 +381,7 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 //--------------------------------------------------------------
 void ofxSurfingMoods::windowResized(int w, int h)
 {
-	if(!bUseCustomPreviewPosition) doResetPreviewWidget();
+	if (!bUseCustomPreviewPosition) doResetPreviewWidget();
 }
 
 //--------------------------------------------------------------
@@ -478,7 +594,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		// 0. main bg expanded
 		{
 			ofFill();
-			ofSetColor(0,0,0,190);
+			ofSetColor(0, 0, 0, 190);
 			//ofSetColor(cBg);
 			float pp = 5;
 			ofRectangle rr = ofRectangle(
@@ -646,7 +762,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			float wStep = 1;
 
 			if (!MODE_Manual) {
-				if (!bClockExternal) {
+				if (!bModeClockExternal) {
 					wStep = ww2 / (float)MAX(1, (COUNTER_step_FromOne.getMax()));//width of any step
 					_w = ofMap(COUNTER_step_FromOne, 1, COUNTER_step_FromOne.getMax() + 1, 0, ww2, true);
 				}
@@ -663,7 +779,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 			//-
 
-			if (!bClockExternal) {
+			if (!bModeClockExternal) {
 				float wTimer = ofMap(timer_Progress, 0, 100, 0, wStep, true);//scale by step timer to make it analog-continuous
 				_w = _w + wTimer;//add step timer
 			}
@@ -675,7 +791,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 				ofFill();
 				//ofNoFill();
-				ofSetColor(0,0,0,32);
+				ofSetColor(0, 0, 0, 32);
 				//ofSetColor(cBg);
 				ofDrawRectRounded(x2, y2, ww2, hh2, ro);
 
@@ -684,7 +800,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 				// 4. 2 complete progress range 
 				// colored
 
-				if (!(MODE_Manual && bClockExternal))
+				if (!(MODE_Manual && bModeClockExternal))
 				{
 					if (RANGE_Selected == 0)
 					{
@@ -812,6 +928,7 @@ void ofxSurfingMoods::setup_Params()
 	bClone_TARGETS.set("BANK CLONE>", false);
 	bClone_TARGETS.setSerializable(false);
 	bGui.set("MOODS SURFING", true);
+	bKeys.set("Keys", true);
 
 	bGui_Advanced.set("Moods Advanced", false);
 	bGui_ManualSlider.set("Show Manual Slider", false);
@@ -900,6 +1017,7 @@ void ofxSurfingMoods::setup_Params()
 	params_STORE.add(bpmSpeed);
 	params_STORE.add(LEN_BARS);
 	params_STORE.add(bGui);
+	//params_STORE.add(bKeys);
 	//params_STORE.add(SHOW_GuiUser);
 	//params_STORE.add(SHOW_Clocks);
 	params_STORE.add(bGui_Advanced);
@@ -931,7 +1049,8 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.setName("MoodMachine_params");
 
 	params_Listeners.add(bPLAY);
-	params_Listeners.add(bClockExternal);
+	params_Listeners.add(bModeClockExternal);
+	params_Listeners.add(bModeAutomatic);
 	params_Listeners.add(bpmSpeed);
 	params_Listeners.add(LEN_BARS);
 	params_Listeners.add(bReset_Settings);
@@ -1234,7 +1353,7 @@ void ofxSurfingMoods::setGui_Visible(bool b)
 
 	//SHOW_GuiUser = b;
 
-	//workflow
+	// workflow
 	//if (!SHOW_GuiUser && bGui_Advanced) bGui_Advanced = false;
 }
 
@@ -1360,11 +1479,11 @@ void ofxSurfingMoods::doRunEngineStep()
 		}
 		else
 		{
-			if (!MODE_AvoidRepeat.get())// allows repeat target
+			if (!MODE_AvoidRepeat.get()) // allows repeat target
 			{
 				TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 			}
-			else// avoids repeat same target
+			else // avoids repeat same target
 			{
 				int _pre = TARGET_Selected.get();
 				TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
@@ -1372,12 +1491,12 @@ void ofxSurfingMoods::doRunEngineStep()
 				int count = 0;
 				int MAX_TRIES = 5;
 
-				while (TARGET_Selected.get() == _pre)// not changed
+				while (TARGET_Selected.get() == _pre) // not changed
 				{
 					TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 
 					count++;
-					if (count > MAX_TRIES)// max attemps to avoid infinite loops...
+					if (count > MAX_TRIES) // max attemps to avoid infinite loops...
 					{
 						if (Range_Min != _pre) TARGET_Selected = Range_Min;
 						else TARGET_Selected = Range_Max;
@@ -1399,7 +1518,8 @@ void ofxSurfingMoods::doRunEngineStep()
 //--------------------------------------------------------------
 void ofxSurfingMoods::doBeatTick()
 {
-	if (bClockExternal && bExternalLocked) doRunStep();
+	if (bModeClockExternal && bExternalLocked)
+		doRunStep();
 }
 
 //--------------------------------------------------------------
@@ -1415,16 +1535,17 @@ void ofxSurfingMoods::clone()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::doRunStep()
+void ofxSurfingMoods::doRunStep(bool bforced)
 {
-	if (bPLAY || (bClockExternal && bExternalLocked))
+	if (bforced || (bPLAY || (bModeClockExternal && bExternalLocked)))
 	{
-		//RESTART
-		if (!bClockExternal) timer_Range.start(false);
+		// restart
+
+		if (!bModeClockExternal) timer_Range.start(false);
 
 		//-
 
-		//modes
+		// modes
 
 		if (MODE_Ranged.get())
 		{
@@ -1452,7 +1573,7 @@ void ofxSurfingMoods::doRunStep()
 
 			//-
 
-			//do randomize between min/max ranges
+			// do randomize between min/max ranges
 
 			//int _RANGE_Selected_PRE = RANGE_Selected.get();
 
@@ -1484,33 +1605,32 @@ void ofxSurfingMoods::doRunStep()
 				}
 
 			}
-			//when changed range, first step will be locked to the min from range
+			// when changed range, first step will be locked to the min from range
 			else
 			{
-				//range changed
+				// range changed
 				if (_RANGE_Selected_PRE != RANGE_Selected.get())
 				{
 					TARGET_Selected = Range_Min.get();
 				}
 				else
 				{
-
-					if (!MODE_AvoidRepeat.get())// allows repeat target
+					if (!MODE_AvoidRepeat.get()) // allows repeat target
 					{
 						TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 					}
-					else//avoids repeat same target
+					else // avoids repeat same target
 					{
 						int _pre = TARGET_Selected.get();
 						TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 						int count = 0;
 
-						while (TARGET_Selected.get() == _pre)//not changed
+						while (TARGET_Selected.get() == _pre) // not changed
 						{
 							TARGET_Selected = ofRandom(Range_Min, Range_Max + 1);
 
 							count++;
-							if (count > 5)//max attemps to avoid infinite loops...
+							if (count > 5) // max attemps to avoid infinite loops...
 							{
 								if (Range_Min != _pre) TARGET_Selected = Range_Min;
 								else TARGET_Selected = Range_Max;
@@ -1530,24 +1650,24 @@ void ofxSurfingMoods::doRunStep()
 			if (bMarkovFileFound) {
 				int _RANGE_Selected_PRE = RANGE_Selected.get();
 
-				//count times and cycle
+				// count times and cycle
 				COUNTER_step++;
 				COUNTER_step = COUNTER_step % COUNT_Duration;
 				COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
 
-				//type A: mode stay amount of counter
+				// type A: mode stay amount of counter
 				//if (COUNTER_step == 0)
-				//type B: ignoring counter. just 1
+				// type B: ignoring counter. just 1
 				{
 					markov.update();
 					TARGET_Selected = markov.getState();
 
 					//--
 
-					//range not changed
+					// range not changed
 					if (RANGE_Selected.get() == _RANGE_Selected_PRE)
 					{
-						if (MODE_AvoidRepeat.get())//avoids repeat same target
+						if (MODE_AvoidRepeat.get()) // avoids repeat same target
 						{
 							int _pre = TARGET_Selected.get();
 
@@ -1557,13 +1677,13 @@ void ofxSurfingMoods::doRunStep()
 							int count = 0;
 							int MAX_TRIES = 100;
 
-							while (TARGET_Selected.get() == _pre)//not changed
+							while (TARGET_Selected.get() == _pre) // not changed
 							{
 								markov.update();
 								TARGET_Selected = markov.getState();
 
 								count++;
-								if (count > MAX_TRIES)//max attemps to avoid infinite loops...
+								if (count > MAX_TRIES) // max attemps to avoid infinite loops...
 								{
 									// do not renew
 									break;
@@ -1772,7 +1892,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 		{
 			if (bPLAY)
 			{
-				//  60,000 / bpmSpeed = MS
+				// 60,000 / bpmSpeed = MS
 				timer = LEN_BARS * (BPM_BAR_RATIO * (60000 / bpmSpeed));
 				timer_Range.start(false);
 				bIsPlaying = true;
@@ -1780,15 +1900,17 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 				//-
 
 				COUNTER_step = 0;
-				COUNTER_step_FromOne = COUNTER_step + 1;// for gui user
-/*
-#ifdef USE_ofxGuiExtended
-				(group_USER->getIntSlider("COUNTER"))->setEnabled(true);//hidden
-				(group_USER->getIntSlider("COMPLETE"))->setEnabled(true);//hidden
-#endif
-*/
-//workflow
-//enable some mode
+				COUNTER_step_FromOne = COUNTER_step + 1; // for gui user
+
+				/*
+				#ifdef USE_ofxGuiExtended
+								(group_USER->getIntSlider("COUNTER"))->setEnabled(true);//hidden
+								(group_USER->getIntSlider("COMPLETE"))->setEnabled(true);//hidden
+				#endif
+				*/
+
+				// workflow
+				//enable some mode
 				if (!MODE_MarkovChain && !MODE_Manual && !MODE_Ranged)
 				{
 					MODE_Ranged = true;
@@ -1814,7 +1936,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			}
 		}
 
-		else if (name == bClockExternal.getName())
+		else if (name == bModeClockExternal.getName())
 		{
 
 		}
@@ -1911,7 +2033,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		else if (name == bpmSpeed.getName())
 		{
-			//  60,000 / bpmSpeed = MS
+			// 60,000 / bpmSpeed = MS
 			timer = LEN_BARS * (BPM_BAR_RATIO * (60000 / bpmSpeed));
 
 			//TODO:
@@ -1929,7 +2051,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		else if (name == LEN_BARS.getName())
 		{
-			//  60,000 / bpmSpeed = MS
+			// 60,000 / bpmSpeed = MS
 			timer = LEN_BARS * (BPM_BAR_RATIO * (60000 / bpmSpeed));
 		}
 
@@ -1959,14 +2081,14 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 			stop();
 		}
 
-		//gui
+		// gui
 	//	else if (name == bGui_Advanced.getName())
 	//	{
 	//		/*
 	//#ifdef USE_ofxGuiExtended
 	//			group_Advanced->getVisible().set(bGui_Advanced);
 
-	//			//workflow
+	//			// workflow
 	//			auto p = group_USER->getShape().getTopRight();
 	//			if (!MODE_vertical)//advanced panel to the right
 	//			{
@@ -2040,20 +2162,56 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 #endif
 			*/
 		}
+
+		// manual control
 		else if (name == controlManual.getName())
 		{
 			// workflow
-			if (!bClockExternal)
+			if (!bModeClockExternal)
 			{
-				if (!bPLAY.get())
+				if (bModeAutomatic)
 				{
-					bPLAY = true;
+					if (!bPLAY.get())
+					{
+						bPLAY = true;
+					}
+				}
+				else {
+					bool bforce = false;
+					if (controlManual < 1.f / 3.f) {
+						if (RANGE_Selected.get() != 0) bforce = true;
+					}
+					else if (controlManual < 2.f / 3.f) {
+						if (RANGE_Selected.get() != 1) bforce = true;
+					}
+					else if (controlManual <= 1.f) {
+						if (RANGE_Selected.get() != 2) bforce = true;
+					}
+					if (!bforce)
+					{
+						if (!timer_Range.bIsRunning) {
+							doRunStep(true);
+						}
+					}
+					else { // don't wait to the timer ends to force change to the new range
+						doRunStep(true);
+					}
 				}
 			}
 			else if (!bExternalLocked.get())
 			{
 				bExternalLocked = true;
 			}
+		}
+
+		// workflow
+		else if (name == bModeAutomatic.getName())
+		{
+			if (!bModeAutomatic)
+				if (bPLAY.get())
+				{
+					bPLAY = false;
+				}
 		}
 
 		// workflow
@@ -2144,46 +2302,6 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 		}
 	}
 }
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::keyPressed(int key)
-{
-	if (key == ' ')
-	{
-		setTogglePlay();
-	}
-
-	else if (key == 'p')
-	{
-		play();
-	}
-
-	else if (key == 's')
-	{
-		stop();
-	}
-
-	else if (key == 'g')
-	{
-		setGui_ToggleVisible();
-	}
-
-	else if (key == '1')
-	{
-		setRange(0);
-	}
-
-	else if (key == '2')
-	{
-		setRange(1);
-	}
-
-	else if (key == '3')
-	{
-		setRange(2);
-	}
-}
-
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
@@ -2331,7 +2449,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			else if (RANGE_Selected == 1) c = color_MOOD2;
 			else if (RANGE_Selected == 2) c = color_MOOD3;
 
-			if (bClockExternal) a = 1.0f;
+			if (bModeClockExternal) a = 1.0f;
 			else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.25, 1, true);
 
 			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
@@ -2343,7 +2461,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ca);
 			ImGui::PushStyleColor(ImGuiCol_Button, ca);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca);
-			if (!bClockExternal) guiManager.Add(bPLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
+			if (!bModeClockExternal) guiManager.Add(bPLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
 			else
 			{
 				if (guiManager.Add(bExternalLocked, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG))
@@ -2372,7 +2490,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 				_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
 				_flagt |= ImGuiTreeNodeFlags_Framed;
 
-				ofxImGuiSurfing::AddToggleRoundedButton(bClockExternal);
+				ofxImGuiSurfing::AddToggleRoundedButton(bModeClockExternal);
+				if (MODE_Manual)
+					ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
 
 				if (ImGui::TreeNodeEx("CLOCK", _flagt))
 				{
@@ -2492,7 +2612,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			if (MODE_Manual) {//ofxImGuiSurfing::AddVoidWidget();
 			}
-			else if (!(bClockExternal && MODE_Manual)) {
+			else if (!(bModeClockExternal && MODE_Manual)) {
 				guiManager.Add(COUNT_Duration, SurfingImGuiTypes::OFX_IM_STEPPER); // user setter
 			}
 			else {
@@ -2508,7 +2628,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			// for monitor only
 			if (MODE_Manual) {//ofxImGuiSurfing::AddVoidWidget();
 			}
-			else if (!(bClockExternal && MODE_Manual)) {
+			else if (!(bModeClockExternal && MODE_Manual)) {
 				if (COUNT_Duration != 1) {
 					guiManager.Add(COUNTER_step_FromOne, SurfingImGuiTypes::OFX_IM_INACTIVE);
 				}
@@ -2523,7 +2643,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			// progress
 			if (MODE_Manual) {//ofxImGuiSurfing::AddVoidWidget();
 			}
-			else if (!(bClockExternal && MODE_Manual))
+			else if (!(bModeClockExternal && MODE_Manual))
 			{
 				guiManager.Add(timer_Progress, SurfingImGuiTypes::OFX_IM_PROGRESS_BAR);
 			}

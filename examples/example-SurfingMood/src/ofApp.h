@@ -50,11 +50,11 @@ public:
     void exitMoods();
 
     // Callbacks from moods
-    void Changed_Mood_TARGET(int & targetVal);
-	void Changed_Mood_PRESET_A(int & targetVal);
-    void Changed_Mood_PRESET_B(int & targetVal);
-    void Changed_Mood_PRESET_C(int & targetVal);
-	void Changed_Mood_RANGE(int & targetVal);
+    void Changed_Mood_TARGET(int & targetIndex);
+	void Changed_Mood_PRESET_A(int & targetIndex);
+    void Changed_Mood_PRESET_B(int & targetIndex);
+    void Changed_Mood_PRESET_C(int & targetIndex);
+	void Changed_Mood_RANGE(int & targetIndex);
 
 	//----
 };

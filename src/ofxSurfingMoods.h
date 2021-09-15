@@ -96,6 +96,7 @@ public:
 	ofxSurfingMoods() {
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
 		ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+		addKeysListeners();
 
 		rectPreview.setAutoSave(false);
 
@@ -106,7 +107,8 @@ public:
 	~ofxSurfingMoods() {
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingMoods::update);
 		ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
-
+		removeKeysListeners();
+		
 		exit();
 	};
 
@@ -157,7 +159,13 @@ public:
 	void startup();
 	void exit();
 	void windowResized(int w, int h);
-	void keyPressed(int key);
+
+	// keys
+private:
+	void keyPressed(ofKeyEventArgs &eventArgs);
+	void keyReleased(ofKeyEventArgs &eventArgs);
+	void addKeysListeners();
+	void removeKeysListeners();
 
 private:
 	bool bMarkovFileFound = false;
@@ -291,14 +299,15 @@ public:
 
 private:
 
-	ofParameter<bool> bClockExternal{ "Clock External", false };
-	//bool bClockExternal = false;
+	ofParameter<bool> bModeClockExternal{ "Clock External", false };
+	ofParameter<bool> bModeAutomatic{ "Automatic", false };
+	//bool bModeClockExternal = false;
 
 public:
 
-	void setTickMode(bool b) { bClockExternal = b; };
+	void setTickMode(bool b) { bModeClockExternal = b; };
 	void doBeatTick();
-	void doRunStep();
+	void doRunStep(bool bforced = false);
 
 	void doResetPreviewWidget();
 
@@ -538,6 +547,7 @@ public:
 
 private:
 
+	ofParameter<bool> bKeys;
 	ofParameter<bool> bGui_Advanced;
 	ofParameter<bool> bGui_ManualSlider;
 	ofParameter<bool> bGui_ManualSliderHeader;
