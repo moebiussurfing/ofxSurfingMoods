@@ -128,11 +128,11 @@ void ofxSurfingMoods::setup(int numTargets, int numPresets, int limit1, int limi
 	rLimit1 = limit1;
 	rLimit2 = limit2;
 
-	setup();//default sizes
+	setup(); // default sizes
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::setup()//default sizes
+void ofxSurfingMoods::setup() // default sizes
 {
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	//ofSetLogLevel(OF_LOG_SILENT);
@@ -150,9 +150,9 @@ void ofxSurfingMoods::setup()//default sizes
 	//-
 
 	//settings paths
-	path_Folder = "ofxSurfingMoods/";//default folder
-	filename_Settings = "moods_Settings";//settings
-	filename_Bank = "moods_Bank.json";//ranges bank: any target to relatives preset/pattern
+	path_Folder = "ofxSurfingMoods/"; // default folder
+	filename_Settings = "moods_Settings"; // settings
+	filename_Bank = "moods_Bank.json"; // ranges bank: any target to relatives preset/pattern
 
 	//-
 
@@ -173,10 +173,10 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//font to draw preview boxes
+	// font to draw preview boxes
 	fname = "overpass-mono-bold.otf";
 	myTTF = "assets/fonts/" + fname;
-	sizeTTF = 9;//font size
+	sizeTTF = 9; // font size
 	bool isLoaded = myFont.load(myTTF, sizeTTF, true, true);
 	if (!isLoaded)
 	{
@@ -185,11 +185,11 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//params
+	// params
 	setup_Params();
 
 	/*
-	//gui
+	// gui
 #ifdef USE_ofxGuiExtended
 	setup_GUI_Main();
 #endif
@@ -197,19 +197,19 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//--
 
-	//callbacks
+	// callbacks
 
-	//1.
+	// 1.
 	ofAddListener(params_Listeners.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 	ofAddListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 
-	//2.
+	// 2.
 	ofAddListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
 
 	//-
 
-	//timer
-	//60,000 / bpmSpeed = MS
+	// timer
+	// 60,000 / bpmSpeed = MS
 	timer = LEN_BARS * (BPM_BAR_RATIO * (60000 / bpmSpeed));
 	timer_Range.setup(timer);
 	ofAddListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
@@ -217,8 +217,8 @@ void ofxSurfingMoods::setup()//default sizes
 
 	//-
 
-	//RESET
-	////ERASE BANK TARGETS
+	// RESET
+	//// ERASE BANK TARGETS
 	//resetBank(false);
 	////REST CLOCK
 	//resetClock();
