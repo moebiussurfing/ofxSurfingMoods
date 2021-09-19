@@ -17,13 +17,6 @@ TODO:
 */
 
 
-/*
-//#define USE_ofxGuiExtended
-#ifdef USE_ofxGuiExtended // -> Deprecated
-#include "ofxGuiExtended2.h"
-#endif
-*/
-
 #include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
 
 //-
@@ -35,9 +28,7 @@ TODO:
 
 //--
 
-// DEFINES
-
-//--
+// Constants
 
 #define MAX_ITEMS 16 // reserve max for arrays creations
 #define NUM_RANGES 3 // TARGET RANGES
@@ -62,7 +53,7 @@ TODO:
 
 //-
 
-// snippets:
+// Snippets:
 
 // ofApp Example:
 // customize ranges/sizes (TODO: maybe not working..)
@@ -84,12 +75,9 @@ TODO:
 
 //--
 
-//class ofxSurfingMoods : public ofBaseApp
 class ofxSurfingMoods
 
 {
-	//-
-
 public:
 
 	//--------------------------------------------------------------
@@ -132,7 +120,6 @@ private:
 
 private:
 
-	//ofxImGui::Gui gui;
 	bool bAutoDraw; // must be false when multiple ImGui instances created!
 
 public:
@@ -268,23 +255,12 @@ public:
 	{
 		return bPLAY.get();
 	}
-
-	//--------------------------------------------------------------
-	//bool isPLAY()
-	//{
-	//	return bPLAY.get();
-	//}
-	//--------------------------------------------------------------
-	//	bool isPlaying()
-	//	{
-	//		return bIsPlaying;
-	//	}
-
+	
 	//-
 
 public:
 
-	//TODO: link
+	//TODO: link bpm's
 	float *bpmPtr = NULL;
 	void setBpmPtr(float &_bpmPtr) {
 		bpmPtr = &_bpmPtr;
@@ -293,23 +269,23 @@ public:
 	void setBpm(float bpm);
 	void setBarsScale(int bars);
 
-	// to run external timers
+	//-
+
+	// To run external clock/timers
 	// we will receive each incomming ticks.
-	// that will inform to step-next
+	// that will inform to step-next. 
+	// This modes disables the internal timers.
 
 private:
 
 	ofParameter<bool> bModeClockExternal{ "Clock External", false };
-	ofParameter<bool> bModeAutomatic{ "Automatic", false };
-	//bool bModeClockExternal = false;
+	ofParameter<bool> bModeAutomatic{ "Automatic", false };//some workflow features
 
 public:
 
 	void setTickMode(bool b) { bModeClockExternal = b; };
 	void doBeatTick();
 	void doRunStep(bool bforced = false);
-
-	void doResetPreviewWidget();
 
 public:
 
@@ -331,7 +307,11 @@ public:
 		TARGET_Selected = t;
 	}
 
-	//void setPosition(int x, int y);
+	//-
+
+	// reset preview layout
+	void doResetPreviewWidget();
+	void doResetManualSlider();
 
 	// preview boxes bar
 	//--------------------------------------------------------------
@@ -365,10 +345,27 @@ private:
 
 public:
 
-	void setGui_Visible(bool enable);//TODO: global gui enabler. not implemented..
+	//TODO: global gui enabler. not implemented..
+	void setGui_Visible(bool enable);
 	void setGui_ToggleVisible();
 	//void setGui_AdvancedVertical_MODE(bool enable);
 
+	//--------------------------------------------------------------
+	void setShowGuiAdvanced(bool b)
+	{
+		bGui_Advanced = b;
+	}
+
+	////--------------------------------------------------------------
+	//void setShowGuiUser(bool b)
+	//{
+	//	SHOW_GuiUser = b;
+	//}
+
+	//-
+
+public:
+	// force browse targets
 	//--------------------------------------------------------------
 	void setNextTarget()
 	{
@@ -389,18 +386,6 @@ public:
 		TARGET_Selected = t;
 	}
 
-	//--------------------------------------------------------------
-	void setShowGuiAdvanced(bool b)
-	{
-		bGui_Advanced = b;
-	}
-
-	////--------------------------------------------------------------
-	//void setShowGuiUser(bool b)
-	//{
-	//	SHOW_GuiUser = b;
-	//}
-
 	//-------------------------------------------
 
 private:
@@ -408,7 +393,7 @@ private:
 	// Settngs
 
 	// path for xml settings
-	string path_Folder;
+	std::string path_Folder;
 
 	std::string filename_Settings;
 	std::string filename_Bank;
@@ -419,7 +404,6 @@ private:
 	void saveBanks(std::string path);
 	void loadBanks(std::string path);
 
-	//bool autoSaveLoad_settings = true;
 	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
 
 	void stopMachine();
@@ -428,9 +412,10 @@ private:
 
 public:
 
-	ofParameter<bool> bPLAY;
-	ofParameter<float> bpmSpeed;//bpm
-	ofParameter<int> LEN_BARS;//in bars
+	ofParameter<bool> bPLAY;//main play toggle
+	ofParameter<float> bpmSpeed;//main bpm
+	ofParameter<int> LEN_BARS;//timer duration in bars
+
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
 
 	//----
@@ -442,15 +427,12 @@ private:
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
 	void refresh_MOOD_Color();
 
-	//ofParameter<std::string> labelRange{ "RANGE", "" };
-	//ofParameter<std::string> labelTarget{ "TARGET", "" };
-
-	// blink
+	// Blink
 	bool bBlink = false;
 	int blinkCounterFrames = 0;
 	float blinkDuration;
 
-	// labels
+	// Labels
 	ofTrueTypeFont myFont;
 	std::string myTTF;
 	int sizeTTF;
@@ -458,7 +440,7 @@ private:
 
 	void setup_Params();
 
-	// this function can be used to trig ranges jumps externally without using the internal timer.
+	// This function can be used to trig ranges jumps externally without using the internal timer.
 	void doRunEngineStep();
 
 	bool BLOCK_CALLBACK_Feedback = false;
@@ -471,7 +453,7 @@ private:
 
 private:
 
-	// default settings
+	// Default settings
 	int NUM_TARGETS = (int)DEFAULT_NUM_TARGETS; // TARGETS
 	int NUM_PRESETS_A = (int)DEFAULT_NUM_PRESETS; // PRESETS
 	int NUM_PRESETS_B = (int)DEFAULT_NUM_PRESETS; // PRESETS
@@ -479,14 +461,14 @@ private:
 
 	//-
 
-	// ranges delimiters
+	// Ranges delimiters
 
-	// range 0: starts at target 0
+	// Range 0: starts at target 0
 
-	// range 1: starts at target rLimit1
+	// Range 1: starts at target rLimit1
 	int rLimit1 = (int)DEFAULT_RANGE_LIMIT_1;
 
-	// range 2: starts at target rLimit2
+	// Range 2: starts at target rLimit2
 	int rLimit2 = (int)DEFAULT_RANGE_LIMIT_2;
 
 	//-
@@ -503,9 +485,6 @@ private:
 	ofParameter<int> Range_Min; // range
 	ofParameter<int> Range_Max; // range
 	void Changed_Params_Listeners(ofAbstractParameter &e);
-
-	//ofParameter<std::string> MONITOR1;
-	ofParameter<std::string> MONITOR2;
 
 	//-
 
@@ -618,70 +597,5 @@ private:
 
 	ofParameter<bool> target_autoSave = true;
 	ofParameter<bool> target_autoLoad = true;
-
-	//--
-
-	/*
-#ifdef USE_ofxGuiExtended
-	//ofxGuiExtended
-
-	//--------------------------------------------------------------
-	float getGuiUserWidth()
-	{
-		return group_USER->getWidth();
-	}
-
-	//--------------------------------------------------------------
-	void setGui_AdvancedPositon(int _x, int _y)
-	{
-		group_Advanced->setPosition(_x, _y);
-	}
-
-	//--------------------------------------------------------------
-	void setGui_UserPositon(int _x, int _y)
-	{
-		group_USER->setPosition(_x, _y);
-	}
-
-	//-
-
-private:
-
-	void setup_GUI_Main();
-	void setup_GUI_User();
-	void setup_GUI_Target();
-	void setup_GUI_Ranges();
-
-	ofxGui gui;
-
-	ofxGuiPanel *group_USER;
-	//ofxGuiGroup2 *group_USER;
-	ofxGuiGroup2 *group_Advanced;
-	ofxGuiGroup2 *group_RANGES;
-	ofxGuiGroup2 *group_TARGETS;
-	ofxGuiGroup2 *group_CLOCK;
-
-	//-
-
-	//theme
-	void setup_GUI_Customize();
-	ofJson j_container, j_itemMini, confItem_Big, j_itemFat, j_itemMedium;
-
-private:
-
-	std::string path_Theme;
-
-public:
-
-	//--------------------------------------------------------------
-	void loadTheme(std::string _path) {
-		path_Theme = _path;
-		//path_Theme = "assets/theme/";
-		//path_Theme += "theme_ofxGuiExtended2.json";
-		group_USER->loadTheme(path_Theme);
-		group_Advanced->loadTheme(path_Theme);
-	}
-#endif
-	*/
 };
 
