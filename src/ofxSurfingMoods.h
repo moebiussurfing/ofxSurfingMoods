@@ -217,7 +217,7 @@ private:
 		}
 	};
 
-	ofParameter<bool> MODE_StartLocked{ "START LOCK-1st", false};
+	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false};//each arrive to a range will start from 1st from range.
 	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true};
 
 	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
@@ -505,7 +505,7 @@ private:
 
 private:
 
-	ofParameter<bool> bReset_Settings;
+	ofParameter<bool> bResetClockSettings;
 	ofParameter<bool> bResetSort_Bank;
 	ofParameter<bool> bReset_Bank;
 	ofParameter<bool> bRandomize_Bank;
