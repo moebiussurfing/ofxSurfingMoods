@@ -1,8 +1,236 @@
 
 #include "ofxSurfingMoods.h"
 
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup(int numTargets, int numPresets, int limit1, int limit2)
+{
+	NUM_TARGETS = numTargets; // TARGET
 
-// keys
+	NUM_PRESETS_A = numPresets; // PRESETS
+	NUM_PRESETS_B = numPresets; // PRESETS
+	NUM_PRESETS_C = numPresets; // PRESETS
+
+	rLimit1 = limit1; // borders limits
+	rLimit2 = limit2;
+
+	setup();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::setup()
+{
+	// Erase arrays
+	for (int i = 0; i < MAX_ITEMS; i++)
+	{
+		presets_A[i] = 0;
+		presets_B[i] = 0;
+		presets_C[i] = 0;
+	}
+
+	//--
+
+	// Settings paths
+	path_Folder = "ofxSurfingMoods/"; // default folder
+	filename_Settings = "moods_Settings"; // settings
+	filename_Bank = "moods_Bank.json"; // ranges bank: any target to relatives preset/pattern
+
+	//--
+
+	// Markov
+	path_markovMatrix = path_Folder + "markov/" + "transitionMatrix.txt";
+
+	// Avoid crash
+	ofFile file;
+	file.open(path_markovMatrix);
+	bMarkovFileFound = file.exists();
+	if (bMarkovFileFound) {
+		ofxMC::Matrix mat(path_markovMatrix);
+		markov.setup(mat, 0);
+	}
+	else {
+		ofLogError(__FUNCTION__) << "Markov file " << path_markovMatrix << " not found!";
+	}
+
+	//--
+
+	// Font to draw preview boxes
+	fname = "overpass-mono-bold.otf";
+	myTTF = "assets/fonts/" + fname;
+	sizeTTF = 9; // font size
+	bool isLoaded = myFont.load(myTTF, sizeTTF, true, true);
+	if (!isLoaded)
+	{
+		ofLogError(__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
+	}
+
+	//--
+
+	// Params
+	setup_Params();
+
+	//--
+
+	// Callbacks
+
+	// 1.
+	ofAddListener(params_Listeners.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
+	ofAddListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
+
+	// 2.
+	ofAddListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
+
+	//--
+
+	// Timer
+	// 60,000 / bpmSpeed = MS
+	timer = bpmLenghtBars * (BPM_BAR_RATIO * (60000 / bpmSpeed));
+	timer_Range.setup(timer);
+	ofAddListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
+	ofAddListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
+
+	//--
+
+	// Gui
+	setup_ImGui();
+
+	//--------
+
+	// startup
+	startup();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::startup()
+{
+	//--
+
+	// Reset
+	//// Erase bank targets
+	//resetBank(false);
+	//// Reset clock
+	//resetClock();
+
+	//--
+
+	setGui_Visible(true);
+
+	//--
+
+	ENABLED_MoodMachine = true;
+	bIsPlaying = false;
+	timer = 0;
+	bPLAY = false;
+
+	TARGET_Selected_PRE = -1;
+	RANGE_Selected_PRE = -1;
+	RANGE_Selected = 0;
+
+	//-
+
+	load_range(RANGE_Selected);
+
+	//--
+
+	// Preview rectangle
+	bUseCustomPreviewPosition = true;
+
+	path_rect = path_Folder + "ofxSurfingMoods_";
+
+	//TODO: 
+	//crashes sometimes if no file present..
+	bool b = rectPreview.loadSettings("_PreviewRect", path_rect, true);
+	if (!b) rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
+	rectPreview.disableEdit();
+
+	//--
+
+	// Load bank targets
+	if (autoSaveLoad_settings.get())
+	{
+		loadBanks(path_Folder);
+	}
+
+	// Load panel settings
+	if (autoSaveLoad_settings.get())
+	{
+		loadSettings(path_Folder);
+	}
+
+	//TODO:
+	//setGui_AdvancedVertical_MODE(false);
+
+	//--
+
+	refresh_MOOD_Color();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::update(ofEventArgs & args)
+{
+	update_PreviewColors();
+
+	//if (MODE_MarkovChain)
+	//{
+	//	i++;
+	//}
+
+	//-
+
+	if (!bModeClockExternal)
+	{
+		timer_Range.update();
+		timer_Progress = 100 * timer_Range.getNormalizedProgress();
+	}
+	else
+	{
+		if (!MODE_Manual) {
+			timer_Progress = ofMap(counterStepFromOne, 1, countStayDuration, 0, 100, true);
+		}
+		else {
+
+		}
+	}
+
+	//-
+
+	//timer_Progress = ofMap(COUNTER_step, 0, countStayDuration, 0, 100, true);
+	//timer_Progress = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, 100, true);
+}
+
+//--------------------------------------------------------------
+void ofxSurfingMoods::draw(ofEventArgs & args)
+{
+	//TODO:
+	//debug
+	if (0)
+	{
+		ofPushStyle();
+		ofNoFill();
+		ofSetLineWidth(2);
+		ofSetColor(0, 0, 255, 255);
+		ofDrawRectangle(rectPreview);
+		float xx = rectPreview.getBottomLeft().x;
+		float yy = rectPreview.getCenter().y;
+		float ww = rectPreview.getWidth();
+		ofDrawLine(xx, yy, xx + ww, yy);
+		rectPreview.draw();
+		ofPopStyle();
+	}
+
+	if (!bGui) return;
+
+	//update_PreviewColors();
+	if (bGui_PreviewWidget) draw_PreviewWidget();
+
+	//-
+
+	//// ImGui
+	//draw_ImGui(); // -> TODO: fails when other ImGui instances...
+}
+
+//-
+
+// Keys
 //--------------------------------------------------------------
 void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 {
@@ -29,19 +257,18 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 
 	//--
 
-	// disabler for all keys. (independent from bActive)
+	// Disabler for all keys. (independent from bActive)
 	if (!bKeys) return;
 
 	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
 
-	// modifiers
+	// Modifiers
 	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
 	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
 	bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
 	bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
 
-	static bool debug = false;
-	if (debug)
+	if (0) // debug
 	{
 		ofLogNotice(__FUNCTION__) << "mod_COMMAND: " << (mod_COMMAND ? "ON" : "OFF");
 		ofLogNotice(__FUNCTION__) << "mod_CONTROL: " << (mod_CONTROL ? "ON" : "OFF");
@@ -50,8 +277,6 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 	}
 
 	//-
-
-	if (!bKeys) return;
 
 	if (key == ' ')
 	{
@@ -118,236 +343,6 @@ void ofxSurfingMoods::removeKeysListeners()
 //-
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::setup(int numTargets, int numPresets, int limit1, int limit2)
-{
-	NUM_TARGETS = numTargets; // TARGETS
-	NUM_PRESETS_A = numPresets; // PRESETS
-	NUM_PRESETS_B = numPresets; // PRESETS
-	NUM_PRESETS_C = numPresets; // PRESETS
-
-	rLimit1 = limit1;
-	rLimit2 = limit2;
-
-	setup(); // default sizes
-}
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::setup() // default sizes
-{
-	//ofSetLogLevel(OF_LOG_VERBOSE);
-	//ofSetLogLevel(OF_LOG_SILENT);
-
-	//-
-
-	//erase arrays
-	for (int i = 0; i < MAX_ITEMS; i++)
-	{
-		presets_A[i] = 0;
-		presets_B[i] = 0;
-		presets_C[i] = 0;
-	}
-
-	//-
-
-	//settings paths
-	path_Folder = "ofxSurfingMoods/"; // default folder
-	filename_Settings = "moods_Settings"; // settings
-	filename_Bank = "moods_Bank.json"; // ranges bank: any target to relatives preset/pattern
-
-	//-
-
-	//markov
-	path_markovMatrix = path_Folder + "markov/" + "transitionMatrix.txt";
-
-	//avoid crash
-	ofFile file;
-	file.open(path_markovMatrix);
-	bMarkovFileFound = file.exists();
-	if (bMarkovFileFound) {
-		ofxMC::Matrix mat(path_markovMatrix);
-		markov.setup(mat, 0);
-	}
-	else {
-		ofLogError(__FUNCTION__) << "Markov file " << path_markovMatrix << " not found!";
-	}
-
-	//--
-
-	// font to draw preview boxes
-	fname = "overpass-mono-bold.otf";
-	myTTF = "assets/fonts/" + fname;
-	sizeTTF = 9; // font size
-	bool isLoaded = myFont.load(myTTF, sizeTTF, true, true);
-	if (!isLoaded)
-	{
-		ofLogError(__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
-	}
-
-	//--
-
-	// Params
-	setup_Params();
-
-	//--
-
-	// callbacks
-
-	// 1.
-	ofAddListener(params_Listeners.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
-	ofAddListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
-
-	// 2.
-	ofAddListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
-
-	//-
-
-	// timer
-	// 60,000 / bpmSpeed = MS
-	timer = bpmLenghtBars * (BPM_BAR_RATIO * (60000 / bpmSpeed));
-	timer_Range.setup(timer);
-	ofAddListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
-	ofAddListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
-
-	//-
-
-	// RESET
-	//// ERASE BANK TARGETS
-	//resetBank(false);
-	////REST CLOCK
-	//resetClock();
-
-	//-
-
-	setGui_Visible(true);
-
-	//--
-
-	ENABLED_MoodMachine = true;
-	bIsPlaying = false;
-	timer = 0;
-	bPLAY = false;
-
-	TARGET_Selected_PRE = -1;
-	RANGE_Selected_PRE = -1;
-	RANGE_Selected = 0;
-
-	//-
-
-	load_range(RANGE_Selected);
-
-	//-
-
-	setup_ImGui();
-
-	//-------
-
-	// startup
-
-	startup();
-
-	//--
-}
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::startup()
-{
-	// preview rectangle
-	bUseCustomPreviewPosition = true;
-
-	path_rect = path_Folder + "ofxSurfingMoods_";
-
-	//TODO: crashes sometime if no file present..
-	bool b = rectPreview.loadSettings("_PreviewRect", path_rect, true);
-	//bool b = rectPreview.loadSettings("", path_rect, true);
-	if (!b) rectPreview.setRect(25, 650, 700, 50); // initialize when no settings file created yet.
-	rectPreview.disableEdit();
-
-	//--
-
-	// load bank targets
-	if (autoSaveLoad_settings.get())
-	{
-		loadBanks(path_Folder);
-	}
-
-	// load panel settings
-	if (autoSaveLoad_settings.get())
-	{
-		loadSettings(path_Folder);
-	}
-
-	//setGui_AdvancedVertical_MODE(false);
-	//setPosition(20, 20);//gui panel position
-
-	//--
-
-	refresh_MOOD_Color();
-
-	//updateLabels();
-}
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::update(ofEventArgs & args)
-{
-	update_PreviewColors();
-
-	//if (MODE_MarkovChain)
-	//{
-	//	i++;
-	//}
-
-	//-
-
-	if (!bModeClockExternal)
-	{
-		timer_Range.update();
-		timer_Progress = 100 * timer_Range.getNormalizedProgress();
-	}
-	else
-	{
-		if (!MODE_Manual) {
-			timer_Progress = ofMap(counterStepFromOne, 1, countStayDuration, 0, 100, true);
-		}
-		else {
-
-		}
-	}
-
-	//timer_Progress = ofMap(COUNTER_step, 0, countStayDuration, 0, 100, true);
-	//timer_Progress = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, 100, true);
-}
-
-//--------------------------------------------------------------
-void ofxSurfingMoods::draw(ofEventArgs & args)
-{
-	//TODO: debug
-	if (0)
-	{
-		ofPushStyle();
-		ofNoFill();
-		ofSetLineWidth(2);
-		ofSetColor(0, 0, 255, 255);
-		ofDrawRectangle(rectPreview);
-		float xx = rectPreview.getBottomLeft().x;
-		float yy = rectPreview.getCenter().y;
-		float ww = rectPreview.getWidth();
-		ofDrawLine(xx, yy, xx + ww, yy);
-		rectPreview.draw();
-		ofPopStyle();
-	}
-
-	if (!bGui) return;
-
-	//update_PreviewColors();
-	if (bGui_PreviewWidget) draw_PreviewWidget();
-
-	//-
-
-	//// ImGui
-	//draw_ImGui(); // -> TODO: fails when other ImGui instances...
-}
-
-//--------------------------------------------------------------
 void ofxSurfingMoods::windowResized(int w, int h)
 {
 	if (!bUseCustomPreviewPosition) doResetPreviewWidget();
@@ -356,10 +351,7 @@ void ofxSurfingMoods::windowResized(int w, int h)
 //--------------------------------------------------------------
 void ofxSurfingMoods::exit()
 {
-	//-
-
-	// preview rectangle
-	//rectPreview.saveSettings("", path_rect, true);
+	// Preview rectangle
 	rectPreview.saveSettings("_PreviewRect", path_rect, true);
 
 	//-
@@ -377,7 +369,6 @@ void ofxSurfingMoods::exit()
 	ofRemoveListener(params_USER.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_Listeners);
 	ofRemoveListener(parameters_ranges.parameterChangedE(), this, &ofxSurfingMoods::Changed_Ranges);
 
-	// timer
 	ofRemoveListener(timer_Range.TIMER_COMPLETE, this, &ofxSurfingMoods::timer_Range_Complete);
 	ofRemoveListener(timer_Range.TIMER_STARTED, this, &ofxSurfingMoods::timer_Range_Started);
 }
@@ -387,7 +378,7 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 {
 	ofLogVerbose(__FUNCTION__);
 
-	// mood color preview label
+	// Mood color preview label
 	switch (RANGE_Selected.get())
 	{
 	case 0:
@@ -408,24 +399,14 @@ void ofxSurfingMoods::refresh_MOOD_Color()
 	}
 }
 
-
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 {
 	float gx, gy, gw, gh, ww, hh, pad;
 	pad = 10;
 
-	////custom
-	//if (bUseCustomPreviewPosition)
-	//{
-	//	gx = positionPreviewBoxes.x;
-	//	gy = positionPreviewBoxes.y;
-	//	ww = positionPreviewBoxes_Width;
-	//	hh = positionPreviewBoxes_Height;
-	//}
-
-	//// custom
-	// preview rectangle
+	// Custom
+	// Preview rectangle
 	if (bUseCustomPreviewPosition)
 	{
 		gx = rectPreview.getX();
@@ -433,8 +414,7 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 		ww = rectPreview.getWidth();
 		hh = rectPreview.getHeight();
 	}
-
-	// default
+	// Default position layout
 	else
 	{
 		gw = ofGetWidth() - 2 * pad;
@@ -444,6 +424,7 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 		hh = 50;
 	}
 
+	//TODO:
 	////horizontal by default
 	//if (!MODE_vertical && !bUseCustomPreviewPosition)
 	//{
@@ -456,28 +437,6 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 	//-
 
 	draw_PreviewWidget(gx, gy, ww, hh);
-
-	//-
-
-	//// Preview rectangle Bg
-	//if (bUseCustomPreviewPosition)
-	//{
-	//	if (bEdit_PreviewWidget)
-	//	{
-	//		ofPushStyle();
-	//		ofSetColor(128, 64);
-	//		ofDrawRectangle(rectPreview);
-	//		rectPreview.draw();
-	//		ofPopStyle();
-	//	}
-	//}
-	//else {//TODO:
-	//	ofPushStyle();
-	//	ofSetColor(128, 64);
-	//	ofRectangle r = ofRectangle(gx, gy, gw, gh);;
-	//	ofDrawRectangle(r);
-	//	ofPopStyle();
-	//}
 }
 
 //--------------------------------------------------------------
@@ -496,7 +455,7 @@ void ofxSurfingMoods::update_PreviewColors()
 	c2.set(ofColor(color_MOOD2, aRg));
 	c3.set(ofColor(color_MOOD3, aRg));
 
-	// color for manual control value
+	// Color for manual control value
 	const float rangeSz = 1.f / (float)NUM_Ranges;
 	if (controlManual < rangeSz)
 	{
@@ -512,372 +471,364 @@ void ofxSurfingMoods::update_PreviewColors()
 	}
 }
 
-
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // customize position and size
 {
 	ofPushStyle();
-
-	// Default widget position without draggable rectangle
-	if (!bUseCustomPreviewPosition)
 	{
-		float gx, gy, gw, gh, ww, hh, pad;
-		pad = 10;
-		gw = ofGetWidth() - 2 * pad;
-		gx = pad;
-		gy = pad;
-		gh = 50;
-		ofPushStyle();
-		ofFill();
-		ofSetColor(0, 0, 0, 190);
-		ofRectangle r = ofRectangle(gx, gy, gw, gh);
-		// expand bigger
-		float ro = 4.0f;
-		float pp = 5;
-		ofRectangle rr = ofRectangle(
-			r.getX() - pp, r.getY() - pp,
-			r.getWidth() + 2 * pp, r.getHeight() + 2 * pp);
-		ofDrawRectRounded(rr, ro);
-		ofPopStyle();
-	}
-
-	//-
-
-	float hratio = 0.7f;// states bar vs progress bar
-
-	float h1 = h * hratio;
-	float h2 = h * (1 - hratio);
-
-	float x2, y2, ww2, hh2;
-
-	const int NUM_Ranges = (int)NUM_RANGES;
-
-	// for 0.20f: if fps is 60. duration will be 60/5 frames = 12frames
-	blinkDuration = 0.20f * ofGetFrameRate();
-
-	float sizes = w / (float)NUM_TARGETS;
-	float ro = 4.0f;
-	float line = 2.0f;
-
-	float padBg, padBox, padSel;
-	padBg = h1 * 0.05f;
-	padBox = h1 * 0.1f;
-	padSel = h1 * 0.1f;
-
-	// alphas
-	int aBg = 140;
-	int aRg = 24;
-	int aSel = 48;
-
-	//-
-
-	// 0. Main bg expanded
-	if (bUseCustomPreviewPosition)
-	{
-		ofFill();
-		ofSetColor(0, 0, 0, 190);
-		//ofSetColor(cBg);
-		float pp = 5;
-		ofRectangle rr = ofRectangle(
-			rectPreview.getX() - pp, rectPreview.getY() - pp,
-			rectPreview.getWidth() + 2 * pp, rectPreview.getHeight() + 2 * pp);
-		ofDrawRectRounded(rr, ro);
-	}
-
-	//-
-
-	// Rect A
-
-	// 1. Bg
-
-	//ofFill();
-	//ofSetColor(cBg);
-	//ofDrawRectRounded(x, y, w, h1, ro);
-
-	// States boxes
-	{
-		float x1, x2, x3, xEnd;
-		x1 = x;
-		x2 = x1 + ((rLimit1)* sizes);
-		x3 = x2 + ((rLimit2 - rLimit1) * sizes);
-		xEnd = x3 + ((NUM_TARGETS - rLimit2) * sizes);
-
-		for (int rg = 0; rg < NUM_Ranges; rg++)
+		// Default widget position without draggable rectangle
+		if (!bUseCustomPreviewPosition)
 		{
-			float _w;
-			float _x;
-
-			switch (rg)
-			{
-			case 0:
-			{
-				ofSetColor(RANGE_Selected != 0 ? c1 : color_MOOD1);// disable alpha when range is selected
-				_x = x1;
-				_w = x2 - x1;
-			}
-			break;
-
-			case 1:
-			{
-				ofSetColor(RANGE_Selected != 1 ? c2 : color_MOOD2);
-				_x = x2;
-				_w = x3 - x2;
-			}
-			break;
-
-			case 2:
-			{
-				ofSetColor(RANGE_Selected != 2 ? c3 : color_MOOD3);
-				_x = x3;
-				_w = xEnd - x3;
-			}
-			break;
-			}
-
-			// Range box
+			float gx, gy, gw, gh, ww, hh, pad;
+			pad = 10;
+			gw = ofGetWidth() - 2 * pad;
+			gx = pad;
+			gy = pad;
+			gh = 50;
+			ofPushStyle();
 			ofFill();
-			ofDrawRectRounded(_x, y, _w, h1, ro);
+			ofSetColor(0, 0, 0, 190);
+			ofRectangle r = ofRectangle(gx, gy, gw, gh);
+			// expand bigger
+			float ro = 4.0f;
+			float pp = 5;
+			ofRectangle rr = ofRectangle(
+				r.getX() - pp, r.getY() - pp,
+				r.getWidth() + 2 * pp, r.getHeight() + 2 * pp);
+			ofDrawRectRounded(rr, ro);
+			ofPopStyle();
 		}
-	}
-
-	//-
-
-	// 2. Target boxes with labels
-
-	for (int t = 0; t < NUM_TARGETS; t++)
-	{
-		if (t >= 0 && t < rLimit1)
-		{
-			ofSetColor(c1);
-		}
-		else if (t >= rLimit1 && t < rLimit2)
-		{
-			ofSetColor(c2);
-		}
-		else if (t >= rLimit2 && t < NUM_TARGETS)
-		{
-			ofSetColor(c3);
-		}
-
-		float xb, yb, wb, hb;
-		xb = x + t * sizes + 0.5f*padBox;
-		yb = y + 0.5f*padBox;
-		wb = sizes - padBox;
-		hb = h1 - padBox;
 
 		//-
 
-		// 2.1 Target box
+		float hratio = 0.7f;// states bar vs progress bar
+		float h1 = h * hratio;
+		float h2 = h * (1 - hratio);
+		float x2, y2, ww2, hh2;
+
+		const int NUM_Ranges = (int)NUM_RANGES;
+
+		// for 0.20f: if fps is 60. duration will be 60/5 frames = 12frames
+		blinkDuration = 0.20f * ofGetFrameRate();
+
+		float sizes = w / (float)NUM_TARGETS;
+		float ro = 4.0f;
+		float line = 2.0f;
+
+		float padBg, padBox, padSel;
+		padBg = h1 * 0.05f;
+		padBox = h1 * 0.1f;
+		padSel = h1 * 0.1f;
+
+		// alphas
+		int aBg = 140;
+		int aRg = 24;
+		int aSel = 48;
+
+		//-
+
+		// 0. Main bg expanded
+		if (bUseCustomPreviewPosition)
+		{
+			ofFill();
+			ofSetColor(0, 0, 0, 190);
+			//ofSetColor(cBg);
+			float pp = 5;
+			ofRectangle rr = ofRectangle(
+				rectPreview.getX() - pp, rectPreview.getY() - pp,
+				rectPreview.getWidth() + 2 * pp, rectPreview.getHeight() + 2 * pp);
+			ofDrawRectRounded(rr, ro);
+		}
+
+		//-
+
+		// Rect A
+
+		// States boxes
+		{
+			float x1, x2, x3, xEnd;
+			x1 = x;
+			x2 = x1 + ((rLimit1)* sizes);
+			x3 = x2 + ((rLimit2 - rLimit1) * sizes);
+			xEnd = x3 + ((NUM_TARGETS - rLimit2) * sizes);
+
+			for (int rg = 0; rg < NUM_Ranges; rg++)
+			{
+				float _w;
+				float _x;
+
+				switch (rg)
+				{
+				case 0:
+				{
+					ofSetColor(RANGE_Selected != 0 ? c1 : color_MOOD1);// disable alpha when range is selected
+					_x = x1;
+					_w = x2 - x1;
+				}
+				break;
+
+				case 1:
+				{
+					ofSetColor(RANGE_Selected != 1 ? c2 : color_MOOD2);
+					_x = x2;
+					_w = x3 - x2;
+				}
+				break;
+
+				case 2:
+				{
+					ofSetColor(RANGE_Selected != 2 ? c3 : color_MOOD3);
+					_x = x3;
+					_w = xEnd - x3;
+				}
+				break;
+				}
+
+				// Range box
+				ofFill();
+				ofDrawRectRounded(_x, y, _w, h1, ro);
+			}
+		}
+
+		//-
+
+		// 2. Target boxes with labels
+
+		for (int t = 0; t < NUM_TARGETS; t++)
+		{
+			if (t >= 0 && t < rLimit1)
+			{
+				ofSetColor(c1);
+			}
+			else if (t >= rLimit1 && t < rLimit2)
+			{
+				ofSetColor(c2);
+			}
+			else if (t >= rLimit2 && t < NUM_TARGETS)
+			{
+				ofSetColor(c3);
+			}
+
+			float xb, yb, wb, hb;
+			xb = x + t * sizes + 0.5f*padBox;
+			yb = y + 0.5f*padBox;
+			wb = sizes - padBox;
+			hb = h1 - padBox;
+
+			//-
+
+			// 2.1 Target box
+
+			ofFill();
+			ofDrawRectRounded(xb, yb, wb, hb, ro);
+
+			//-
+
+			// 2.2 Text label
+
+			ofSetColor(0);
+			float xOff = 3;
+			float yOff = 5;
+			if (myFont.isLoaded())
+			{
+				myFont.drawString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
+			}
+			else
+			{
+				ofDrawBitmapString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
+			}
+		}
+
+		//--
+
+		// 3. Selected box/target
+
+		// Blink disabling box draw
+
+		if (bBlink)
+		{
+			blinkCounterFrames++;
+			if (blinkCounterFrames >= blinkDuration)
+			{
+				bBlink = false;
+			}
+		}
+
+		//-
+
+		// 3.1. Filled box
 
 		ofFill();
-		ofDrawRectRounded(xb, yb, wb, hb, ro);
+		float blinkFactor = 0.4f;
+		if (!bBlink) ofSetColor(0, aSel);
+		else ofSetColor(0, blinkFactor * aSel);
+		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
 
 		//-
 
-		// 2.2 Text label
+		// 3.2. Border
 
-		ofSetColor(0);
-		float xOff = 3;
-		float yOff = 5;
-		if (myFont.isLoaded())
+		ofNoFill();
+		ofSetLineWidth(line);
+		if (!bBlink) ofSetColor(cBord);
+		else ofSetColor(cBord.r, cBord.g, cBord.b, cBord.a * blinkFactor);
+		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
+
+		//----
+
+		// B. Box
+
+		// 4. Completed timer progress
+
+		x2 = x;
+		y2 = y + h1 + padBg;
+		ww2 = w;
+		hh2 = h2 - 2 * padBg;
+
+		if (RANGE_Selected >= 0 && RANGE_Selected < 3)
 		{
-			myFont.drawString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
-		}
-		else
-		{
-			ofDrawBitmapString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
-		}
-	}
+			float _w = 1;
+			float wStep = 1;
 
-	//--
-
-	// 3. Selected box/target
-
-	// Blink disabling box draw
-
-	if (bBlink)
-	{
-		blinkCounterFrames++;
-		if (blinkCounterFrames >= blinkDuration)
-		{
-			bBlink = false;
-		}
-	}
-
-	//-
-
-	// 3.1. Filled box
-
-	ofFill();
-	float blinkFactor = 0.4f;
-	if (!bBlink) ofSetColor(0, aSel);
-	else ofSetColor(0, blinkFactor * aSel);
-	ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
-
-	//-
-
-	// 3.2. Border
-
-	ofNoFill();
-	ofSetLineWidth(line);
-	if (!bBlink) ofSetColor(cBord);
-	else ofSetColor(cBord.r, cBord.g, cBord.b, cBord.a * blinkFactor);
-	ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
-
-	//----
-
-	// B. Box
-
-	// 4. Completed timer progress
-
-	x2 = x;
-	y2 = y + h1 + padBg;
-	ww2 = w;
-	hh2 = h2 - 2 * padBg;
-
-	if (RANGE_Selected >= 0 && RANGE_Selected < 3)
-	{
-		float _w = 1;
-		float wStep = 1;
-
-		if (!MODE_Manual) {
-			if (!bModeClockExternal) {
-				wStep = ww2 / (float)MAX(1, (counterStepFromOne.getMax()));//width of any step
-				_w = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, ww2, true);
+			if (!MODE_Manual) {
+				if (!bModeClockExternal) 
+				{
+					wStep = ww2 / (float)MAX(1, (counterStepFromOne.getMax()));//width of any step
+					_w = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, ww2, true);
+				}
+				else 
+				{
+					wStep = ww2 / MAX(1, (float)(countStayDuration.get()));//width of any step
+					_w = counterStepFromOne * wStep;
+				}
 			}
-			else {
-				wStep = ww2 / MAX(1, (float)(countStayDuration.get()));//width of any step
-				_w = counterStepFromOne * wStep;
+			// Manual mode don't have steps counter bc it waits the user commands!
+			// The we just cound all the bar a single step.
+			else 
+			{
+				_w = ofMap(timer_Progress, 0, 100, 0, ww2, true);
 			}
-		}
-		// Manual mode don't have steps counter bc it waits the user commands!
-		// The we just cound all the bar a single step.
-		else {
-			_w = ofMap(timer_Progress, 0, 100, 0, ww2, true);
-		}
 
-		//-
+			//-
 
-		if (!bModeClockExternal) {
-			float wTimer = ofMap(timer_Progress, 0, 100, 0, wStep, true);//scale by step timer to make it analog-continuous
-			_w = _w + wTimer;//add step timer
-		}
+			if (!bModeClockExternal)
+			{
+				float wTimer = ofMap(timer_Progress, 0, 100, 0, wStep, true);//scale by step timer to make it analog-continuous
+				_w = _w + wTimer;//add step timer
+			}
 
-		//-
+			//-
 
-		{
 			// 4.1 Bg
 
 			ofFill();
-			ofSetColor(0, 0, 0, 32);
-			//ofSetColor(cBg);
+			//ofSetColor(0, 0, 0, 32);
+			ofSetColor(cBg);
 			ofDrawRectRounded(x2, y2, ww2, hh2, ro);
 
 			//-
 
 			// 4. 2 Complete progress range 
 			// Colored
-
-			if (!(MODE_Manual && bModeClockExternal))
 			{
-				if (RANGE_Selected == 0)
+
+				if (!(MODE_Manual && bModeClockExternal))
 				{
-					cRange = color_MOOD1;
+					if (RANGE_Selected == 0)
+					{
+						cRange = color_MOOD1;
+					}
+					else if (RANGE_Selected == 1)
+					{
+						cRange = color_MOOD2;
+					}
+					else if (RANGE_Selected == 2)
+					{
+						cRange = color_MOOD3;
+					}
+					ofSetColor(cRange);
+
+					//--
+
+					// 4.3 Bar bg rectangle
+
+					ofFill();
+					ofDrawRectRounded(x2, y2, _w, hh2, ro);
+
+					// 4.4 Mark all range steps with vertical lines
+
+					if (!MODE_Manual)
+					{
+						ofNoFill();
+						ofSetLineWidth(line + 1.0f);
+						float xStep;
+						for (int m = 1; m < counterStepFromOne.getMax(); m++)
+						{
+							xStep = wStep * m;
+
+							ofDrawLine(x2 + xStep, y2, x2 + xStep, y2 + hh2);
+						}
+					}
 				}
-				else if (RANGE_Selected == 1)
-				{
-					cRange = color_MOOD2;
-				}
-				else if (RANGE_Selected == 2)
-				{
-					cRange = color_MOOD3;
-				}
-				ofSetColor(cRange);
+			}
 
-				//--
+			//----
 
-				// 4.3 Bar bg rectangle
-
-				ofFill();
-				ofDrawRectRounded(x2, y2, _w, hh2, ro);
-
-				// 4.4 Mark all range steps with vertical lines
-
-				if (!MODE_Manual)
+			// 5. Manual control line
+			{
+				if (MODE_Manual)
 				{
 					ofNoFill();
-					ofSetLineWidth(line + 1.0f);
-					float xStep;
-					for (int m = 1; m < counterStepFromOne.getMax(); m++)
+					float xx = x2 + controlManual * w;
 					{
-						xStep = wStep * m;
+						float __x, __y, __w, __h;
+						__w = 5;
+						__h = hh2;
+						__x = xx;
+						__y = y2;
+						ofRectangle r(__x, __y, __w, __h);
 
-						ofDrawLine(x2 + xStep, y2, x2 + xStep, y2 + hh2);
+						ofPushMatrix();
+						ofTranslate(-__w / 2.0, 0);
+						ofFill();
+						ofSetColor(cRangeRaw);
+						ofDrawRectRounded(r, 2);
+						ofPopMatrix();
 					}
 				}
 			}
 		}
 
-		//----
-
-		// 5. Manual control line
+		// Preview rectangle Bg when editing
+		if (bUseCustomPreviewPosition)
 		{
-			if (MODE_Manual)
+			if (bEdit_PreviewWidget)
 			{
-				ofNoFill();
-				float xx = x2 + controlManual * w;
-				{
-					float __x, __y, __w, __h;
-					__w = 5;
-					__h = hh2;
-					__x = xx;
-					__y = y2;
-					ofRectangle r(__x, __y, __w, __h);
-
-					ofPushMatrix();
-					ofTranslate(-__w / 2.0, 0);
-					ofFill();
-					ofSetColor(cRangeRaw);
-					ofDrawRectRounded(r, 2);
-					ofPopMatrix();
-				}
+				ofPushStyle();
+				ofSetColor(128, 64);
+				ofDrawRectangle(rectPreview);
+				rectPreview.draw();
+				ofPopStyle();
 			}
 		}
+
+		//--
+
+		//TODO:
+		//// Markov debug preview
+		//float ww =300;
+		//float hh =300;
+		//if(i == 0){
+		//    ofSetColor(ofColor::red);
+		//    ofDrawRectangle(ww, hh + 10, 10, 10);
+		//}
+		//
+		//markov.draw(ww + 35, hh + 20);
+		//
+		//ofSetColor(ofColor::white);
+		//ofDrawBitmapString("You can change the \ntransition matrix in \n'data/transitionMatrix.txt'", ww + 10, hh + 50);
 	}
-
-	//--
-
-	//// Markov debug preview
-	//float ww =300;
-	//float hh =300;
-	//if(i == 0){
-	//    ofSetColor(ofColor::red);
-	//    ofDrawRectangle(ww, hh + 10, 10, 10);
-	//}
-	//
-	//markov.draw(ww + 35, hh + 20);
-	//
-	//ofSetColor(ofColor::white);
-	//ofDrawBitmapString("You can change the \ntransition matrix in \n'data/transitionMatrix.txt'", ww + 10, hh + 50);
-
-	//-
-
 	ofPopStyle();
-
-	//-
-
-	// Preview rectangle Bg when editing
-	if (bUseCustomPreviewPosition)
-	{
-		if (bEdit_PreviewWidget)
-		{
-			ofPushStyle();
-			ofSetColor(128, 64);
-			ofDrawRectangle(rectPreview);
-			rectPreview.draw();
-			ofPopStyle();
-		}
-	}
 }
 
 //--------------------------------------------------------------
@@ -917,7 +868,7 @@ void ofxSurfingMoods::setup_Params()
 
 	bResetClockSettings.set("RESET CLOCK", false);
 	bResetClockSettings.setSerializable(false);
-	bClone_TARGETS.set("BANK CLONE>", false);
+	bClone_TARGETS.set("BANK CLONE >", false);
 	bClone_TARGETS.setSerializable(false);
 	bGui.set("MOODS SURFING", true);
 	bKeys.set("Keys", true);
@@ -1270,25 +1221,16 @@ void ofxSurfingMoods::setTogglePlay()
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_Visible(bool b)
 {
-	////TODO: global gui enabler. not implemented..
 	bGui = b;
-	//gui.getVisible().set(bGui);
-
-	//SHOW_GuiUser = b;
-
-	// workflow
-	//if (!SHOW_GuiUser && bGui_Advanced) bGui_Advanced = false;
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_ToggleVisible()
 {
 	bGui = !bGui;
-	//gui.getVisible().set(bGui);
-
-	//SHOW_GuiUser = !SHOW_GuiUser;
 }
 
+//TODO:
 ////--------------------------------------------------------------
 //void ofxSurfingMoods::setGui_AdvancedVertical_MODE(bool enable)
 //{
@@ -2656,11 +2598,6 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 				std::string n = "MOODS ADVANCED";
 				guiManager.beginWindow(n.c_str(), (bool*)&bGui_Advanced.get(), window_flags);
 				{
-					//guiManager.refreshLayout();
-					//guiManager.Add(SHOW_GuiUser, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-
-					//--
-
 					// Tools
 					{
 						bOpen = false;
@@ -2688,14 +2625,11 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 						if (ImGui::TreeNodeEx("DEBUG LIMITS", _flagt))
 						{
 							guiManager.refreshLayout();
-
 							ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 							flags |= ImGuiTreeNodeFlags_Framed;
 							flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
 							ofxImGuiSurfing::AddGroup(parameters_ranges, flags);
-							//ofxImGuiSurfing::AddGroup(params_STORE, flags);
-							//ofxImGuiSurfing::AddGroup(params_Listeners, flags);
 
 							ImGui::TreePop();
 						}
@@ -2703,7 +2637,6 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 
 					//--
 
-					//guiManager.refreshLayout();
 					//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
 					//guiManager.drawAdvancedSubPanel();
 				}
