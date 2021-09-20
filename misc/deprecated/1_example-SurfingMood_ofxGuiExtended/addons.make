@@ -1,2 +1,0 @@
-ofxGuiExtended2
-ofxSurfingMoods

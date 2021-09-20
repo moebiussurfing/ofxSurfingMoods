@@ -7,19 +7,14 @@
 
 TODO:
 
-++ fix link bpm ptr. allow don't break the timers/progress
-	better slider
-
-+ fix counter and stay count margins/preview
-+ fix save/load settings
-+ fix preview box full (merge double click with drag rect)
++ fix link bpm ptr.
 
 */
 
 
-#include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
-
 //-
+
+#include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
 
 #include "ofxSurfingHelpers.h"
 #include "ofxSimpleTimer.h"
@@ -30,19 +25,24 @@ TODO:
 //--
 
 // Constants
-
-#define MAX_ITEMS 16 // reserve max for arrays creations
 #define NUM_RANGES 3 // TARGET RANGES
+#define MAX_ITEMS 16 // reserve max for arrays creations
 
-// with default 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+//----
+
+// Default hardcoded template
+// With default 9 targets, 
+// 9 presets x3 (ABC), limit1 3, limit2 6
 #define DEFAULT_NUM_TARGETS 9 // TARGETS
 #define DEFAULT_NUM_PRESETS 9 // PRESETS
 #define DEFAULT_RANGE_LIMIT_1 3 // divisor between range 0 and range 1
 #define DEFAULT_RANGE_LIMIT_2 6 // divisor between range 1 and range 2
 
-//--
+//----
 
-// with default 16 targets, 16 presets, 8 patterns, limit1 4, limit2 11
+// Another posible template
+// With default 16 targets, 
+// 16 presets, 8 patterns, limit1 4, limit2 11
 //#define DEFAULT_NUM_TARGETS 16 // TARGETS
 //#define DEFAULT_NUM_PRESETS 8 // PRESETS
 //#define DEFAULT_RANGE_LIMIT_1 4 // divisor between range 0 and range 1
@@ -52,32 +52,27 @@ TODO:
 //range 1 = presets 4-10
 //range 0 = presets 11-max_preset
 
-//-
+//----
 
-// Snippets:
+/*
 
+Example Snippet:
 // ofApp Example:
 // customize ranges/sizes (TODO: maybe not working..)
-//moodsSurfer.setup(9, 9, 3, 6);
-//// 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
-//// 3 ranges/moods: range0 starts at 0. rage 1 starts at limit1 3, and range 2 starts at limit2 6
+moodsSurfer.setup(9, 9, 3, 6);
+// 9 targets, 9 presets x3 (ABC), limit1 3, limit2 6
+// 3 ranges/moods: range0 starts at 0.
+// range 1 starts at limit1 3, and range 2 starts at limit2 6
 
-// ofApp Example:
-//// customized position: bottom centered
-//int w = 500;
-//int h = 50;
-//int x = ofGetWidth() / 2. - w * 0.5;
-//int y = ofGetHeight() - h - 40;//TODO: there's a little offset...
-//moodsSurfer.draw_PreviewWidget(x, y, w, h);
+*/
 
 //--
 
-#define BPM_BAR_RATIO 4 // TO SCALE TIMER/bpmSpeed
+#define BPM_BAR_RATIO 4 // To scale ms Timer / Bpm Speed
 
 //--
 
 class ofxSurfingMoods
-
 {
 public:
 
@@ -97,46 +92,9 @@ public:
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingMoods::update);
 		ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
 		removeKeysListeners();
-		
+
 		exit();
 	};
-
-	//-
-
-private:
-	TextBoxWidget textBoxWidget;
-
-private:
-	ofxSurfing_ImGui_Manager guiManager;
-	void setup_ImGui();
-
-public:
-	void draw_ImGui();
-
-private:
-	void draw_ImGui_User();
-	void draw_ImGui_Advanced();
-	void draw_ImGui_ManualSlider();
-
-	ofParameter<bool> bResetSlider{ "Reset Slider",false };
-	ofParameter<bool> bResetPreviewWidget{ "Reset Preview",false };
-
-private:
-
-	bool bAutoDraw; // must be false when multiple ImGui instances created!
-
-public:
-
-	// Force autodraw
-	//--------------------------------------------------------------
-	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
-
-	//-
-
-private:
-
-	ofxInteractiveRect rectPreview = { "_PreviewRect" };
-	std::string path_rect;
 
 public:
 	void setup();
@@ -157,6 +115,42 @@ private:
 	void addKeysListeners();
 	void removeKeysListeners();
 
+	//-
+
+private:
+	ofxSurfing_ImGui_Manager guiManager;
+	void setup_ImGui();
+
+public:
+	void draw_ImGui();
+
+private:
+	void draw_ImGui_User();
+	void draw_ImGui_Advanced();
+	void draw_ImGui_ManualSlider();
+
+public:
+	// Force autodraw
+	//--------------------------------------------------------------
+	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
+
+private:
+	bool bAutoDraw; // must be false when multiple ImGui instances created!
+
+private:
+	ofParameter<bool> bResetSlider{ "Reset Slider",false };
+	ofParameter<bool> bResetPreviewWidget{ "Reset Preview",false };
+
+private:
+	TextBoxWidget textBoxWidget;
+
+	//-
+
+private:
+
+	ofxInteractiveRect rectPreview = { "_PreviewRect" };
+	std::string path_rect;
+
 private:
 	bool bMarkovFileFound = false;
 
@@ -176,7 +170,8 @@ private:
 
 public:
 
-	// should make an outside listener to receive changes!
+	// Should make an outside listener to receive changes!
+	// (on parent scope like ofApp. Look the example for snippets)
 
 	ofParameter<int> RANGE_Selected;
 
@@ -196,13 +191,12 @@ public:
 private:
 
 	ofParameterGroup params_Listeners;
-	ofParameterGroup params_STORE;
-	ofParameterGroup params_USER;
+	ofParameterGroup params_AppSettings;
 	ofParameterGroup parameters_ranges;
 
 	//-
 
-	// markov
+	// Markov
 
 private:
 
@@ -220,14 +214,10 @@ private:
 		}
 	};
 
-	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false};//each arrive to a range will start from 1st from range.
-	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true};
+	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };//Every time we arrive to a range, will start from 1st from target of the mood range.
+	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true };
 
 	ofParameter<float> controlManual{ "MANUAL CTRL", 0, 0, 1.f };
-
-	//ofParameterGroup params_Ranged{"RANGED"};
-	//ofParameterGroup params_Manual{"MANUAL"};
-
 
 	ofColor cRange;
 	ofColor cRangeRaw;
@@ -258,7 +248,7 @@ public:
 	{
 		return bPLAY.get();
 	}
-	
+
 	//-
 
 public:
@@ -272,6 +262,12 @@ public:
 	void setBpm(float bpm);
 	void setBarsScale(int bars);
 
+	//--------------------------------------------------------------
+	float getBPM()
+	{
+		return bpmSpeed.get();
+	}
+
 	//-
 
 	// To run external clock/timers
@@ -281,7 +277,7 @@ public:
 
 private:
 
-	ofParameter<bool> bModeClockExternal{ "External Clock", false };
+	ofParameter<bool> bModeClockExternal{ "External Clock", false };//disables internal timers to receive ticks. We can force bets internally.
 
 	ofParameter<bool> bModeAutomatic{ "Automatic", false };//some workflow features
 
@@ -292,12 +288,6 @@ public:
 	void doRunStep(bool bforced = false);
 
 public:
-
-	//--------------------------------------------------------------
-	float getBPM()
-	{
-		return bpmSpeed.get();
-	}
 
 	//--------------------------------------------------------------
 	void setRange(int r)
@@ -313,7 +303,9 @@ public:
 
 	//-
 
-	// reset preview layout
+public:
+
+	// Reset preview layout
 	void doResetPreviewWidget();
 	void doResetManualSlider();
 
@@ -341,6 +333,9 @@ public:
 		bGui_PreviewWidget = !bGui_PreviewWidget;
 	}
 
+	//TODO:
+	//void setGui_AdvancedVertical_MODE(bool enable);
+
 private:
 
 	glm::vec2 positionPreviewBoxes;
@@ -349,10 +344,8 @@ private:
 
 public:
 
-	//TODO: global gui enabler. not implemented..
 	void setGui_Visible(bool enable);
 	void setGui_ToggleVisible();
-	//void setGui_AdvancedVertical_MODE(bool enable);
 
 	//--------------------------------------------------------------
 	void setShowGuiAdvanced(bool b)
@@ -360,16 +353,11 @@ public:
 		bGui_Advanced = b;
 	}
 
-	////--------------------------------------------------------------
-	//void setShowGuiUser(bool b)
-	//{
-	//	SHOW_GuiUser = b;
-	//}
-
 	//-
 
 public:
-	// force browse targets
+
+	// Force browse targets
 	//--------------------------------------------------------------
 	void setNextTarget()
 	{
@@ -394,12 +382,10 @@ public:
 
 private:
 
-	// Settngs
+	// Settings
 
-	// path for xml settings
 	std::string path_Folder;
-
-	std::string filename_Settings;
+	std::string filename_AppSettings;
 	std::string filename_Bank;
 
 	void saveSettings(std::string path);
@@ -538,32 +524,16 @@ private:
 	ofParameter<bool> bEdit_PreviewWidget;
 	ofParameter<bool> bGui_PreviewWidget;
 	ofParameter<bool> bUseCustomPreviewPosition;
-	//ofParameter<bool> SHOW_GuiUser;
-	//ofParameter<bool> SHOW_Clocks;
-	//bool bUseCustomPreviewPosition = false;
-
-	//void updateLabels();
 
 	//-
 
 	// Timer
 
-	// timer
 	ofxSimpleTimer timer_Range;
 	void timer_Range_Complete(int &args);
 	void timer_Range_Started(int &args);
-	//bool SHOW_timer;
 
 	//-
-
-	// Gui layout
-
-	// panel
-	int gui_w;
-	// widgets
-	int gui_slider_mini_h;
-	int gui_slider_big_h;
-	int gui_button_big_h;
 
 	std::string myTTF_Gui;
 	int sizeTTF_Gui;
@@ -574,7 +544,6 @@ private:
 
 private:
 
-	// ranges
 	void Changed_Ranges(ofAbstractParameter &e);
 	int RANGE_Selected_PRE;
 
