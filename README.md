@@ -2,10 +2,13 @@
 An **openFrameworks** add-on that works as my personal **Mood-Machine** to *walk'n'randomize* around some *Moods and States*.  
 
 There are **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
+
 Each Range has Three States. Each **State** is also named **Target**.  
+
 Every **Target** can be linked to three **Presets receivers (A-B-C)**.  
 
 Each **Preset receiver (A-B-C)** has 9 available **Presets/indexes**.  
+
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**.  
 
 (Linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/Triggering Video/Sounds...etc*)
@@ -14,8 +17,6 @@ There is an internal **BPM Clock** and customizable timers and counters, to conf
 
 ## Screenshots
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
-<!-- **VIDEO/GIF**:  
-https://imgur.com/a/MtI4NL7 -->
 
 ## Features
 - Three different **Modes**:
@@ -44,6 +45,8 @@ Add to **PROJECT GENERATOR**:
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) from @**Daandelange**  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) [_FORK_]  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) [_FORK_]  
 
 Already included in *OF_ADDON/libs*. No need to add manually:
 - [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
