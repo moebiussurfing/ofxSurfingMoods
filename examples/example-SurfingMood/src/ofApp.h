@@ -11,20 +11,20 @@
 	
 	NOTE:
 	
-	1. You can start testing by moving the Target slide
+	1. You could start testing by moving the Target slide
 	with the player stopped.
-	Each target is linked to 3 Presets that you can configure or to disable.
+	Each Target is linked to 3 Presets that you can configure or to disable.
 	
 	2. Then, pick a Mode and hit Play.
 
-	3. On Mode Manual, you can drag the Control slider to set a Range. 
-	The machine must be playing, and wil be wlaking between the 'mood' states.
+	3. Then, on the Mode Manual, you can drag the Control slider to set a Range. 
+	The machine must be playing, and wil be walking between the 'mood' states. 
+	All the time locked to the clock Bpm.
 
 */
 
 
 class ofApp: public ofBaseApp{
-
 public:
 
     void setup();
@@ -34,7 +34,7 @@ public:
     void windowResized(int w, int h);
 	ofxWindowApp windowApp;
 
-    // scene circle colors
+    // Scene circle colors
     ofxColorGradient<ofColor> gradient;
     ofColor colorCircle;
 	bool bGui = true;;
@@ -55,6 +55,4 @@ public:
     void Changed_Mood_PRESET_B(int & targetIndex);
     void Changed_Mood_PRESET_C(int & targetIndex);
 	void Changed_Mood_RANGE(int & targetIndex);
-
-	//----
 };

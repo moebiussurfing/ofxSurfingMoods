@@ -259,7 +259,6 @@ void ofxSurfingMoods::setup() // default sizes
 void ofxSurfingMoods::startup()
 {
 	// preview rectangle
-	//bUseCustomPreviewPosition = false;
 	bUseCustomPreviewPosition = true;
 
 	path_rect = path_Folder + "ofxSurfingMoods_";
@@ -507,16 +506,25 @@ void ofxSurfingMoods::draw_PreviewWidget() // put to the rigth-top of user panel
 
 	//-
 
-	// preview rectangle
-	if (bUseCustomPreviewPosition)
-		if (bEdit_PreviewWidget)
-		{
-			ofPushStyle();
-			ofSetColor(128, 64);
-			ofDrawRectangle(rectPreview);
-			rectPreview.draw();
-			ofPopStyle();
-		}
+	//// Preview rectangle Bg
+	//if (bUseCustomPreviewPosition)
+	//{
+	//	if (bEdit_PreviewWidget)
+	//	{
+	//		ofPushStyle();
+	//		ofSetColor(128, 64);
+	//		ofDrawRectangle(rectPreview);
+	//		rectPreview.draw();
+	//		ofPopStyle();
+	//	}
+	//}
+	//else {//TODO:
+	//	ofPushStyle();
+	//	ofSetColor(128, 64);
+	//	ofRectangle r = ofRectangle(gx, gy, gw, gh);;
+	//	ofDrawRectangle(r);
+	//	ofPopStyle();
+	//}
 }
 
 //--------------------------------------------------------------
@@ -555,11 +563,30 @@ void ofxSurfingMoods::update_PreviewColors()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custom position and size
 {
-	//if (bGui || bGui_PreviewWidget)
-	//if (bGui_PreviewWidget)
-
 	{
 		ofPushStyle();
+		
+		if (!bUseCustomPreviewPosition)
+		{
+			float gx, gy, gw, gh, ww, hh, pad;
+			pad = 10;
+			gw = ofGetWidth() - 2 * pad;
+			gx = pad;
+			gy = pad;
+			gh = 50;
+			ofPushStyle();
+			ofFill();
+			ofSetColor(0, 0, 0, 190);
+			ofRectangle r = ofRectangle(gx, gy, gw, gh);
+			// expand bigger
+			float ro = 4.0f;
+			float pp = 5;
+			ofRectangle rr = ofRectangle(
+				r.getX() - pp, r.getY() - pp,
+				r.getWidth() + 2 * pp, r.getHeight() + 2 * pp);
+			ofDrawRectRounded(rr, ro);
+			ofPopStyle();
+		}
 
 		//-
 
@@ -591,7 +618,8 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// 0. main bg expanded
+		// 0. Main bg expanded
+		if (bUseCustomPreviewPosition)
 		{
 			ofFill();
 			ofSetColor(0, 0, 0, 190);
@@ -605,15 +633,15 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// RECT A
+		// Rect A
 
-		// 1. bg
+		// 1. Bg
 
 		//ofFill();
 		//ofSetColor(cBg);
 		//ofDrawRectRounded(x, y, w, h1, ro);
 
-		// states boxes
+		// States boxes
 		{
 			float x1, x2, x3, xEnd;
 			x1 = x;
@@ -630,7 +658,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 				{
 				case 0:
 				{
-					ofSetColor(RANGE_Selected != 0 ? c1 : color_MOOD1);//disable alpha when range is selected
+					ofSetColor(RANGE_Selected != 0 ? c1 : color_MOOD1);// disable alpha when range is selected
 					_x = x1;
 					_w = x2 - x1;
 				}
@@ -653,7 +681,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 				break;
 				}
 
-				// range box
+				// Range box
 				ofFill();
 				ofDrawRectRounded(_x, y, _w, h1, ro);
 			}
@@ -661,7 +689,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// 2. target boxes with labels
+		// 2. Target boxes with labels
 
 		for (int t = 0; t < NUM_TARGETS; t++)
 		{
@@ -686,14 +714,14 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 			//-
 
-			// 2.1 target box
+			// 2.1 Target box
 
 			ofFill();
 			ofDrawRectRounded(xb, yb, wb, hb, ro);
 
 			//-
 
-			// 2.2 text label
+			// 2.2 Text label
 
 			ofSetColor(0);
 			float xOff = 3;
@@ -710,9 +738,9 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//--
 
-		// 3. selected box/target
+		// 3. Selected box/target
 
-		// blink disabling box draw
+		// Blink disabling box draw
 
 		if (bBlink)
 		{
@@ -725,7 +753,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// 3.1. filled box
+		// 3.1. Filled box
 
 		ofFill();
 		float blinkFactor = 0.4f;
@@ -735,7 +763,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// 3.2. border
+		// 3.2. Border
 
 		ofNoFill();
 		ofSetLineWidth(line);
@@ -743,13 +771,11 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		else ofSetColor(cBord.r, cBord.g, cBord.b, cBord.a * blinkFactor);
 		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
 
-
 		//----
-
 
 		// B. Box
 
-		// 4. completed timer progress
+		// 4. Completed timer progress
 
 		x2 = x;
 		y2 = y + h1 + padBg;
@@ -771,8 +797,8 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 					_w = COUNTER_step_FromOne * wStep;
 				}
 			}
-			// manual mode don't have steps counter bc it waits the user commands!
-			// the we just cound all the bar a single step.
+			// Manual mode don't have steps counter bc it waits the user commands!
+			// The we just cound all the bar a single step.
 			else {
 				_w = ofMap(timer_Progress, 0, 100, 0, ww2, true);
 			}
@@ -787,7 +813,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			//-
 
 			{
-				// 4.1 bg
+				// 4.1 Bg
 
 				ofFill();
 				//ofNoFill();
@@ -797,8 +823,8 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 				//-
 
-				// 4. 2 complete progress range 
-				// colored
+				// 4. 2 Complete progress range 
+				// Colored
 
 				if (!(MODE_Manual && bModeClockExternal))
 				{
@@ -818,12 +844,12 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 					//--
 
-					// 4.3 bar bg rectangle
+					// 4.3 Bar bg rectangle
 
 					ofFill();
 					ofDrawRectRounded(x2, y2, _w, hh2, ro);
 
-					// 4.4 mark all range steps with vertical lines
+					// 4.4 Mark all range steps with vertical lines
 
 					if (!MODE_Manual)
 					{
@@ -842,7 +868,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 			//----
 
-			// 5. manual control line
+			// 5. Manual control line
 			{
 				if (MODE_Manual)
 				{
@@ -869,7 +895,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		//// markov debug preview
+		//// Markov debug preview
 		//float ww =300;
 		//float hh =300;
 		//if(i == 0){
@@ -885,6 +911,22 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		//-
 
 		ofPopStyle();
+
+		//-
+
+		// Preview rectangle Bg
+		// Editing
+		if (bUseCustomPreviewPosition)
+		{
+			if (bEdit_PreviewWidget)
+			{
+				ofPushStyle();
+				ofSetColor(128, 64);
+				ofDrawRectangle(rectPreview);
+				rectPreview.draw();
+				ofPopStyle();
+			}
+		}
 	}
 }
 
@@ -2396,6 +2438,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.25, 1, true);
 
 			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
+			ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.1));//lower
 
 			//-
 
@@ -2403,7 +2446,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ca);
 			ImGui::PushStyleColor(ImGuiCol_Button, ca);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca2);
 			if (!bModeClockExternal) guiManager.Add(bPLAY, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG);
 			else
 			{
@@ -2549,7 +2592,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//--
 
-			if (MODE_Manual) {//ofxImGuiSurfing::AddVoidWidget();
+			if (MODE_Manual) {
+				//ofxImGuiSurfing::AddVoidWidget();
 			}
 			else if (!(bModeClockExternal && MODE_Manual)) {
 				guiManager.Add(COUNT_Duration, SurfingImGuiTypes::OFX_IM_STEPPER); // user setter
@@ -2565,7 +2609,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 			//-
 
 			// for monitor only
-			if (MODE_Manual) {//ofxImGuiSurfing::AddVoidWidget();
+			if (MODE_Manual) {
+				//ofxImGuiSurfing::AddVoidWidget();
 			}
 			else if (!(bModeClockExternal && MODE_Manual)) {
 				if (COUNT_Duration != 1) {
@@ -2612,7 +2657,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			guiManager.Add(RANGE_Selected, SurfingImGuiTypes::OFX_IM_INACTIVE);
 
 			ImGui::Spacing();
-			//ImGui::Spacing();
+
 			guiManager.Add(TARGET_Selected, SurfingImGuiTypes::OFX_IM_DEFAULT, false, 1, 4);
 
 			ImGui::PopStyleColor();
@@ -2643,13 +2688,12 @@ void ofxSurfingMoods::draw_ImGui_User()
 				if (guiManager.bExtra)
 				{
 					ImGui::Indent();
-					//ImGui::Indent();
 
 					{
 						ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
 						if (MODE_Manual)
 							ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
-						
+
 						ImGui::Separator();
 
 						ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
@@ -2664,16 +2708,13 @@ void ofxSurfingMoods::draw_ImGui_User()
 										bResetPreviewWidget = false;
 										doResetPreviewWidget();
 									}
-									//ofxImGuiSurfing::ToggleRoundedButton("Custom", &bUseCustomPreviewPosition);
 								}
 							}
 							ImGui::Unindent();
 						}
 
-						ImGui::Separator();
-						//ImGui::Spacing();
-
 						if (MODE_Manual) {
+							ImGui::Separator();
 							ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
 							if (bGui_ManualSlider)
 							{
@@ -2699,7 +2740,6 @@ void ofxSurfingMoods::draw_ImGui_User()
 					}
 
 					ImGui::Unindent();
-					//ImGui::Unindent();
 				}
 			}
 		}
@@ -2710,8 +2750,6 @@ void ofxSurfingMoods::draw_ImGui_User()
 //--------------------------------------------------------------
 void ofxSurfingMoods::doResetPreviewWidget()
 {
-	//bUseCustomPreviewPosition = false;
-
 	float gx, gy, gw, gh, ww, hh, pad;
 	pad = 10;
 	gw = ofGetWidth() - 2 * pad;
