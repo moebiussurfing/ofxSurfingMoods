@@ -54,8 +54,7 @@ public:
     ofxSurfingMoods moods;
     void setupMoods();
     void exitMoods();
-
-    // Callbacks from moods
+    // Callbacks to be notified from moods
     void Changed_Mood_TARGET(int & targetIndex);
 	void Changed_Mood_PRESET_A(int & targetIndex);
     void Changed_Mood_PRESET_B(int & targetIndex);

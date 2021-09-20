@@ -25,6 +25,7 @@ TODO:
 #include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
 #include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
+#include "TextBoxWidget.h"
 
 //--
 
@@ -103,7 +104,9 @@ public:
 	//-
 
 private:
+	TextBoxWidget textBoxWidget;
 
+private:
 	ofxSurfing_ImGui_Manager guiManager;
 	void setup_ImGui();
 
@@ -278,7 +281,8 @@ public:
 
 private:
 
-	ofParameter<bool> bModeClockExternal{ "Clock External", false };
+	ofParameter<bool> bModeClockExternal{ "External Clock", false };
+
 	ofParameter<bool> bModeAutomatic{ "Automatic", false };//some workflow features
 
 public:
@@ -482,6 +486,7 @@ private:
 
 	ofParameter<int> timer; // timer
 	ofParameter<int> timer_Progress; // % to finish timer
+	ofParameter<int> timer_ProgressComplete; // % to finish timer
 	ofParameter<int> Range_Min; // range
 	ofParameter<int> Range_Max; // range
 	void Changed_Params_Listeners(ofAbstractParameter &e);
@@ -585,7 +590,7 @@ private:
 
 	ofParameter<int> countToDuration; // the one setted by the user
 
-	ofParameter<int> COUNTER_step;
+	ofParameter<int> counterStep;
 	ofParameter<int> counterStepFromOne;
 
 	bool directionUp = true;
