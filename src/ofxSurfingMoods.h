@@ -220,7 +220,7 @@ private:
 	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false};//each arrive to a range will start from 1st from range.
 	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true};
 
-	ofParameter<float> controlManual{ "MANUAL CONTROL", 0, 0, 1.f };
+	ofParameter<float> controlManual{ "MANUAL CTRL", 0, 0, 1.f };
 
 	//ofParameterGroup params_Ranged{"RANGED"};
 	//ofParameterGroup params_Manual{"MANUAL"};
