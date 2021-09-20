@@ -21,7 +21,7 @@ void ofApp::draw()
 	ofPushStyle();
 	ofSetColor(colorCircle);
 	ofFill();
-	float r = 100;
+	float r = ofGetHeight()*0.2;
 	float x = ofGetWidth()*0.5;
 	float y = ofGetHeight()*0.5;
 	ofDrawCircle(x, y, r);

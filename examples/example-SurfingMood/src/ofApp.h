@@ -11,15 +11,21 @@
 	
 	NOTE:
 	
-	1. You could start testing by moving the Target slide
-	with the player stopped.
-	Each Target is linked to 3 Presets that you can configure or to disable.
-	
-	2. Then, pick a Mode and hit Play.
+	1. You could start testing by moving the PRESET A slider.
+	That Preset Index will change the circle color.
+	Set the player stopped to clarify.
 
-	3. Then, on the Mode Manual, you can drag the Control slider to set a Range. 
-	The machine must be playing, and wil be walking between the 'mood' states. 
-	All the time locked to the clock Bpm.
+	2. Then you could go testing by moving the STATE TARGET slider.
+	First you should ENABLE some preset controller A, B or C.
+	Each Target is linked to 3 Presets that you can configure/assign or to disable.
+	
+	2. Pick a Mode (A, B or C) and hit Play.
+	On A and B Mode, the machine must be playing, and will be walking between the 3 RANGE MOODS. 
+
+	3. On the Mode Manual, you can drag the Control slider to set a Range Mood.
+	When you set the slider to a mood, the machine will be walking/randomizing on the STATE TARGETS but locked inside the Mood.
+	
+	All the timers are locked to the clock Bpm.
 
 */
 

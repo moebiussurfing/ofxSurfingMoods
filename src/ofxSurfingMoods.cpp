@@ -184,16 +184,15 @@ void ofxSurfingMoods::update(ofEventArgs & args)
 	else
 	{
 		if (!MODE_Manual) {
-			timer_Progress = ofMap(counterStepFromOne, 1, countStayDuration, 0, 100, true);
+			timer_Progress = ofMap(counterStepFromOne, 1, countToDuration, 0, 100, true);
 		}
 		else {
-
 		}
 	}
 
 	//-
 
-	//timer_Progress = ofMap(COUNTER_step, 0, countStayDuration, 0, 100, true);
+	//timer_Progress = ofMap(COUNTER_step, 0, countToDuration, 0, 100, true);
 	//timer_Progress = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, 100, true);
 }
 
@@ -690,21 +689,22 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			float _w = 1;
 			float wStep = 1;
 
-			if (!MODE_Manual) {
-				if (!bModeClockExternal) 
+			if (!MODE_Manual)
+			{
+				if (!bModeClockExternal)
 				{
 					wStep = ww2 / (float)MAX(1, (counterStepFromOne.getMax()));//width of any step
 					_w = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, ww2, true);
 				}
-				else 
+				else
 				{
-					wStep = ww2 / MAX(1, (float)(countStayDuration.get()));//width of any step
+					wStep = ww2 / MAX(1, (float)(countToDuration.get()));//width of any step
 					_w = counterStepFromOne * wStep;
 				}
 			}
 			// Manual mode don't have steps counter bc it waits the user commands!
 			// The we just cound all the bar a single step.
-			else 
+			else
 			{
 				_w = ofMap(timer_Progress, 0, 100, 0, ww2, true);
 			}
@@ -888,7 +888,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// Ranges
 
-	//hardcoded for NUM_RANGES = 3
+	// hardcoded for NUM_RANGES = 3
 	ranges[0].name = "0";
 	ranges[0].min = 0;
 	ranges[0].max = rLimit1 - 1;
@@ -906,13 +906,11 @@ void ofxSurfingMoods::setup_Params()
 	// Define params
 	timer_Progress.set("COMPLETE", 0, 0, 100);//%
 	RANGE_Selected.set("RANGE MOOD", 0, 0, NUM_RANGES - 1);
-	//myRange.min.set("MIN PRESET", 0, 0, NUM_TARGETS - 1);//?
-	//myRange.max.set("MAX PRESET", 0, 0, NUM_TARGETS - 1);
 	myRange.name.set("MOOD", ranges[RANGE_Selected].name);
 
 	// Main counters
-	countStayDuration.set("STAY COUNT", 4, 1, 8);
-	counterStepFromOne.set("COUNTER", 1, 0, countStayDuration);
+	countToDuration.set("COUNT TO", 4, 1, 8);
+	counterStepFromOne.set("COUNTER", 1, 0, countToDuration);
 
 	bRandomize_Bank.set("BANK RANDOMIZE", false);
 	bRandomize_Bank.setSerializable(false);
@@ -925,8 +923,6 @@ void ofxSurfingMoods::setup_Params()
 
 	myRange.min.set("TARGET MIN", 0, 0, NUM_TARGETS - 1);
 	myRange.max.set("TARGET MAX", 0, 0, NUM_TARGETS - 1);
-	//myRange.min.set("RANGE TARGETS", 0, 0, NUM_TARGETS - 1);//range sliders
-	//myRange.max.set(NUM_TARGETS - 1);
 
 	//---
 
@@ -935,16 +931,12 @@ void ofxSurfingMoods::setup_Params()
 	parameters_ranges.add(RANGE_Selected);
 	parameters_ranges.add(myRange.min);
 	parameters_ranges.add(myRange.max);
-	//parameters_ranges.add(countStayDuration);
-	//parameters_ranges.add(bReset_Bank);
-	//parameters_ranges.add(bResetSort_Bank);
-	//parameters_ranges.add(bRandomize_Bank);
 
 	//---
 
 	// Store params (grouped only to save/load, not to allow on gui or callbacks)
 	params_STORE.setName("ofxSurfingMoods_Settings");
-	params_STORE.add(countStayDuration);
+	params_STORE.add(countToDuration);
 	params_STORE.add(bpmSpeed);
 	params_STORE.add(bpmLenghtBars);
 	params_STORE.add(bGui);
@@ -1014,7 +1006,7 @@ void ofxSurfingMoods::setup_Params()
 	params_USER.add(MODE_StartLocked);
 	params_USER.add(MODE_AvoidRepeat);
 
-	params_USER.add(countStayDuration);
+	params_USER.add(countToDuration);
 	params_USER.add(timer_Progress);
 	params_USER.add(counterStepFromOne);
 
@@ -1266,7 +1258,7 @@ void ofxSurfingMoods::doRunEngineStep()
 
 	// count times and cycle
 	COUNTER_step++;
-	COUNTER_step = COUNTER_step % countStayDuration;
+	COUNTER_step = COUNTER_step % countToDuration;
 	counterStepFromOne = COUNTER_step + 1;// for gui user
 
 	if (COUNTER_step == 0)
@@ -1515,9 +1507,9 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 			if (bMarkovFileFound) {
 				int _RANGE_Selected_PRE = RANGE_Selected.get();
 
-				// count times and cycle
+				// Count times and cycle
 				COUNTER_step++;
-				COUNTER_step = COUNTER_step % countStayDuration;
+				COUNTER_step = COUNTER_step % countToDuration;
 				counterStepFromOne = COUNTER_step + 1;// for gui user
 
 				// type A: mode stay amount of counter
@@ -2076,14 +2068,12 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 			refresh_MOOD_Color();
 		}
 
-		else if (name == countStayDuration.getName())
+		else if (name == countToDuration.getName())
 		{
-			countStayDuration = ofClamp(countStayDuration, countStayDuration.getMin(), countStayDuration.getMax());
+			countToDuration = ofClamp(countToDuration, countToDuration.getMin(), countToDuration.getMax());
 
 			counterStepFromOne.setMin(1);
-			counterStepFromOne.setMax(countStayDuration.get());
-
-			// avoid rescale timers error on preview
+			counterStepFromOne.setMax(countToDuration.get());
 
 			//// workflow
 			//bool bPre = isPlaying();
@@ -2195,6 +2185,30 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 
 			guiManager.beginWindow(n.c_str(), (bool*)&bGui_ManualSlider.get(), window_flags);
 			{
+				// markers
+				float x1, x2, gap, yy, ww, hh;
+				ww = ofxImGuiSurfing::getPanelWidth();
+				hh = ofxImGuiSurfing::getPanelHeight();
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				ImVec2 p = ImGui::GetCursorScreenPos();
+				float linew = 2.f;
+				float linea = 0.15f;
+				ImVec4 cm = ImVec4(0.0f, 0.0f, 0.0f, linea);
+
+				gap = 10;
+				ww -= 2 * gap;
+				x1 = p.x + gap;
+				x2 = x1 + ww;
+
+				yy = p.y + 0.33 * hh;
+				draw_list->AddLine(ImVec2(x1, yy), ImVec2(x2, yy), ImGui::GetColorU32(cm), linew);
+				yy = p.y + 0.66 * hh;
+				draw_list->AddLine(ImVec2(x1, yy), ImVec2(x2, yy), ImGui::GetColorU32(cm), linew);
+
+				//-
+
+				// v slider
+
 				auto c = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
 				ImVec4 _cBg = ImVec4(c.x, c.y, c.z, c.w * 0.2);
 				ImGui::PushStyleColor(ImGuiCol_SliderGrab, cRange);
@@ -2202,7 +2216,9 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 				ImGui::PushStyleColor(ImGuiCol_FrameBg, _cBg);
 				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, _cBg);
 				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, _cBg);
+
 				ofxImGuiSurfing::AddVSlider(controlManual);
+
 				ImGui::PopStyleColor(5);
 			}
 			guiManager.endWindow();
@@ -2218,7 +2234,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
-		//static bool bMinimize = false;
+		if (guiManager.bLockMove) window_flags |= ImGuiWindowFlags_NoMove;
 
 		//-
 
@@ -2270,8 +2286,19 @@ void ofxSurfingMoods::draw_ImGui_User()
 			//--
 
 			// Clock
-			if (guiManager.bMinimize) {
+			if (guiManager.bMinimize)
+			{
+				float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
+				float _h = 1 * ofxImGuiSurfing::getWidgetsHeightUnit();
 				guiManager.Add(bpmSpeed, SurfingImGuiTypes::OFX_IM_SLIDER);
+				if (ImGui::Button("HALF", ImVec2(_w50, _h))) {
+					bpmSpeed = bpmSpeed / 2.0f;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("DOUBLE", ImVec2(_w50, _h))) {
+					bpmSpeed = bpmSpeed * 2.0f;
+				}
+				guiManager.Add(bResetClockSettings, SurfingImGuiTypes::OFX_IM_BUTTON_SMALL, false, 1, 0);
 			}
 			else if (!guiManager.bMinimize)
 			{
@@ -2379,17 +2406,12 @@ void ofxSurfingMoods::draw_ImGui_User()
 				guiManager.refreshLayout();
 			}
 
-			//guiManager.Add(MODE_Ranged, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
-			//guiManager.Add(MODE_MarkovChain, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, true, 3);
-			//guiManager.Add(MODE_Manual, SurfingImGuiTypes::OFX_IM_TOGGLE_BIG, false, 3);
-
 			if (MODE_Manual) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ca);
 				guiManager.Add(controlManual, SurfingImGuiTypes::OFX_IM_SLIDER);
 				ImGui::PopStyleColor();
 			}
 			else {
-				//ofxImGuiSurfing::AddVoidWidget();
 			}
 
 			ImGui::Spacing();
@@ -2398,8 +2420,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			if (MODE_Manual) {
 			}
-			else if (!(bModeClockExternal && MODE_Manual)) {
-				guiManager.Add(countStayDuration, SurfingImGuiTypes::OFX_IM_STEPPER); // user setter
+			else if (!(bModeClockExternal/*&& MODE_Manual*/))
+			{
+				guiManager.Add(countToDuration, SurfingImGuiTypes::OFX_IM_STEPPER); // user setter
 			}
 			else {
 			}
@@ -2412,7 +2435,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 			if (MODE_Manual) {
 			}
 			else if (!(bModeClockExternal && MODE_Manual)) {
-				if (countStayDuration != 1) {
+				if (countToDuration != 1) {
 					guiManager.Add(counterStepFromOne, SurfingImGuiTypes::OFX_IM_INACTIVE);
 				}
 				else {
@@ -2421,10 +2444,10 @@ void ofxSurfingMoods::draw_ImGui_User()
 			else {
 			}
 
-			// progress
+			// Progress
 			if (MODE_Manual) {
 			}
-			else if (!(bModeClockExternal && MODE_Manual))
+			else if (!(bModeClockExternal/* && MODE_Manual*/))
 			{
 				guiManager.Add(timer_Progress, SurfingImGuiTypes::OFX_IM_PROGRESS_BAR);
 			}
@@ -2441,19 +2464,15 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//s = ofToString(bpmSpeed.get(), 2) + " BPM";
 			//ImGui::Text(s.c_str());
-
 			if (MODE_Ranged) s = MODE_Ranged.getName();
 			else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
 			else if (MODE_Manual) s = MODE_Manual.getName();
 			ImGui::Text(s.c_str());
-
 			//ImGui::Text("STATES:RANGE");
 			//ImGui::Spacing();
 
 			guiManager.Add(RANGE_Selected, SurfingImGuiTypes::OFX_IM_INACTIVE);
-
 			ImGui::Spacing();
-
 			guiManager.Add(TARGET_Selected, SurfingImGuiTypes::OFX_IM_DEFAULT, false, 1, 4);
 
 			ImGui::PopStyleColor();
@@ -2484,11 +2503,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 				if (guiManager.bExtra)
 				{
 					ImGui::Indent();
-
 					{
 						ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
-						if (MODE_Manual)
-							ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
+						if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
 
 						ImGui::Separator();
 
@@ -2517,12 +2534,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 								ImGui::Indent();
 								{
 									ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
-									//if (bGui_ManualSliderHeader) 
+									if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
 									{
-										if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
-										{
-											bResetSlider = true;
-										}
+										bResetSlider = true;
 									}
 								}
 								ImGui::Unindent();
@@ -2531,10 +2545,10 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 						ImGui::Separator();
 
-						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-						guiManager.drawAdvancedSubPanel(false);
+						guiManager.drawAdvanced();
+						//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+						//guiManager.drawAdvancedSubPanel(false);
 					}
-
 					ImGui::Unindent();
 				}
 			}

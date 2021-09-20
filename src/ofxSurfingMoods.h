@@ -583,7 +583,7 @@ private:
 
 	vector<range> ranges;
 
-	ofParameter<int> countStayDuration; // the one setted by the user
+	ofParameter<int> countToDuration; // the one setted by the user
 
 	ofParameter<int> COUNTER_step;
 	ofParameter<int> counterStepFromOne;
