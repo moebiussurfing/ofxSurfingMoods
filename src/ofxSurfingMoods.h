@@ -308,6 +308,7 @@ public:
 	// Reset preview layout
 	void doResetPreviewWidget();
 	void doResetManualSlider();
+	bool bResetLayout = false;
 
 	// preview boxes bar
 	//--------------------------------------------------------------

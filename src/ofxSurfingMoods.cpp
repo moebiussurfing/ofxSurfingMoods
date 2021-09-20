@@ -539,7 +539,10 @@ void ofxSurfingMoods::removeKeysListeners()
 //--------------------------------------------------------------
 void ofxSurfingMoods::windowResized(int w, int h)
 {
-	if (!bUseCustomPreviewPosition) doResetPreviewWidget();
+	ofLogNotice(__FUNCTION__) << w << ", " << h;
+
+	// workaround
+	bResetLayout = true;
 }
 
 //--------------------------------------------------------------
@@ -2280,7 +2283,10 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bMinimize);
 
-			if (!guiManager.bMinimize) ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
+			if (!guiManager.bMinimize) {
+				ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
+				if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
+			}
 
 			if (guiManager.bMinimize)
 			{
@@ -2299,7 +2305,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 						bpmSpeed = bpmSpeed * 2.0f;
 					}
 					ImGui::SameLine();
-					if (ImGui::Button("RESET", ImVec2(_w33, _h))) {
+					if (ImGui::Button("RESET", ImVec2(_w33, _h))) {//to change the name..
 						bResetClockSettings = true;
 					}
 					//guiManager.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL, false, 3);
@@ -2460,13 +2466,14 @@ void ofxSurfingMoods::draw_ImGui_User()
 			if (!guiManager.bMinimize) {
 
 				ImGui::Spacing();
-				ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
-				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bHelp);
 				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
 				if (guiManager.bExtra)
 				{
 					ImGui::Indent();
 					{
+						ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
+						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bHelp);
+
 						ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
 						if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
 
@@ -2542,6 +2549,15 @@ void ofxSurfingMoods::draw_ImGui()
 	{
 		draw_ImGui_User();
 		draw_ImGui_Advanced();
+
+		// workaround
+		if (bResetLayout) {
+			bResetLayout = true;
+
+			doResetPreviewWidget();
+			doResetManualSlider();
+		}
+
 		draw_ImGui_ManualSlider();
 	}
 	guiManager.end();
