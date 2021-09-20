@@ -414,7 +414,7 @@ public:
 
 	ofParameter<bool> bPLAY;//main play toggle
 	ofParameter<float> bpmSpeed;//main bpm
-	ofParameter<int> LEN_BARS;//timer duration in bars
+	ofParameter<int> bpmLenghtBars;//timer duration in bars
 
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
 
@@ -583,10 +583,10 @@ private:
 
 	vector<range> ranges;
 
-	ofParameter<int> COUNT_Duration; // the one setted by the user
+	ofParameter<int> countStayDuration; // the one setted by the user
 
 	ofParameter<int> COUNTER_step;
-	ofParameter<int> COUNTER_step_FromOne;
+	ofParameter<int> counterStepFromOne;
 
 	bool directionUp = true;
 
