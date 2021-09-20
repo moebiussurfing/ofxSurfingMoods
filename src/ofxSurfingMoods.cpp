@@ -1241,19 +1241,19 @@ void ofxSurfingMoods::setBarsScale(int bars)
 //--------------------------------------------------------------
 void ofxSurfingMoods::doRunEngineStep()
 {
-	// this function can be used to trig ranges jumps externally without using the internal timer.
+	// This function can be used to trig ranges jumps externally without using the internal timer.
 
 	int _RANGE_Selected_PRE = RANGE_Selected.get();
 
 	//-
 
-	// 1. mode random
+	// 1. Mode random
 
 	//-
 
-	// 2. mode back loop:
+	// 2. Mode back loop:
 
-	// count times and cycle
+	// Count times and cycle
 	counterStep++;
 	counterStep = counterStep % countToDuration;
 	counterStepFromOne = counterStep + 1;// for gui user
@@ -2279,6 +2279,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 			//-
 
 			ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bMinimize);
+
+			if (!guiManager.bMinimize) ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
 
 			if (guiManager.bMinimize)
 			{
