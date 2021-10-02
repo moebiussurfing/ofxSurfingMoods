@@ -1796,7 +1796,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 
 		else if (name == TARGET_Selected.getName())
 		{
-			ofLogNotice(__FUNCTION__) << TARGET_Selected;
+			ofLogNotice(__FUNCTION__) << name << ":" << TARGET_Selected;
 
 			// Blink
 			bBlink = true;
