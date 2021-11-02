@@ -723,7 +723,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 		//-
 
-		// 0. Main bg expanded
+		// 0. Main Bg expanded
 		if (bUseCustomPreviewPosition)
 		{
 			ofFill();
@@ -2068,47 +2068,23 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
 {
-	//guiManager.setImGuiAutodraw(bAutoDraw);
-	//guiManager.setup();
-	////guiManager.setup(gui);
-
 	guiManager.setSettingsPathLabel("ofxSurfingMoods");
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//--
 
 	//TODO:
-	//fixing..
+	// fixing..
 	static bool bCustom2 = true;
 	if (bCustom2)
 	{
 		guiManager.clearStyles();
-		guiManager.AddStyle(bPLAY, OFX_IM_TOGGLE_BIG, false, 1, 5);
+		guiManager.AddStyle(bPLAY, OFX_IM_TOGGLE_BIG, 1, false);
 
-		guiManager.AddStyle(MODE_Ranged, OFX_IM_TOGGLE_BIG, true, 3);
-		guiManager.AddStyle(MODE_MarkovChain, OFX_IM_TOGGLE_BIG, true, 3);
-		guiManager.AddStyle(MODE_Manual, OFX_IM_TOGGLE_BIG, false, 3, 5);
-
-		//	guiManager.AddStyle(bPrevious, OFX_IM_BUTTON_SMALL, true, 2);
-		//	guiManager.AddStyle(bNext, OFX_IM_BUTTON_SMALL, false, 2, 20);
-		//	guiManager.AddStyle(separation, OFX_IM_STEPPER);
-		//	guiManager.AddStyle(speed, OFX_IM_DRAG, false, 1, 10);
-		//	guiManager.AddStyle(shapeType, OFX_IM_SLIDER);
-		//	guiManager.AddStyle(size, OFX_IM_STEPPER);
-		//	guiManager.AddStyle(amount, OFX_IM_DRAG, false, 1, 10);
-		//	guiManager.AddStyle(bMode1, OFX_IM_TOGGLE_BIG, true, 2);
-		//	guiManager.AddStyle(bMode2, OFX_IM_TOGGLE_BIG, false, 2);
-		//	guiManager.AddStyle(bMode3, OFX_IM_TOGGLE_BIG, true, 2);
-		//	guiManager.AddStyle(bMode4, OFX_IM_TOGGLE_BIG, false, 2);
-		//	//guiManager.AddStyle(lineWidth3, OFX_IM_DRAG); // not works?
-		//	// hide some params from any on-param-group appearance
-		//	guiManager.AddStyle(speed3, OFX_IM_HIDDEN, false, -1, 50);
-		//	guiManager.AddStyle(size2, OFX_IM_HIDDEN, false, -1, 50);
-		//	guiManager.AddStyle(bPrevious, OFX_IM_HIDDEN);
-		//	guiManager.AddStyle(bNext, OFX_IM_HIDDEN);
-		//  guiManager.AddStyle(lineWidth, OFX_IM_HIDDEN);
+		guiManager.AddStyle(MODE_Ranged, OFX_IM_TOGGLE_BIG, 3, true);
+		guiManager.AddStyle(MODE_MarkovChain, OFX_IM_TOGGLE_BIG, 3, true);
+		guiManager.AddStyle(MODE_Manual, OFX_IM_TOGGLE_BIG, 3, false);
 	}
-	//guiManager.bAutoResize = false;
 }
 
 //--------------------------------------------------------------
@@ -2327,8 +2303,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 					float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
 					float _h = 1 * ofxImGuiSurfing::getWidgetsHeightUnit();
 
-					guiManager.Add(bpmSpeed, OFX_IM_SLIDER, false, 1, 0);
-					//guiManager.Add(bpmSpeed, OFX_IM_DRAG, false, 1, 0);
+					guiManager.Add(bpmSpeed, OFX_IM_SLIDER, 1, false);
+					//guiManager.Add(bpmSpeed, OFX_IM_DRAG, 1, false);
 
 					if (!bModeClockExternal)
 					{
@@ -2342,7 +2318,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 							bpmSpeed = bpmSpeed * 2.0f;
 						}
 
-						guiManager.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL, false, 1, 0);
+						guiManager.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL, 1, false);
 					}
 
 					ImGui::TreePop();
@@ -2439,7 +2415,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 				ImGui::Spacing();
 
-				guiManager.Add(TARGET_Selected, OFX_IM_DEFAULT, false, 1, 4);
+				guiManager.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
 			}
 			ImGui::PopStyleColor();
 
@@ -2454,12 +2430,12 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 				guiManager.Add(PRESET_A_Enable, OFX_IM_TOGGLE_SMALL);
 				guiManager.Add(PRESET_B_Enable, OFX_IM_TOGGLE_SMALL);
-				guiManager.Add(PRESET_C_Enable, OFX_IM_TOGGLE_SMALL, false, 1, 4);
+				guiManager.Add(PRESET_C_Enable, OFX_IM_TOGGLE_SMALL, 1, false);
 			}
 
 			if (PRESET_A_Enable) guiManager.Add(PRESET_A_Selected, OFX_IM_DEFAULT);
 			if (PRESET_B_Enable) guiManager.Add(PRESET_B_Selected, OFX_IM_DEFAULT);
-			if (PRESET_C_Enable) guiManager.Add(PRESET_C_Selected, OFX_IM_DEFAULT, false, 1, 4);
+			if (PRESET_C_Enable) guiManager.Add(PRESET_C_Selected, OFX_IM_DEFAULT, 1, false);
 
 			//--
 
@@ -2605,7 +2581,7 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 							guiManager.Add(bClone_TARGETS, OFX_IM_TOGGLE_SMALL);
 							guiManager.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
 							guiManager.Add(bReset_Bank, OFX_IM_TOGGLE_SMALL);
-							guiManager.Add(bRandomize_Bank, OFX_IM_TOGGLE_SMALL, false, 1);
+							guiManager.Add(bRandomize_Bank, OFX_IM_TOGGLE_SMALL, 1, false);
 
 							ImGui::TreePop();
 						}

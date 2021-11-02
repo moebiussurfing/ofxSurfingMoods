@@ -21,9 +21,9 @@ void ofApp::draw()
 	ofPushStyle();
 	ofSetColor(colorCircle);
 	ofFill();
-	float r = ofGetHeight()*0.2;
-	float x = ofGetWidth()*0.5;
-	float y = ofGetHeight()*0.5;
+	float r = ofGetHeight() * 0.2;
+	float x = ofGetWidth() * 0.5;
+	float y = ofGetHeight() * 0.5;
 	ofDrawCircle(x, y, r);
 	ofSetLineWidth(2.0);
 	ofNoFill();
@@ -69,7 +69,7 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::setupMoods()
 {
-	// Callbacks listeners from moods
+	// Callbacks listeners from Moods
 	moods.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
 	moods.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
 
