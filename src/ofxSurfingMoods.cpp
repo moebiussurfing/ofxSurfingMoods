@@ -246,7 +246,9 @@ void ofxSurfingMoods::setup_Params()
 	params_AppSettings.add(guiManager.params_Advanced);
 	params_AppSettings.add(bGui_PreviewWidget);
 	params_AppSettings.add(bUseCustomPreviewPosition);
-
+	params_AppSettings.add(bModeClockExternal);
+	params_AppSettings.add(bPLAY);
+	
 	//-
 
 	// Group params for callback listener only
@@ -285,7 +287,7 @@ void ofxSurfingMoods::setup_Params()
 	counterStepFromOne.setSerializable(false);
 	bGui_ManualSliderHeader.setSerializable(false);
 	autoSaveLoad_settings.setSerializable(false);
-	bPLAY.setSerializable(false);
+	//bPLAY.setSerializable(false);
 }
 
 //--------------------------------------------------------------
@@ -610,6 +612,24 @@ void ofxSurfingMoods::update_PreviewColors()
 	c1.set(ofColor(color_MOOD1, aRg));
 	c2.set(ofColor(color_MOOD2, aRg));
 	c3.set(ofColor(color_MOOD3, aRg));
+
+	//-
+
+	//TODO:
+	if (RANGE_Selected == 0)
+	{
+		cRange = color_MOOD1;
+	}
+	else if (RANGE_Selected == 1)
+	{
+		cRange = color_MOOD2;
+	}
+	else if (RANGE_Selected == 2)
+	{
+		cRange = color_MOOD3;
+	}
+
+	//-
 
 	// Color for manual control value
 	const float rangeSz = 1.f / (float)NUM_Ranges;
@@ -2139,7 +2159,7 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 			//window_flags |= ImGuiWindowFlags_NoDocking;
 			//if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-			std::string n = "Control";
+			std::string n = "_Control";
 
 			guiManager.beginWindow(n.c_str(), (bool*)&bGui_ManualSlider.get(), window_flags);
 			{
@@ -2378,6 +2398,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			// For monitor only
 			//if (!guiManager.bMinimize)
+			if (!MODE_Manual)
 			{
 				if (countToDuration != 1) {
 					guiManager.Add(counterStepFromOne, OFX_IM_INACTIVE);
@@ -2385,8 +2406,10 @@ void ofxSurfingMoods::draw_ImGui_User()
 			}
 
 			// Progress
-			guiManager.Add(timer_Progress, OFX_IM_PROGRESS_BAR);
-			if (!MODE_Manual && !bModeClockExternal) guiManager.Add(timer_ProgressComplete, OFX_IM_PROGRESS_BAR);
+			if (!bModeClockExternal && !guiManager.bMinimize) {
+				guiManager.Add(timer_Progress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+				if (!MODE_Manual && !bModeClockExternal) guiManager.Add(timer_ProgressComplete, OFX_IM_PROGRESS_BAR_NO_TEXT);
+			}
 
 			//----
 
