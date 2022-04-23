@@ -1,4 +1,4 @@
-
+// Not required for ofxSurfingMoods, just for the example drawing.
 
 #ifndef _OFX_COLOR_GRADIENT_H
 #define _OFX_COLOR_GRADIENT_H

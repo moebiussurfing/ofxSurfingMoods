@@ -155,6 +155,7 @@ void ofxSurfingMoods::setup_Params()
 	bClone_TARGETS.setSerializable(false);
 	bGui.set("MOODS SURFING", true);
 	bKeys.set("Keys", true);
+	bKeySpace.set("Key Space", true);
 
 	bGui_Advanced.set("Moods Advanced", false);
 	bGui_ManualSlider.set("Show Manual Slider", false);
@@ -358,7 +359,8 @@ void ofxSurfingMoods::startup()
 //--------------------------------------------------------------
 void ofxSurfingMoods::update(ofEventArgs & args)
 {
-	if (bGui && bGui_PreviewWidget) update_PreviewColors();
+	if (bGui) update_PreviewColors();
+	//if (bGui && bGui_PreviewWidget) update_PreviewColors();
 
 	//-
 
@@ -464,7 +466,7 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 
 	if (key == ' ')
 	{
-		setTogglePlay();
+		if(!bKeySpace) setTogglePlay();
 	}
 
 	//else if (key == 'p')
@@ -2470,6 +2472,11 @@ void ofxSurfingMoods::draw_ImGui_User()
 				{
 					ImGui::Indent();
 					{
+						ImGui::Spacing();
+						guiManager.refreshLayout();
+						guiManager.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
+						ImGui::Spacing();
+
 						ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
 						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bHelp);
 
