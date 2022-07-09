@@ -4,8 +4,8 @@
 
 #include "ofxSurfingMoods.h"
 
-#include "ofxColorGradient.h" // for the example only
-#include "ofxWindowApp.h" // for the example only
+#include "ofxColorGradient.h" // Not required. For the example only
+#include "ofxWindowApp.h" // Not required. For the example only
 
 /*
 	
@@ -25,7 +25,7 @@
 	3. On the Mode Manual, you can drag the Control slider to set a Range Mood.
 	When you set the slider to a mood, the machine will be walking/randomizing on the STATE TARGETS but locked inside the Mood.
 	
-	All the timers are locked to the clock Bpm.
+	All the timers are locked to the clock BPM.
 
 */
 
@@ -47,8 +47,8 @@ public:
 
 	ofxWindowApp windowApp;
 
-	//-------------------------
 
+	//--------------------------------------------------------------
 	// Snippet to copy / paste to you project ->
 
 	// Surfing Moods
@@ -58,6 +58,8 @@ public:
 	void setupMoods();
     void exitMoods();
 
+	//--
+	 
     // Callbacks to be notified from MOODS evolution
 
     void Changed_Mood_TARGET(int &index);

@@ -40,7 +40,7 @@
 
 //----
 
-// Another posible template
+// Another possible template
 // With default 16 targets, 
 // 16 presets, 8 patterns, limit1 4, limit2 11
 //#define DEFAULT_NUM_TARGETS 16 // TARGETS

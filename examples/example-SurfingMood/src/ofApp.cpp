@@ -9,7 +9,7 @@ void ofApp::setup()
 	gradient.addColor(ofColor::yellow);
 	gradient.addColor(ofColor::green);
 
-	//-
+	//--
 
 	setupMoods();
 }
@@ -55,16 +55,18 @@ void ofApp::exit()
 	exitMoods();
 }
 
+
 //----
 
 
-//-------------------------
-// Full Snippet to copy/paste to your project ->
-
+//--------------------------------------------------------------
+// 
+// Full Snippet to copy / paste to your project ->
+//
 // Surfing Moods
 //
-//setupMoods();
-//exitMoods();
+// setupMoods();
+// exitMoods();
 
 //--------------------------------------------------------------
 void ofApp::setupMoods()
@@ -82,10 +84,10 @@ void ofApp::setupMoods()
 	moods.setup();
 
 	// Default structure is:
-	// 3 Moods/ranges (with 3 targets each)
-	// 9 States/targets.
+	// 3 Moods aka Ranges (with 3 targets each)
+	// 9 States aka Targets.
 	// 9 Presets for each preset receiver A-B-C.
-	// Splitting the 3 moods/ranges:
+	// Splitting the 3 Moods:
 	// Limit 0-1 target 3, limit 1-2 target 6.
 }
 
@@ -147,7 +149,7 @@ void ofApp::Changed_Mood_RANGE(int &index)
 //--------------------------------------------------------------
 void ofApp::exitMoods()
 {
-	// Callbacks listeners from moods
+	// Callbacks listeners from Moods
 
 	moods.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
 
