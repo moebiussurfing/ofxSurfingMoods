@@ -28,13 +28,15 @@
 #define NUM_RANGES 3 // TARGET RANGES
 #define MAX_ITEMS 16 // reserve max for arrays creations
 
+#define PREVIEW_START_AT_ZERO
+
 //----
 
 // Default hard coded template
 // With default 9 targets, 
 // 9 presets x3 (ABC), limit1 3, limit2 6
-#define DEFAULT_NUM_TARGETS 9 // TARGETS
-#define DEFAULT_NUM_PRESETS 9 // PRESETS
+#define DEFAULT_NUM_TARGETS 9	// TARGETS
+#define DEFAULT_NUM_PRESETS 9	// PRESETS
 #define DEFAULT_RANGE_LIMIT_1 3 // divisor between range 0 and range 1
 #define DEFAULT_RANGE_LIMIT_2 6 // divisor between range 1 and range 2
 
@@ -43,10 +45,10 @@
 // Another possible template
 // With default 16 targets, 
 // 16 presets, 8 patterns, limit1 4, limit2 11
-//#define DEFAULT_NUM_TARGETS 16 // TARGETS
-//#define DEFAULT_NUM_PRESETS 8 // PRESETS
-//#define DEFAULT_RANGE_LIMIT_1 4 // divisor between range 0 and range 1
-//#define DEFAULT_RANGE_LIMIT_2 11 // divisor between range 1 and range 2
+//#define DEFAULT_NUM_TARGETS 16	// TARGETS
+//#define DEFAULT_NUM_PRESETS 8		// PRESETS
+//#define DEFAULT_RANGE_LIMIT_1 4	// divisor between range 0 and range 1
+//#define DEFAULT_RANGE_LIMIT_2 11	// divisor between range 1 and range 2
 // NOTE:
 //range 0 = presets 0-3
 //range 1 = presets 4-10
@@ -68,7 +70,7 @@ moodsSurfer.setup(9, 9, 3, 6);
 
 //--
 
-#define BPM_BAR_RATIO 4 // To scale ms Timer / Bpm Speed
+#define BPM_BAR_RATIO 4 // To scale ms Timer / BPM Speed
 
 //--
 
@@ -123,7 +125,7 @@ private:
 private:
 
 	ofxSurfing_ImGui_Manager guiManager;
-	void setup_ImGui();
+	void setupGui();
 
 public:
 
@@ -131,19 +133,10 @@ public:
 
 private:
 
-	void draw_ImGui_User();
+	void draw_ImGui_Main();
 	void draw_ImGui_Advanced();
+	void draw_ImGui_Matrices();
 	void draw_ImGui_ManualSlider();
-
-public:
-
-	// Force autodraw
-	//--------------------------------------------------------------
-	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
-
-private:
-
-	bool bAutoDraw; // must be false when multiple ImGui instances created!
 
 private:
 
@@ -408,7 +401,7 @@ private:
 	void loadSettings(std::string path);
 
 	void saveBanks(std::string path);
-	void loadBanks(std::string path);
+	bool loadBanks(std::string path);
 
 	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
 
@@ -449,7 +442,7 @@ private:
 	// This function can be used to trig ranges jumps externally without using the internal timer.
 	void doRunEngineStep();
 
-	bool BLOCK_CALLBACK_Feedback = false;
+	bool bDISABLE_CALLBACKS = false;
 
 	//-
 
@@ -538,6 +531,7 @@ private:
 	ofParameter<bool> bKeys;
 	ofParameter<bool> bKeySpace;
 	ofParameter<bool> bGui_Advanced;
+	ofParameter<bool> bGui_Matrices;
 	ofParameter<bool> bGui_ManualSlider;
 	ofParameter<bool> bGui_ManualSliderHeader;
 	ofParameter<bool> bEdit_PreviewWidget;
