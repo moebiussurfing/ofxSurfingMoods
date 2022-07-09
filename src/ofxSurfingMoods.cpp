@@ -196,7 +196,7 @@ void ofxSurfingMoods::setup_Params()
 	myRange.name.set("MOOD", ranges[RANGE_Selected].name);
 
 	// Main counters
-	countToDuration.set("COUNT TO", 4, 1, 8);
+	countToDuration.set("TO", 4, 1, 8);
 	counterStepFromOne.set("COUNTER", 1, 0, countToDuration);
 
 	bRandomize_Bank.set("BANK RANDOMIZE", false);
@@ -2397,8 +2397,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 					if (!guiManager.bMinimize) {
 						guiManager.refreshLayout();
 						ImGui::Spacing();
-						guiManager.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL);
+						guiManager.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL, 2, true);
+						guiManager.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL, 2);
 						//ImGui::Spacing();
 					}
 
@@ -2459,8 +2459,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 				else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
 				else if (MODE_Manual) s = MODE_Manual.getName();
 
-				ImGui::Spacing();
-				ImGui::Spacing();
+				//ImGui::Spacing();
+				//ImGui::Spacing();
+				guiManager.AddSpacingSeparated();
 
 				guiManager.AddLabelHuge(s.c_str(), false, true);
 
@@ -2485,6 +2486,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 				guiManager.AddLabelBig("TARGET > PRESETS", false, true);
 
 				guiManager.AddSpacingSeparated();
+				ImGui::Spacing();
 
 				guiManager.Add(PRESET_A_Enable, OFX_IM_TOGGLE_SMALL);
 				guiManager.Add(PRESET_B_Enable, OFX_IM_TOGGLE_SMALL);

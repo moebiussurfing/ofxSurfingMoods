@@ -228,8 +228,8 @@ private:
 	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };
 	// Every time we arrive to a range, will start from 1st from target of the mood range.
 	
-	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true };
-	// Nex random will go to a different than previous state, if enabled.
+	ofParameter<bool> MODE_AvoidRepeat{ "NO REPEAT", true };
+	// Next random will go to a different than previous state, if enabled.
 
 	ofParameter<float> controlManual{ "MANUAL CTRL", 0, 0, 1.f };
 
