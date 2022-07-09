@@ -1,5 +1,5 @@
 # Overview
-An **openFrameworks** add-on that works as my personal **Mood-Machine**.  
+An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.  
 To *Walk'n'Randomize* around some *Moods and States*.  
 
 1. There are **Three Moods** that we also name as **Ranges**. (Red-Yellow-Green)  
@@ -46,20 +46,20 @@ Available float to force select a **Mood/Range**, and to *walk'n'randomize* **St
 Add to **PROJECT GENERATOR**:  
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) from @**Daandelange**  
-* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) [_FORK_]  
-* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) [_FORK_]  
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) / _Fork_ from @**Daandelange**  
 
-Already included in *OF_ADDON/libs*. No need to add manually:
+Already included in *OF_ADDON/libs* or into other add-ons. No need to add them manually:
 - [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
 - [ofxSimpleTimer](https://github.com/HeliosInteractive/ofxSimpleTimer)
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_  
 
 ## Tested Systems
-* **Windows 10** / **VS 2017** / **OF ~0.11**
+* **Windows 10** / **VS 2022** / **OF ~0.12**
 
 ## Author
 An addon by **@moebiusSurfing**  
-*( ManuMolina ) 2021*  
+*( ManuMolina ) 2022*  
 
 ## License
 [**MIT License**](https://github.com/LICENSE)
