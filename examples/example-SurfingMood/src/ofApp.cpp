@@ -96,49 +96,49 @@ void ofApp::setupMoods()
 // We can modify other things depending on mood range too.
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_TARGET(int &targetIndex)
+void ofApp::Changed_Mood_TARGET(int &index)
 {
-	ofLogNotice(__FUNCTION__) << targetIndex;
+	ofLogNotice(__FUNCTION__) << index;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_A(int &targetIndex)
+void ofApp::Changed_Mood_PRESET_A(int &index)
 {
-	ofLogNotice(__FUNCTION__) << targetIndex;
+	ofLogNotice(__FUNCTION__) << index;
 
 	// Change the circle color reflecting the Preset A index
-	float val = ofMap(targetIndex, 0, 8, 0.f, 1.f);
+	float val = ofMap(index, 0, 8, 0.f, 1.f);
 	colorCircle = gradient.getColorAtPercent(val);
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_B(int &targetIndex)
+void ofApp::Changed_Mood_PRESET_B(int &index)
 {
-	ofLogNotice(__FUNCTION__) << targetIndex;
+	ofLogNotice(__FUNCTION__) << index;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_PRESET_C(int &targetIndex)
+void ofApp::Changed_Mood_PRESET_C(int &index)
 {
-	ofLogNotice(__FUNCTION__) << targetIndex;
+	ofLogNotice(__FUNCTION__) << index;
 }
 
 //--------------------------------------------------------------
-void ofApp::Changed_Mood_RANGE(int &targetIndex)
+void ofApp::Changed_Mood_RANGE(int &index)
 {
-	ofLogNotice(__FUNCTION__) << targetIndex;
+	ofLogNotice(__FUNCTION__) << index;
 
 	// Change the background color reflecting the Mood/Range
 
-	if (targetIndex == 0)
+	if (index == 0)
 	{
 		ofBackground(ofColor::indianRed);
 	}
-	else if (targetIndex == 1)
+	else if (index == 1)
 	{
 		ofBackground(ofColor::yellow);
 	}
-	else if (targetIndex == 2)
+	else if (index == 2)
 	{
 		ofBackground(ofColor::lightGreen);
 	}
@@ -148,8 +148,11 @@ void ofApp::Changed_Mood_RANGE(int &targetIndex)
 void ofApp::exitMoods()
 {
 	// Callbacks listeners from moods
+
 	moods.RANGE_Selected.removeListener(this, &ofApp::Changed_Mood_RANGE);
+
 	moods.TARGET_Selected.removeListener(this, &ofApp::Changed_Mood_TARGET);
+
 	moods.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);
 	moods.PRESET_B_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_B);
 	moods.PRESET_C_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_C);

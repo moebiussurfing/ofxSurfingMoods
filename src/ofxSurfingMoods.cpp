@@ -157,10 +157,10 @@ void ofxSurfingMoods::setup_Params()
 	bKeys.set("Keys", true);
 	bKeySpace.set("Key Space", true);
 
-	bGui_Advanced.set("Moods Advanced", false);
-	bGui_ManualSlider.set("Show Manual Slider", false);
+	bGui_Advanced.set("Advanced", false);
+	bGui_ManualSlider.set("Manual Slider", false);
 	bGui_ManualSliderHeader.set("Slider Header", false);
-	bGui_PreviewWidget.set("Show Preview Widget", false);
+	bGui_PreviewWidget.set("Preview Widget", false);
 	bUseCustomPreviewPosition.set("Custom", false);
 	bEdit_PreviewWidget.set("Edit Preview Widget", false);
 
@@ -2216,7 +2216,9 @@ void ofxSurfingMoods::draw_ImGui_User()
 		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 		if (guiManager.bLockMove) window_flags |= ImGuiWindowFlags_NoMove;
 
-		//-
+		//--
+
+		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
 
 		if (guiManager.beginWindow(bGui.getName().c_str(), (bool*)&bGui.get(), window_flags))
 		{
@@ -2225,7 +2227,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//-
 
-			// Colorize moods
+			// Colorize MOODS
 			float a;
 			ImVec4 c;
 			if (RANGE_Selected == 0) c = color_MOOD1;
@@ -2268,44 +2270,52 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//--
 
-			ImGui::Spacing();
+			guiManager.AddSpacing();
+
+			// Minimize
+			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+
+			guiManager.AddSpacingSeparated();
+
+			//-
+
+			if (!guiManager.bMinimize)
+			{
+				guiManager.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+				if (MODE_Manual) guiManager.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+			}
 
 			//--
 
 			// External clock
 
-			ofxImGuiSurfing::AddToggleRoundedButton(bModeClockExternal);
-			//guiManager.Add(bModeClockExternal, OFX_IM_TOGGLE_SMALL_BORDER);
+			guiManager.Add(bModeClockExternal, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
-			//-
-
-			ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bMinimize);
-
-			if (!guiManager.bMinimize) {
-				ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
-				if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
-			}
+			guiManager.AddSpacingSeparated();
 
 			if (guiManager.bMinimize)
 			{
 				// Mini Clock
 
-				float _w33 = ofxImGuiSurfing::getWidgetsWidth(3);
-				float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
+				float _w3 = ofxImGuiSurfing::getWidgetsWidth(3);
+				float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 				float _h = 1 * ofxImGuiSurfing::getWidgetsHeightUnit();
+
 				guiManager.Add(bpmSpeed, OFX_IM_SLIDER);
-				if (!bModeClockExternal) {
-					if (ImGui::Button("/2", ImVec2(_w33, _h))) {
+				if (!bModeClockExternal)
+				{
+					if (ImGui::Button("/2", ImVec2(_w3, _h))) {
 						bpmSpeed = bpmSpeed / 2.0f;
 					}
 					ImGui::SameLine();
-					if (ImGui::Button("x2", ImVec2(_w33, _h))) {
+					if (ImGui::Button("x2", ImVec2(_w3, _h))) {
 						bpmSpeed = bpmSpeed * 2.0f;
 					}
 					ImGui::SameLine();
-					if (ImGui::Button("RESET", ImVec2(_w33, _h))) {//to change the name..
+					if (ImGui::Button("RESET", ImVec2(_w3, _h))) {//to change the name..
 						bResetClockSettings = true;
 					}
+
 					//guiManager.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL, false, 3);
 				}
 			}
@@ -2321,8 +2331,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 				{
 					guiManager.refreshLayout();
 
-					float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
-					float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);
+					float _w1 = ofxImGuiSurfing::getWidgetsWidth(1);
+					float _w2 = ofxImGuiSurfing::getWidgetsWidth(2);
 					float _h = 1 * ofxImGuiSurfing::getWidgetsHeightUnit();
 
 					guiManager.Add(bpmSpeed, OFX_IM_SLIDER, 1, false);
@@ -2332,11 +2342,11 @@ void ofxSurfingMoods::draw_ImGui_User()
 					{
 						guiManager.Add(bpmSpeed, OFX_IM_STEPPER);
 
-						if (ImGui::Button("HALF", ImVec2(_w50, _h))) {
+						if (ImGui::Button("HALF", ImVec2(_w2, _h))) {
 							bpmSpeed = bpmSpeed / 2.0f;
 						}
 						ImGui::SameLine();
-						if (ImGui::Button("DOUBLE", ImVec2(_w50, _h))) {
+						if (ImGui::Button("DOUBLE", ImVec2(_w2, _h))) {
 							bpmSpeed = bpmSpeed * 2.0f;
 						}
 
@@ -2347,13 +2357,22 @@ void ofxSurfingMoods::draw_ImGui_User()
 				}
 			}
 
+			guiManager.AddSpacingSeparated();
+
 			//--
 
 			// Modes
-			if (!guiManager.bMinimize) {
+
+			// A. Ranged
+			// B. Markov
+			// C. Manual
+
+			if (!guiManager.bMinimize)
+			{
 				bool bOpen2 = false;
 				ImGuiTreeNodeFlags _flagt2 = (bOpen2 ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
 				_flagt2 |= ImGuiTreeNodeFlags_Framed;
+
 				if (ImGui::TreeNodeEx("MODES", _flagt2))
 				{
 					guiManager.refreshLayout();
@@ -2362,6 +2381,8 @@ void ofxSurfingMoods::draw_ImGui_User()
 					guiManager.Add(MODE_Ranged, OFX_IM_TOGGLE_BIG);
 					if (bMarkovFileFound) guiManager.Add(MODE_MarkovChain, OFX_IM_TOGGLE_BIG);
 					guiManager.Add(MODE_Manual, OFX_IM_TOGGLE_BIG);
+
+					guiManager.AddSpacingSeparated();
 
 					//--
 
@@ -2379,7 +2400,11 @@ void ofxSurfingMoods::draw_ImGui_User()
 				guiManager.refreshLayout();
 			}
 
-			if (MODE_Manual) {
+			if(!guiManager.bMinimize) guiManager.AddSpacingSeparated();
+
+			if (MODE_Manual)
+			{
+				guiManager.AddSpacing();
 				ImGui::PushStyleColor(ImGuiCol_Text, ca);
 				guiManager.Add(controlManual, OFX_IM_SLIDER);
 				ImGui::PopStyleColor();
@@ -2429,7 +2454,11 @@ void ofxSurfingMoods::draw_ImGui_User()
 				if (MODE_Ranged) s = MODE_Ranged.getName();
 				else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
 				else if (MODE_Manual) s = MODE_Manual.getName();
-				ImGui::Text(s.c_str());
+
+				ImGui::Spacing();
+
+				guiManager.AddLabelBig(s.c_str(), false, true);
+				//ImGui::Text(s.c_str());
 
 				//ImGui::Text("STATES:RANGE");
 
@@ -2448,87 +2477,101 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 			//-
 
-			if (!guiManager.bMinimize) {
+			if (!guiManager.bMinimize)
+			{
+				//ImGui::TextColored(ImGui::GetStyle().Colors[ImGuiCol_TextDisabled], "TARGET > PRESETS");
+				guiManager.AddLabelBig("TARGET > PRESETS", false, true);
 
-				ImGui::TextColored(ImGui::GetStyle().Colors[ImGuiCol_TextDisabled], "TARGET > PRESETS");
 				ImGui::Spacing();
 
 				guiManager.Add(PRESET_A_Enable, OFX_IM_TOGGLE_SMALL);
 				guiManager.Add(PRESET_B_Enable, OFX_IM_TOGGLE_SMALL);
 				guiManager.Add(PRESET_C_Enable, OFX_IM_TOGGLE_SMALL, 1, false);
+
+				ImGui::Spacing();
 			}
 
+			guiManager.AddSpacingSeparated();
+
+			ImGui::Spacing();
 			if (PRESET_A_Enable) guiManager.Add(PRESET_A_Selected, OFX_IM_DEFAULT);
 			if (PRESET_B_Enable) guiManager.Add(PRESET_B_Selected, OFX_IM_DEFAULT);
 			if (PRESET_C_Enable) guiManager.Add(PRESET_C_Selected, OFX_IM_DEFAULT, 1, false);
+			ImGui::Spacing();
 
 			//--
 
 			if (!guiManager.bMinimize) {
 
+				guiManager.AddSpacingSeparated();
+
 				ImGui::Spacing();
-				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+
+				guiManager.Add(guiManager.bExtra, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 				if (guiManager.bExtra)
 				{
-					ImGui::Indent();
+					guiManager.Indent();
 					{
 						ImGui::Spacing();
-						guiManager.refreshLayout();
+
+						guiManager.Add(bGui_Advanced, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 						guiManager.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
 						ImGui::Spacing();
+						guiManager.Add(bKeys, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+						guiManager.Add(guiManager.bHelp, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 
-						ofxImGuiSurfing::AddToggleRoundedButton(bKeys);
-						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bHelp);
-
-						ofxImGuiSurfing::AddToggleRoundedButton(bGui_Advanced);
-						if (MODE_Manual) ofxImGuiSurfing::AddToggleRoundedButton(bModeAutomatic);
+						if (MODE_Manual) guiManager.Add(bModeAutomatic, OFX_IM_TOGGLE_ROUNDED);
 
 						ImGui::Separator();
 
-						ofxImGuiSurfing::AddToggleRoundedButton(bGui_PreviewWidget);
+						//--
+
+						// Preview
+
+						guiManager.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 						if (bGui_PreviewWidget)
 						{
-							ImGui::Indent();
+							guiManager.Indent();
 							{
-								ofxImGuiSurfing::AddToggleRoundedButton(bUseCustomPreviewPosition);
+								guiManager.Add(bUseCustomPreviewPosition, OFX_IM_TOGGLE_ROUNDED_SMALL);
 								if (bUseCustomPreviewPosition) {
-									ofxImGuiSurfing::AddToggleRoundedButton(bEdit_PreviewWidget);
-									if (ofxImGuiSurfing::AddToggleRoundedButton(bResetPreviewWidget)) {
+									guiManager.Add(bEdit_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL);
+									if (guiManager.Add(bResetPreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL))
+									{
 										bResetPreviewWidget = false;
 										doResetPreviewWidget();
 									}
 								}
 							}
-							ImGui::Unindent();
+							guiManager.Unindent();
 						}
 
-						// slider
+						//--
+
+						// Slider
+
 						if (MODE_Manual) {
 							ImGui::Separator();
-							ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSlider);
+
+							guiManager.Add(bGui_ManualSlider, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 							if (bGui_ManualSlider)
 							{
-								ImGui::Indent();
+								guiManager.Indent();
 								{
-									ofxImGuiSurfing::AddToggleRoundedButton(bGui_ManualSliderHeader);
-									if (ofxImGuiSurfing::AddToggleRoundedButton(bResetSlider))
+									guiManager.Add(bGui_ManualSliderHeader, OFX_IM_TOGGLE_ROUNDED_SMALL);
+									if (guiManager.Add(bResetSlider, OFX_IM_TOGGLE_ROUNDED_SMALL))
 									{
 										bResetSlider = true;
 									}
 								}
-								ImGui::Unindent();
+								guiManager.Unindent();
 							}
 						}
-
-						ImGui::Separator();
-
-						// advanced
-						guiManager.drawAdvanced();
 					}
-					ImGui::Unindent();
+					guiManager.Unindent();
 				}
 			}
-		
+
 			guiManager.endWindow();
 		}
 	}
@@ -2550,11 +2593,10 @@ void ofxSurfingMoods::doResetPreviewWidget()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui()
 {
-	//if (!bGui) return;
-
 	guiManager.begin();
 	{
-		if (bGui) {
+		if (bGui)
+		{
 			draw_ImGui_User();
 			draw_ImGui_Advanced();
 		}
@@ -2583,13 +2625,9 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 	{
 		if (bGui_Advanced)
 		{
-			// Panels sizes
-			float xx = 10;
-			float yy = 10;
-			float ww = PANEL_WIDGETS_WIDTH;
-			float hh = 20;
+			if (bGui) guiManager.setNextWindowAfterWindowNamed(bGui.getName());
 
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
+			IMGUI_SUGAR__WINDOWS_CONSTRAINTSW
 			{
 				static bool bOpen = true;
 				ImGuiTreeNodeFlags _flagt;
@@ -2637,14 +2675,9 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 						}
 					}
 
-					//--
-
-					//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-					//guiManager.drawAdvancedSubPanel();
+					guiManager.endWindow();
 				}
-				guiManager.endWindow();
 			}
-			ImGui::PopStyleVar();
 		}
 	}
 }

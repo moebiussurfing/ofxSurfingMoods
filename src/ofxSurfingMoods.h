@@ -5,9 +5,9 @@
 
 /*
 
-TODO:
+	TODO:
 
-+ fix link bpm ptr.
+	+ fix link bpm as ptr.
 
 */
 
@@ -30,7 +30,7 @@ TODO:
 
 //----
 
-// Default hardcoded template
+// Default hard coded template
 // With default 9 targets, 
 // 9 presets x3 (ABC), limit1 3, limit2 6
 #define DEFAULT_NUM_TARGETS 9 // TARGETS
@@ -83,8 +83,6 @@ public:
 		addKeysListeners();
 
 		rectPreview.setAutoSave(false);
-
-		//bAutoDraw = false;
 	};
 
 	//--------------------------------------------------------------
@@ -97,19 +95,24 @@ public:
 	};
 
 public:
+
 	void setup();
 
 private:
+
 	void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
 
 public:
+
 	void startup();
 	void exit();
 	void windowResized(int w, int h);
 
-	// keys
+	// Keys
+
 private:
+
 	void keyPressed(ofKeyEventArgs &eventArgs);
 	void keyReleased(ofKeyEventArgs &eventArgs);
 	void addKeysListeners();
@@ -118,30 +121,37 @@ private:
 	//-
 
 private:
+
 	ofxSurfing_ImGui_Manager guiManager;
 	void setup_ImGui();
 
 public:
+
 	void draw_ImGui();
 
 private:
+
 	void draw_ImGui_User();
 	void draw_ImGui_Advanced();
 	void draw_ImGui_ManualSlider();
 
 public:
+
 	// Force autodraw
 	//--------------------------------------------------------------
 	void setImGuiAutodraw(bool b) { bAutoDraw = b; } // must be called befor setup!
 
 private:
+
 	bool bAutoDraw; // must be false when multiple ImGui instances created!
 
 private:
+
 	ofParameter<bool> bResetSlider{ "Reset Slider",false };
 	ofParameter<bool> bResetPreviewWidget{ "Reset Preview",false };
 
 private:
+
 	TextBoxWidget textBoxWidget;
 
 	//-
@@ -152,10 +162,13 @@ private:
 	std::string path_rect;
 
 private:
+
 	bool bMarkovFileFound = false;
 
-	// preview widget
 private:
+
+	// Preview widget
+
 	void draw_PreviewWidget();
 	void update_PreviewColors();
 	void draw_PreviewWidget(int x, int  y, int  w, int  h);
@@ -163,8 +176,6 @@ private:
 	ofColor cBg;
 	ofColor cBord;
 	ofColor c1, c2, c3;
-
-	//ofParameter<glm::vec2> positionGui_Engine;
 
 	//--
 
@@ -214,8 +225,11 @@ private:
 		}
 	};
 
-	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };//Every time we arrive to a range, will start from 1st from target of the mood range.
+	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };
+	// Every time we arrive to a range, will start from 1st from target of the mood range.
+	
 	ofParameter<bool> MODE_AvoidRepeat{ "AVOID REPEAT", true };
+	// Nex random will go to a different than previous state, if enabled.
 
 	ofParameter<float> controlManual{ "MANUAL CTRL", 0, 0, 1.f };
 
@@ -231,7 +245,7 @@ private:
 public:
 
 	void setup(int numTargets, int numPresets, int limit1, int limit2);
-	// all 3 preset have the same size, usualy 8 
+	// All 3 preset have the same size, usually 8 
 
 	void play();
 	void stop();
@@ -271,15 +285,16 @@ public:
 	//-
 
 	// To run external clock/timers
-	// we will receive each incomming ticks.
+	// we will receive each incoming ticks.
 	// that will inform to step-next. 
 	// This modes disables the internal timers.
 
 private:
 
-	ofParameter<bool> bModeClockExternal{ "External Clock", false };//disables internal timers to receive ticks. We can force bets internally.
+	ofParameter<bool> bModeClockExternal{ "External Clock", false };
+	// disables internal timers to receive ticks. We can force bets internally.
 
-	ofParameter<bool> bModeAutomatic{ "Automatic", false };//some workflow features
+	ofParameter<bool> bModeAutomatic{ "Automatic", false }; // some workflow features
 
 public:
 
