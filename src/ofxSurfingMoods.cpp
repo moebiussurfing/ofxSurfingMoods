@@ -249,7 +249,7 @@ void ofxSurfingMoods::setup_Params()
 	params_AppSettings.add(bUseCustomPreviewPosition);
 	params_AppSettings.add(bModeClockExternal);
 	params_AppSettings.add(bPLAY);
-	
+
 	//-
 
 	// Group params for callback listener only
@@ -357,7 +357,7 @@ void ofxSurfingMoods::startup()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::update(ofEventArgs & args)
+void ofxSurfingMoods::update(ofEventArgs& args)
 {
 	if (bGui) update_PreviewColors();
 	//if (bGui && bGui_PreviewWidget) update_PreviewColors();
@@ -396,7 +396,7 @@ void ofxSurfingMoods::update(ofEventArgs & args)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::draw(ofEventArgs & args)
+void ofxSurfingMoods::draw(ofEventArgs& args)
 {
 	if (!bGui) return;
 
@@ -418,9 +418,9 @@ void ofxSurfingMoods::draw(ofEventArgs & args)
 
 // Keys
 //--------------------------------------------------------------
-void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
+void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 {
-	const int &key = eventArgs.key;
+	const int& key = eventArgs.key;
 
 	//--
 
@@ -466,7 +466,7 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 
 	if (key == ' ')
 	{
-		if(!bKeySpace) setTogglePlay();
+		if (!bKeySpace) setTogglePlay();
 	}
 
 	//else if (key == 'p')
@@ -513,9 +513,9 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs &eventArgs)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::keyReleased(ofKeyEventArgs &eventArgs)
+void ofxSurfingMoods::keyReleased(ofKeyEventArgs& eventArgs)
 {
-	const int &key = eventArgs.key;
+	const int& key = eventArgs.key;
 	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
 
 	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -766,7 +766,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		{
 			float x1, x2, x3, xEnd;
 			x1 = x;
-			x2 = x1 + ((rLimit1)* sizes);
+			x2 = x1 + ((rLimit1)*sizes);
 			x3 = x2 + ((rLimit2 - rLimit1) * sizes);
 			xEnd = x3 + ((NUM_TARGETS - rLimit2) * sizes);
 
@@ -828,8 +828,8 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			}
 
 			float xb, yb, wb, hb;
-			xb = x + t * sizes + 0.5f*padBox;
-			yb = y + 0.5f*padBox;
+			xb = x + t * sizes + 0.5f * padBox;
+			yb = y + 0.5f * padBox;
 			wb = sizes - padBox;
 			hb = h1 - padBox;
 
@@ -849,11 +849,11 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			float yOff = 5;
 			if (myFont.isLoaded())
 			{
-				myFont.drawString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
+				myFont.drawString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f * hb + yOff);
 			}
 			else
 			{
-				ofDrawBitmapString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f*hb + yOff);
+				ofDrawBitmapString(ofToString(t), xb + wb * 0.5f - xOff, yb + 0.5f * hb + yOff);
 			}
 		}
 
@@ -880,7 +880,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		float blinkFactor = 0.4f;
 		if (!bBlink) ofSetColor(0, aSel);
 		else ofSetColor(0, blinkFactor * aSel);
-		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
+		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f * padSel, y + 0.5f * padSel, sizes - padSel, h1 - padSel, ro);
 
 		//-
 
@@ -890,7 +890,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		ofSetLineWidth(line);
 		if (!bBlink) ofSetColor(cBord);
 		else ofSetColor(cBord.r, cBord.g, cBord.b, cBord.a * blinkFactor);
-		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f*padSel, y + 0.5f*padSel, sizes - padSel, h1 - padSel, ro);
+		ofDrawRectRounded(x + TARGET_Selected * sizes + 0.5f * padSel, y + 0.5f * padSel, sizes - padSel, h1 - padSel, ro);
 
 		//----
 
@@ -1594,7 +1594,7 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::timer_Range_Complete(int &args)
+void ofxSurfingMoods::timer_Range_Complete(int& args)
 {
 	ofLogNotice(__FUNCTION__) << "\n";
 
@@ -1603,7 +1603,7 @@ void ofxSurfingMoods::timer_Range_Complete(int &args)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::timer_Range_Started(int &args)
+void ofxSurfingMoods::timer_Range_Started(int& args)
 {
 	ofLogVerbose(__FUNCTION__) << "timer_Range_Started";
 }
@@ -1679,7 +1679,7 @@ void ofxSurfingMoods::loadBanks(std::string path)
 
 		// avoid crashes
 		int p = 0;
-		for (auto &js_tar : js_targets)
+		for (auto& js_tar : js_targets)
 		{
 			if ((!js_tar.empty()) && (p < NUM_TARGETS))
 			{
@@ -1750,7 +1750,7 @@ void ofxSurfingMoods::loadSettings(std::string path)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
+void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 {
 	if (BLOCK_CALLBACK_Feedback) return;
 	{
@@ -2041,7 +2041,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter &e)
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
+void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter& e)
 {
 	if (BLOCK_CALLBACK_Feedback) return;
 	{
@@ -2090,7 +2090,7 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter &e)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setup_ImGui()
 {
-	guiManager.setSettingsPathLabel("ofxSurfingMoods");
+	guiManager.setName("ofxSurfingMoods");
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//--
@@ -2218,7 +2218,7 @@ void ofxSurfingMoods::draw_ImGui_User()
 
 		//-
 
-		guiManager.beginWindow(bGui.getName().c_str(), (bool*)&bGui.get(), window_flags);
+		if (guiManager.beginWindow(bGui.getName().c_str(), (bool*)&bGui.get(), window_flags))
 		{
 			static bool bOpen = false;
 			ImGuiTreeNodeFlags _flagt;
@@ -2528,9 +2528,10 @@ void ofxSurfingMoods::draw_ImGui_User()
 					ImGui::Unindent();
 				}
 			}
+		
+			guiManager.endWindow();
 		}
 	}
-	guiManager.endWindow();
 }
 
 //--------------------------------------------------------------
@@ -2549,12 +2550,14 @@ void ofxSurfingMoods::doResetPreviewWidget()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui()
 {
-	if (!bGui) return;
+	//if (!bGui) return;
 
 	guiManager.begin();
 	{
-		draw_ImGui_User();
-		draw_ImGui_Advanced();
+		if (bGui) {
+			draw_ImGui_User();
+			draw_ImGui_Advanced();
+		}
 
 		// workaround
 		if (bResetLayout) {
