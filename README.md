@@ -3,7 +3,7 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 
 *WALK'n'RANDOMIZE* around some *MOODS and associated STATES*.  
 
-### HIERARCHY
+## HIERARCHY
 1. There are **THREE MOODS** (also named as **RANGES**). (Red - Yellow - Green)  
 
 2. Each **RANGE** has **THREE STATES** or variations. (also named as **TARGETS**)  
@@ -12,11 +12,11 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 
 4. Each **PRESET RECEIVER (A-B-C)** has 9 available destinations **PRESETS / INDEXES**.  
 
-### What we will do with that Target index evolution?
+## What we will do with that Target index evolution?
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**,  
 linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/Triggering Video/Sounds...etc*  
 
-### There's some clock inside?
+## There's some clock inside?
 Yes. There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walking around into the *MOOD STATES*.  
 
 ## Screenshots
@@ -25,6 +25,7 @@ Yes. There is an internal **BPM Clock** and customizable timers and counters to 
 ![](/Examples/1_example-Mood_Basic/Capture.PNG)  
 
 2_example-Mood_Advanced
+Uses ofxBeatClock.  
 ![](/Examples/2_example-Mood_Advanced/Capture.PNG)  
 
 ## Features
@@ -35,9 +36,9 @@ Yes. There is an internal **BPM Clock** and customizable timers and counters to 
 Looped walking through the **Moods/Ranges** : **123** **321** **123** ..., doing randomize to select a **Target/State** around the contained Targets into the **Mood/Range**.
 
 2. **MODE MARKOV CHAIN**  
-![image](/readme_images/MarcovGraph.png?raw=true "image")  
+![](/readme_images/MarcovGraph.png)  
 Editable matrix to distribute graph probabilities. Customizable file '*transitionMatrix.txt*' with your own text editor. (Each row represents each State, and the odds (%) of jumping to the other States, or "to rest into itself". All row values must add up to 1.0 (100%) to be stochastic.):  
-![image](/readme_images/MarkovMatrix.PNG?raw=true "image")  
+![](/readme_images/MarkovMatrix.PNG)  
 
 3. **MODE MANUAL CONTROL**  
 Available float to force select a **Mood/Range**, and to *walk'n'randomize* **States/Targets** locked inside the **Mood/Range**.
@@ -55,7 +56,8 @@ Available float to force select a **Mood/Range**, and to *walk'n'randomize* **St
 Download / Clone and add to **PROJECT GENERATOR**:  
 - [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 - [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
-- [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) / _Fork_ from @**Daandelange**  
+- [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) / _Fork_ from @**Daandelange**.  
+- [ofxBeatClock](https://github.com/moebiussurfing/ofxBeatClock) / _Optional_. For the Advanced Example. 
 
 Already included in *OF_ADDON/libs* or into other add-ons. No need to add them manually:
 - [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
