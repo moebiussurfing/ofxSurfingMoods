@@ -7,8 +7,13 @@
 
 	TODO:
 
-	+ fix link bpm as ptr.
+	+ add lock mode to disable editing ranges preset
+	+ reverse manual slider bc matrix presets is inverted 1-9
+	
+	BUG:
 
+	+ mode b toggle not showing..
+	
 */
 
 
@@ -57,7 +62,7 @@
 
 /*
 
-Example Snippet:
+// Example Snippet:
 // ofApp Example:
 // customize ranges/sizes (TODO: maybe not working..)
 moodsSurfer.setup(9, 9, 3, 6);
@@ -78,18 +83,22 @@ class ofxSurfingMoods
 public:
 
 	//--------------------------------------------------------------
-	ofxSurfingMoods() {
+	ofxSurfingMoods() 
+	{
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
-		ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+		//ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+
 		addKeysListeners();
 
 		rectPreview.setAutoSave(false);
 	};
 
 	//--------------------------------------------------------------
-	~ofxSurfingMoods() {
+	~ofxSurfingMoods()
+	{
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingMoods::update);
-		ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+		//ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
+
 		removeKeysListeners();
 
 		exit();
@@ -102,7 +111,7 @@ public:
 private:
 
 	void update(ofEventArgs & args);
-	void draw(ofEventArgs & args);
+	//void draw(ofEventArgs & args);
 
 public:
 
@@ -128,7 +137,7 @@ private:
 
 public:
 
-	void draw_ImGui();
+	void drawGui();
 
 private:
 
@@ -223,7 +232,7 @@ private:
 	ofParameter<bool> MODE_AvoidRepeat{ "NO REPEAT", true };
 	// Next random will go to a different than previous state, if enabled.
 
-	ofParameter<float> controlManual{ "MANUAL CTRL", 0, 0, 1.f };
+	ofParameter<float> controlManual{ "CTRL", 0, 0, 1.f };
 
 	ofColor cRange;
 	ofColor cRangeRaw;

@@ -404,24 +404,24 @@ void ofxSurfingMoods::update(ofEventArgs& args)
 	//timer_Progress = ofMap(counterStepFromOne, 1, counterStepFromOne.getMax() + 1, 0, 100, true);
 }
 
-//--------------------------------------------------------------
-void ofxSurfingMoods::draw(ofEventArgs& args)
-{
-	//if (!bGui) return;
-
-	// Preview widget
-	if (bGui_PreviewWidget) draw_PreviewWidget();
-
-	// Help
-	if (guiManager.bHelp) textBoxWidget.draw();
-
-	//-
-
-	//// ImGui
-	//draw_ImGui(); 
-	// -> TODO: fails when other ImGui instances...
-	// We will call this manually from parent scope.
-}
+////--------------------------------------------------------------
+//void ofxSurfingMoods::draw(ofEventArgs& args)
+//{
+//	//if (!bGui_Main) return;
+//
+//	//// Preview widget
+//	//if (bGui_PreviewWidget) draw_PreviewWidget();
+//
+//	//// Help
+//	//if (guiManager.bHelp) textBoxWidget.draw();
+//
+//	//-
+//
+//	//// ImGui
+//	//drawGui(); 
+//	// -> TODO: fails when other ImGui instances...
+//	// We will call this manually from parent scope.
+//}
 
 //-
 
@@ -2223,6 +2223,7 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 
 				yy = p.y + 0.33 * hh;
 				draw_list->AddLine(ImVec2(x1, yy), ImVec2(x2, yy), ImGui::GetColorU32(cm), linew);
+
 				yy = p.y + 0.66 * hh;
 				draw_list->AddLine(ImVec2(x1, yy), ImVec2(x2, yy), ImGui::GetColorU32(cm), linew);
 
@@ -2651,20 +2652,26 @@ void ofxSurfingMoods::doResetPreviewWidget()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingMoods::draw_ImGui()
+void ofxSurfingMoods::drawGui()
 {
+	if (!bGui_Main) return;
+
 	guiManager.begin();
 	{
-		//if (bGui_Main)
-		{
-			draw_ImGui_Main();
-			draw_ImGui_Matrices();
-			draw_ImGui_Advanced();
-		}
-
+		draw_ImGui_Main();
+		draw_ImGui_Matrices();
+		draw_ImGui_Advanced();
 		draw_ImGui_ManualSlider();
 	}
 	guiManager.end();
+
+	//--
+
+	// Preview widget
+	if (bGui_PreviewWidget) draw_PreviewWidget();
+
+	// Help
+	if (guiManager.bHelp) textBoxWidget.draw();
 }
 
 //--------------------------------------------------------------
