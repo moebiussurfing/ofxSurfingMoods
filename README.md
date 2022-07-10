@@ -12,10 +12,12 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 
 4. Each **PRESET RECEIVER (A-B-C)** has 9 available destinations **PRESETS / INDEXES**.  
 
+### What we will do with that Target index evolution?
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**,  
 linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/Triggering Video/Sounds...etc*  
 
-There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walking around into the *MOOD STATES*.  
+### There's some clock inside?
+Yes. There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walking around into the *MOOD STATES*.  
 
 ## Screenshots
 ![image](/readme_images/Capture1.PNG?raw=true "image")  
