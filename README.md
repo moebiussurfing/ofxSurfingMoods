@@ -21,11 +21,13 @@ Yes. There is an internal **BPM Clock** and customizable timers and counters to 
 
 ## Screenshots
 
-1_example-Mood_Basic
+#### 1_example-Mood_Basic  
+
 ![](/Examples/1_example-Mood_Basic/Capture.PNG)  
 
-2_example-Mood_Advanced
+#### 2_example-Mood_Advanced  
 Uses ofxBeatClock.  
+
 ![](/Examples/2_example-Mood_Advanced/Capture.PNG)  
 
 ## Features
