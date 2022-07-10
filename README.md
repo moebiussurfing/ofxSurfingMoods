@@ -6,11 +6,11 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 ## HIERARCHY
 1. There are **THREE MOODS** (also named as **RANGES**). (Red - Yellow - Green)  
 
-2. Each **RANGE** has **THREE STATES** or variations. (also named as **TARGETS**)  
+2. Each **RANGE** has **THREE STATES**. (also named as **TARGETS**)  
 
-3. Every **TARGET** can be linked to three **PRESETS RECEIVERS (A-B-C)**.  
+3. Every **TARGET** can be linked to three (A-B-C) **PRESETS RECEIVERS**.  
 
-4. Each **PRESET RECEIVER (A-B-C)** has 9 available destinations **PRESETS / INDEXES**.  
+4. Each **PRESET RECEIVER** has 9 available destinations or variations selected as **PRESETS / INDEXES**.  
 
 ## What we will do with that Target index evolution?
 We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**,  
