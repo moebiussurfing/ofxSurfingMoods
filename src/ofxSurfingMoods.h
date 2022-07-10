@@ -15,7 +15,6 @@
 //-
 
 #include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
-
 #include "ofxSurfingHelpers.h"
 #include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
@@ -260,11 +259,12 @@ public:
 
 public:
 
-	//TODO: link bpm's
-	float *bpmPtr = NULL;
-	void setBpmPtr(float &_bpmPtr) {
-		bpmPtr = &_bpmPtr;
-	};
+	////TODO: link bpm's
+	//float *bpmPtr = NULL;
+	////--------------------------------------------------------------
+	//void setBpmPtr(float &_bpmPtr) {
+	//	bpmPtr = &_bpmPtr;
+	//};
 
 	void setBpm(float bpm);
 	void setBarsScale(int bars);
@@ -282,7 +282,19 @@ public:
 	// that will inform to step-next. 
 	// This modes disables the internal timers.
 
+	//--------------------------------------------------------------
+	void setEnableExternalClock(bool b) {
+		bModeClockExternal = b;
+	}
+
+	////--------------------------------------------------------------
+	//void setEnableInternalClock(bool b) {
+	//	bInternalClock = b;
+	//}
+
 private:
+
+	//bool bInternalClock = true;
 
 	ofParameter<bool> bModeClockExternal{ "External Clock", false };
 	// disables internal timers to receive ticks. We can force bets internally.
@@ -421,7 +433,7 @@ public:
 
 private:
 
-	ofParameter<bool> MOOD_Color_Preview{ "RANGE MOOD", false };
+	//ofParameter<bool> MOOD_Color_Preview{ "RANGE MOOD", false };
 	ofColor colorLabel;
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
 	void refresh_MOOD_Color();

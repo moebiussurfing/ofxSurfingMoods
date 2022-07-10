@@ -10,8 +10,15 @@ void ofApp::setup()
 	gradient.addColor(ofColor::green);
 
 	//--
+	
+	setupMoods();	
 
-	setupMoods();
+	//--
+	
+	beatClock.setup();
+
+	// Beat Tick Callback
+	listenerBeat = beatClock.BeatTick.newListener([&](bool&) {this->Changed_Tick(); });
 }
 
 //--------------------------------------------------------------
@@ -35,6 +42,8 @@ void ofApp::draw()
 
 	// Gui
 	moods.draw_ImGui();
+
+	beatClock.draw();
 }
 
 //--------------------------------------------------------------
@@ -71,6 +80,15 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::setupMoods()
 {
+	// Default structure is:
+	// 3 Moods aka Ranges (with 3 targets each)
+	// 9 States aka Targets.
+	// 9 Presets for each preset receiver A-B-C.
+	// Splitting the 3 Moods:
+	// Limit 0-1 target 3, limit 1-2 target 6.
+
+	//--
+	 
 	// Callbacks listeners from Moods
 	moods.RANGE_Selected.addListener(this, &ofApp::Changed_Mood_RANGE);
 	moods.TARGET_Selected.addListener(this, &ofApp::Changed_Mood_TARGET);
@@ -81,14 +99,15 @@ void ofApp::setupMoods()
 
 	//--
 
-	moods.setup();
+	// Link Mood BPM to BeatBlock instance:
+	moods.bpmSpeed.makeReferenceTo(beatClock.BPM_Global);
 
-	// Default structure is:
-	// 3 Moods aka Ranges (with 3 targets each)
-	// 9 States aka Targets.
-	// 9 Presets for each preset receiver A-B-C.
-	// Splitting the 3 Moods:
-	// Limit 0-1 target 3, limit 1-2 target 6.
+	// Link Mood PLAY to BeatBlock instance:
+	moods.bPLAY.makeReferenceTo(beatClock.bPlay);
+
+	moods.setEnableExternalClock(true); // Forced. Is not mandatory, can be modified using the GUI.
+
+	moods.setup();
 }
 
 //--------------------------------------------------------------
@@ -158,4 +177,13 @@ void ofApp::exitMoods()
 	moods.PRESET_A_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_A);
 	moods.PRESET_B_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_B);
 	moods.PRESET_C_Selected.removeListener(this, &ofApp::Changed_Mood_PRESET_C);
+}
+
+//--------------------------------------------------------------
+void ofApp::Changed_Tick() // Callback to receive BeatTicks
+{
+	if (beatClock.getBeat() == 1)ofLogNotice(__FUNCTION__) << "--------";
+	ofLogNotice(__FUNCTION__) << "Beat! #" << beatClock.getBeat();
+
+	moods.doBeatTick();
 }
