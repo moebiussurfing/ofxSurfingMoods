@@ -19,8 +19,8 @@ linking them to change some *Parameters/States/Scenes/Preset Selections/Colors/T
 ### There's some clock inside?
 Yes. There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walking around into the *MOOD STATES*.  
 
-## Screenshots
-![image](/readme_images/Capture1.PNG?raw=true "image")  
+## Screenshot
+![](/Examples/1_example-Mood_Basic/Capture.PNG)  
 
 ## Features
 

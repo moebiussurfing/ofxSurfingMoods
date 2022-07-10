@@ -2670,8 +2670,8 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 				{
 					//guiManager.refreshLayout();
 					//ImGui::Spacing();
-					guiManager.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL, 2, true);
-					guiManager.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL, 2);
+					guiManager.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL);
+					guiManager.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL);
 					//ImGui::Spacing();
 
 					guiManager.AddSpacingSeparated();
