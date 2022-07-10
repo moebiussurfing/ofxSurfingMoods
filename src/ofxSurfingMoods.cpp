@@ -133,7 +133,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// 1. Params
 
-	bGui.set("MOODS", true);
+	bGui_Main.set("MOODS", true);
 	bGui_Matrices.set("MATRICES", false);
 	bGui_Advanced.set("ADVANCED", false);
 	bGui_PreviewWidget.set("Preview Widget", false);
@@ -236,7 +236,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// Store params (grouped only to save/load, not to allow on gui or callbacks)
 	params_AppSettings.setName("ofxSurfingMoods_AppSettings");
-	params_AppSettings.add(bGui);
+	params_AppSettings.add(bGui_Main);
 	params_AppSettings.add(bGui_Matrices);
 	params_AppSettings.add(bGui_Advanced);
 	params_AppSettings.add(bGui_ManualSlider);
@@ -369,7 +369,7 @@ void ofxSurfingMoods::startup()
 //--------------------------------------------------------------
 void ofxSurfingMoods::update(ofEventArgs& args)
 {
-	if (bGui) update_PreviewColors();
+	if (bGui_Main) update_PreviewColors();
 
 	//-
 
@@ -407,7 +407,7 @@ void ofxSurfingMoods::update(ofEventArgs& args)
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw(ofEventArgs& args)
 {
-	if (!bGui) return;
+	//if (!bGui) return;
 
 	// Preview widget
 	if (bGui_PreviewWidget) draw_PreviewWidget();
@@ -1261,13 +1261,13 @@ void ofxSurfingMoods::setTogglePlay()
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_Visible(bool b)
 {
-	bGui = b;
+	bGui_Main = b;
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_ToggleVisible()
 {
-	bGui = !bGui;
+	bGui_Main = !bGui_Main;
 }
 
 //TODO:
@@ -2126,7 +2126,7 @@ void ofxSurfingMoods::setupGui()
 	guiManager.setWindowsMode(IM_GUI_MODE_WINDOWS_SPECIAL_ORGANIZER);
 	guiManager.setup();
 
-	guiManager.addWindowSpecial(bGui);
+	guiManager.addWindowSpecial(bGui_Main);
 	guiManager.addWindowSpecial(bGui_Advanced);
 	guiManager.addWindowSpecial(bGui_Matrices);
 
@@ -2186,7 +2186,18 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 			doResetManualSlider();
 		}
 
-		//ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(40, 200));
+		// workaround
+		if (bResetLayout)
+		{
+			bResetLayout = false;
+
+			doResetPreviewWidget();
+			doResetManualSlider();
+		}
+
+		//--
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(40, 200));
 		{
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 			window_flags |= ImGuiWindowFlags_NoBackground;
@@ -2234,7 +2245,7 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 				guiManager.endWindow();
 			}
 		}
-		//ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 	}
 }
 
@@ -2280,11 +2291,11 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui_Main()
 {
-	if (bGui)
+	if (bGui_Main)
 	{
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 
-		if (guiManager.beginWindowSpecial(bGui))
+		if (guiManager.beginWindowSpecial(bGui_Main))
 		{
 			//--
 
@@ -2514,8 +2525,6 @@ void ofxSurfingMoods::draw_ImGui_Main()
 				{
 				}
 
-				guiManager.AddSpacing();
-
 				//--
 
 				if (!MODE_Manual)
@@ -2523,7 +2532,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					guiManager.Add(countToDuration, OFX_IM_STEPPER); // user setter
 				}
 
-				//-
+				//--
 
 				// For monitor only
 				//if (!guiManager.bMinimize)
@@ -2535,7 +2544,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					}
 				}
 
-				// Progress
+				// Progress Bar
 				if (!bModeClockExternal && !guiManager.bMinimize)
 				{
 					guiManager.Add(timer_Progress, OFX_IM_PROGRESS_BAR_NO_TEXT);
@@ -2646,20 +2655,11 @@ void ofxSurfingMoods::draw_ImGui()
 {
 	guiManager.begin();
 	{
-		//if (bGui)
+		//if (bGui_Main)
 		{
 			draw_ImGui_Main();
 			draw_ImGui_Matrices();
 			draw_ImGui_Advanced();
-		}
-
-		// workaround
-		if (bResetLayout)
-		{
-			bResetLayout = true;
-
-			doResetPreviewWidget();
-			doResetManualSlider();
 		}
 
 		draw_ImGui_ManualSlider();

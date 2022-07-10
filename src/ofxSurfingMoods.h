@@ -534,7 +534,7 @@ private:
 
 public:
 
-	ofParameter<bool> bGui;
+	ofParameter<bool> bGui_Main;
 
 	void setKeySpace(bool b) { bKeySpace = b; }//to avoid collapse with other space key as players start key.
 
