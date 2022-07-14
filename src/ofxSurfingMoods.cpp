@@ -2320,8 +2320,10 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			else if (RANGE_Selected == 2) c = color_MOOD3;
 			if (bModeClockExternal) a = 1.0f;//external
 			else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.35, 1, true);//internal playing
-			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
-			ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+//			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
+//			ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+            ImVec4 ca = (ImVec4)ImColor(c.x, c.y, c.z, c.w * a);
+            ImVec4 ca2 = (ImVec4)ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
 
 			//-
 
