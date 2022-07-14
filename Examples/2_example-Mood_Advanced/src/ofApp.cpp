@@ -24,7 +24,9 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	// Circle will be filled with gradient colors to visualize Preset A index
+    ofBackground(colorBg);
+    
+    // Circle will be filled with gradient colors to visualize Preset A index
 	ofPushStyle();
 	ofSetColor(colorCircle);
 	ofFill();
@@ -41,7 +43,7 @@ void ofApp::draw()
 	//-
 
 	// Gui
-	moods.draw_ImGui();
+	moods.drawGui();
 
 	beatClock.draw();
 }
@@ -148,20 +150,20 @@ void ofApp::Changed_Mood_PRESET_C(int &index)
 void ofApp::Changed_Mood_RANGE(int &index)
 {
 	ofLogNotice(__FUNCTION__) << index;
-
-	// Change the background color reflecting the Mood/Range
-
-	if (index == 0)
-	{
-		ofBackground(ofColor::indianRed);
-	}
-	else if (index == 1)
-	{
-		ofBackground(ofColor::yellow);
-	}
-	else if (index == 2)
-	{
-		ofBackground(ofColor::lightGreen);
+    
+    // Change the background color reflecting the Mood/Range
+    
+    if (index == 0)
+    {
+        colorBg = (ofColor::indianRed);
+    }
+    else if (index == 1)
+    {
+        colorBg = (ofColor::yellow);
+    }
+    else if (index == 2)
+    {
+        colorBg = (ofColor::lightGreen);
 	}
 }
 
