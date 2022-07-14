@@ -314,7 +314,7 @@ void ofxSurfingMoods::startup()
 
 	//--
 
-	ENABLED_MoodMachine = true;
+	bEnable = true;
 	bIsPlaying = false;
 	timer = 0;
 	bPLAY = false;
@@ -1145,8 +1145,10 @@ void ofxSurfingMoods::stopMachine()
 	RANGE_Selected_PRE = -1;
 
 	RANGE_Selected = 0;
+	
+	// set the target to the first target pos of the range
 	if (RANGE_Selected < ranges.size())
-		TARGET_Selected = ranges[RANGE_Selected].min; // set the target to the first target pos of the range
+		TARGET_Selected = ranges[RANGE_Selected].min; 
 
 	// markov
 	if (bMarkovFileFound)
@@ -1217,7 +1219,7 @@ void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 //--------------------------------------------------------------
 void ofxSurfingMoods::stop()
 {
-	if (ENABLED_MoodMachine && bPLAY)
+	if (bEnable && bPLAY)
 	{
 		bPLAY = false;
 
@@ -1231,7 +1233,7 @@ void ofxSurfingMoods::stop()
 //--------------------------------------------------------------
 void ofxSurfingMoods::play()
 {
-	if (ENABLED_MoodMachine && !bPLAY)
+	if (bEnable && !bPLAY)
 	{
 		bPLAY = true;
 	}
@@ -1240,7 +1242,7 @@ void ofxSurfingMoods::play()
 //--------------------------------------------------------------
 void ofxSurfingMoods::setTogglePlay()
 {
-	if (ENABLED_MoodMachine)
+	if (bEnable)
 	{
 		if (bPLAY)
 		{
@@ -2489,7 +2491,13 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 					// Modes
 					guiManager.Add(MODE_Ranged, OFX_IM_TOGGLE_MEDIUM);
-					if (bMarkovFileFound) guiManager.Add(MODE_MarkovChain, OFX_IM_TOGGLE_MEDIUM);
+					if (bMarkovFileFound) {
+						guiManager.Add(MODE_MarkovChain, OFX_IM_TOGGLE_MEDIUM);
+					}
+					else {
+						guiManager.AddLabel("ERROR! MARKOV FILES NOT FOUND ON /DATA");
+					}
+
 					guiManager.Add(MODE_Manual, OFX_IM_TOGGLE_MEDIUM);
 
 					ImGui::TreePop();

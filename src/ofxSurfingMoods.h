@@ -7,9 +7,13 @@
 
 	TODO:
 
-	+ add lock mode to disable editing ranges preset
+	+ add divider to make globally slower
+	+ add LOCK mode to disable momentary editing ranges preset
 	+ reverse manual slider bc matrix presets is inverted 1-9
-	
+	+ allow draw slider and preview widget a part, independently
+	+ 
+
+
 	BUG:
 
 	+ mode b toggle not showing..
@@ -19,12 +23,12 @@
 
 //-
 
-#include "ofxSurfingImGui.h" // -> Adds all the add-on classes. You can also simplify picking what you want to use.
-#include "ofxSurfingHelpers.h"
 #include "ofxSimpleTimer.h"
 #include "ofxMarkovChain.h"
-#include "ofxInteractiveRect.h" // engine to move the user clicker buttons panel. TODO: add resize by mouse too.
-#include "TextBoxWidget.h"
+#include "ofxSurfingImGui.h" 
+#include "ofxSurfingHelpers.h"
+#include "ofxInteractiveRect.h" // engine to move and resize the preview widget
+#include "TextBoxWidget.h" // help box
 
 //--
 
@@ -86,7 +90,6 @@ public:
 	ofxSurfingMoods() 
 	{
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
-		//ofAddListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
 
 		addKeysListeners();
 
@@ -97,7 +100,6 @@ public:
 	~ofxSurfingMoods()
 	{
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingMoods::update);
-		//ofRemoveListener(ofEvents().draw, this, &ofxSurfingMoods::draw);
 
 		removeKeysListeners();
 
@@ -111,7 +113,6 @@ public:
 private:
 
 	void update(ofEventArgs & args);
-	//void draw(ofEventArgs & args);
 
 public:
 
@@ -119,9 +120,9 @@ public:
 	void exit();
 	void windowResized(int w, int h);
 
-	// Keys
-
 private:
+
+	// Keys
 
 	void keyPressed(ofKeyEventArgs &eventArgs);
 	void keyReleased(ofKeyEventArgs &eventArgs);
@@ -187,8 +188,11 @@ public:
 
 	ofParameter<int> RANGE_Selected;
 
-	// each target/state is linked or trigs 3 other receiver selectors together: Preset A-B-C
-	ofParameter<int> TARGET_Selected;//current target. allways starts from 0
+	// Each target/state is linked to
+	// (or trigs) 3 other receiver selectors together: Preset A-B-C
+	
+	// Current index target. always starts from 0
+	ofParameter<int> TARGET_Selected;
 
 	ofParameter<int> PRESET_A_Selected;
 	ofParameter<int> PRESET_B_Selected;
@@ -232,7 +236,7 @@ private:
 	ofParameter<bool> MODE_AvoidRepeat{ "NO REPEAT", true };
 	// Next random will go to a different than previous state, if enabled.
 
-	ofParameter<float> controlManual{ "CTRL", 0, 0, 1.f };
+	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
 
 	ofColor cRange;
 	ofColor cRangeRaw;
@@ -256,10 +260,11 @@ public:
 	void setPathSettingsFolder(string s)
 	{
 		path_Folder = s;
+		ofxSurfingHelpers::CheckFolder(path_Folder);
 	}
 
 	//--------------------------------------------------------------
-	bool isPlaying()
+	bool isPlaying() const
 	{
 		return bPLAY.get();
 	}
@@ -268,7 +273,9 @@ public:
 
 public:
 
-	////TODO: link bpm's
+	////TODO: link BPMS's
+	// We will use makeReferenceTo between ofParmas!
+	// 
 	//float *bpmPtr = NULL;
 	////--------------------------------------------------------------
 	//void setBpmPtr(float &_bpmPtr) {
@@ -279,7 +286,7 @@ public:
 	void setBarsScale(int bars);
 
 	//--------------------------------------------------------------
-	float getBPM()
+	float getBPM() const
 	{
 		return bpmSpeed.get();
 	}
@@ -330,7 +337,7 @@ public:
 		TARGET_Selected = t;
 	}
 
-	//-
+	//--
 
 public:
 
@@ -339,16 +346,11 @@ public:
 	void doResetManualSlider();
 	bool bResetLayout = false;
 
-	// preview boxes bar
+	// Preview boxes bar
 	//--------------------------------------------------------------
 	void setPreviewPosition(int x, int y, int w, int h)
 	{
-		positionPreviewBoxes = glm::vec2(x, y);
-		positionPreviewBoxes_Width = w;
-		positionPreviewBoxes_Height = h;
-
-		rectPreview.setRect(positionPreviewBoxes.x, positionPreviewBoxes.y,
-			positionPreviewBoxes_Width, positionPreviewBoxes_Height);
+		rectPreview.setRect(x, y, w, h);
 
 		bUseCustomPreviewPosition = true;
 	}
@@ -365,12 +367,8 @@ public:
 
 	//TODO:
 	//void setGui_AdvancedVertical_MODE(bool enable);
-
-private:
-
-	glm::vec2 positionPreviewBoxes;
-	float positionPreviewBoxes_Width;
-	float positionPreviewBoxes_Height;
+	// can be enabled only when default positioner mode
+	//bool MODE_vertical = false;
 
 public:
 
@@ -426,15 +424,15 @@ private:
 
 	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
 
-	void stopMachine();
-
 	//--
 
 public:
 
-	ofParameter<bool> bPLAY;//main play toggle
-	ofParameter<float> bpmSpeed;//main bpm
-	ofParameter<int> bpmLenghtBars;//timer duration in bars
+	void stopMachine();
+
+	ofParameter<bool> bPLAY; // Main play toggle
+	ofParameter<float> bpmSpeed; // Main BPM
+	ofParameter<int> bpmLenghtBars; // Timer duration in bars
 
 	ofParameter<bool> bExternalLocked{ "EXTERNAL LOCKED", true };
 
@@ -442,7 +440,6 @@ public:
 
 private:
 
-	//ofParameter<bool> MOOD_Color_Preview{ "RANGE MOOD", false };
 	ofColor colorLabel;
 	ofColor color_MOOD1, color_MOOD2, color_MOOD3;
 	void refresh_MOOD_Color();
@@ -505,11 +502,13 @@ private:
 	ofParameter<int> timer_ProgressComplete; // % to finish timer
 	ofParameter<int> Range_Min; // range
 	ofParameter<int> Range_Max; // range
+
+	// Callbacks
 	void Changed_Params_Listeners(ofAbstractParameter &e);
 
 	//-
 
-	// each target handles two 'sub targets' aka 'preset + pattern';
+	// Each target handles two 'sub targets' aka 'preset + pattern';
 
 	int presets_A[MAX_ITEMS];
 	int presets_B[MAX_ITEMS];
@@ -530,16 +529,17 @@ private:
 	ofParameter<bool> bResetSort_Bank;
 	ofParameter<bool> bReset_Bank;
 	ofParameter<bool> bRandomize_Bank;
+
+	// BPM to 120
 	void resetClock();
+
+	// Creates bank assignments to each target index
 	void resetBank(bool RANDOMIZED = false, bool SORT_RELATIVE = true);
 
 	//-
 
 	bool stopBack = true; // WORKFLOW: goes to range 0 when stops
-	bool ENABLED_MoodMachine;
-
-	// can be enabled only when default positioner mode
-	//bool MODE_vertical = false;
+	bool bEnable;
 
 public:
 
@@ -588,22 +588,21 @@ private:
 		ofParameter<int> max;
 	};
 	range myRange;
-
 	vector<range> ranges;
 
-	ofParameter<int> countToDuration; // the one setted by the user
-
-	ofParameter<int> counterStep;
-	ofParameter<int> counterStepFromOne;
+	ofParameter<int> countToDuration; // the one to be setted by the user
+	ofParameter<int> counterStep; // monitor the counting but starting in 0
+	ofParameter<int> counterStepFromOne; // monitor the counting but starting in 1
 
 	bool directionUp = true;
 
-	void load_range(int r);
-	void save_range(int r);
 	ofParameter<bool> range_autoSave = true;
 	ofParameter<bool> range_autoLoad = true;
 
 	ofParameter<bool> target_autoSave = true;
 	ofParameter<bool> target_autoLoad = true;
+
+	void load_range(int r);
+	void save_range(int r);
 };
 
