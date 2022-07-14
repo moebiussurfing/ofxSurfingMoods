@@ -76,4 +76,6 @@ public:
 	void Changed_Mood_PRESET_C(int& index);
 
 	void Changed_Mood_RANGE(int& index);
+    
+    ofColor colorBg;
 };
