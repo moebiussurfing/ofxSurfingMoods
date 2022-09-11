@@ -221,8 +221,8 @@ void ofxSurfingMoods::setup_Params()
 	//---
 
 	// link to gui manager
-	bKeys.makeReferenceTo(guiManager.bKeys);
-	//bHelp.makeReferenceTo(guiManager.bHelp);
+	bKeys.makeReferenceTo(ui.bKeys);
+	//bHelp.makeReferenceTo(ui.bHelp);
 
 	//---
 
@@ -257,8 +257,8 @@ void ofxSurfingMoods::setup_Params()
 	params_AppSettings.add(PRESET_C_Enable);
 	params_AppSettings.add(TARGET_Selected);
 	params_AppSettings.add(bUseCustomPreviewPosition);
-	params_AppSettings.add(bModeClockExternal);
-	params_AppSettings.add(guiManager.params_Advanced);
+	params_AppSettings.add(bModeExternalClock);
+	params_AppSettings.add(ui.params_Advanced);
 
 	//-
 
@@ -266,7 +266,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.setName("MoodMachine_params");
 
 	params_Listeners.add(bPLAY);
-	params_Listeners.add(bModeClockExternal);
+	params_Listeners.add(bModeExternalClock);
 	params_Listeners.add(bModeAutomatic);
 	params_Listeners.add(bpmSpeed);
 	params_Listeners.add(bpmLenghtBars);
@@ -288,7 +288,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(MODE_Manual);
 	params_Listeners.add(controlManual);
 	params_Listeners.add(countToDuration);
-	params_Listeners.add(guiManager.bMinimize);
+	params_Listeners.add(ui.bMinimize);
 
 	// Exclude from file settings
 	//bPLAY.setSerializable(false);
@@ -380,7 +380,7 @@ void ofxSurfingMoods::update(ofEventArgs& args)
 
 	//-
 
-	if (!bModeClockExternal)
+	if (!bModeExternalClock)
 	{
 		timer_Range.update();
 		timer_Progress = 100 * timer_Range.getNormalizedProgress();
@@ -413,7 +413,7 @@ void ofxSurfingMoods::update(ofEventArgs& args)
 //	//if (bGui_PreviewWidget) draw_PreviewWidget();
 //
 //	//// Help
-//	//if (guiManager.bHelp) textBoxWidget.draw();
+//	//if (ui.bHelp) textBoxWidget.draw();
 //
 //	//-
 //
@@ -509,7 +509,7 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 
 	else if (key == 'B')
 	{
-		if (bModeClockExternal) doBeatTick();
+		if (bModeExternalClock) doBeatTick();
 	}
 	else if (key == '-')
 	{
@@ -646,6 +646,7 @@ void ofxSurfingMoods::update_PreviewColors()
 
 	// Color for manual control value
 	const float rangeSz = 1.f / (float)NUM_Ranges;
+
 	if (controlManual < rangeSz)
 	{
 		cRangeRaw = color_MOOD1;
@@ -658,6 +659,20 @@ void ofxSurfingMoods::update_PreviewColors()
 	{
 		cRangeRaw = color_MOOD3;
 	}
+
+	//// flip
+	//if (controlManual < rangeSz)
+	//{
+	//	cRangeRaw = color_MOOD3;
+	//}
+	//else if (controlManual < 2 * rangeSz)
+	//{
+	//	cRangeRaw = color_MOOD2;
+	//}
+	//else if (controlManual < 3 * rangeSz)
+	//{
+	//	cRangeRaw = color_MOOD1;
+	//}
 }
 
 //--------------------------------------------------------------
@@ -932,7 +947,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 			if (!MODE_Manual) // Mode A Range or B Markov
 			{
-				if (bModeClockExternal) // external clock
+				if (bModeExternalClock) // external clock
 				{
 					wStep = ww2 / MAX(1, (float)(countToDuration.get()));//width of any step
 					_w = counterStepFromOne * wStep;
@@ -954,7 +969,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 
 			//-
 
-			if (!bModeClockExternal)
+			if (!bModeExternalClock)
 			{
 				float wTimer = ofMap(timer_Progress, 0, 100, 0, wStep, true);
 				// scale by step timer to make it analog-continuous
@@ -974,7 +989,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 			// 4. 2 Complete progress range 
 			// Colored
 			{
-				if (!(MODE_Manual && bModeClockExternal))
+				if (!(MODE_Manual && bModeExternalClock))
 				{
 					if (RANGE_Selected == 0)
 					{
@@ -1145,10 +1160,10 @@ void ofxSurfingMoods::stopMachine()
 	RANGE_Selected_PRE = -1;
 
 	RANGE_Selected = 0;
-	
+
 	// set the target to the first target pos of the range
 	if (RANGE_Selected < ranges.size())
-		TARGET_Selected = ranges[RANGE_Selected].min; 
+		TARGET_Selected = ranges[RANGE_Selected].min;
 
 	// markov
 	if (bMarkovFileFound)
@@ -1425,7 +1440,7 @@ void ofxSurfingMoods::doRunEngineStep()
 //--------------------------------------------------------------
 void ofxSurfingMoods::doBeatTick()
 {
-	if (bModeClockExternal && bExternalLocked) doRunStep();
+	if (bModeExternalClock && bExternalLocked) doRunStep();
 }
 
 //--------------------------------------------------------------
@@ -1444,11 +1459,11 @@ void ofxSurfingMoods::clone()
 void ofxSurfingMoods::doRunStep(bool bforced)
 {
 	if (bforced ||
-		(bPLAY || (bModeClockExternal && bExternalLocked)))
+		(bPLAY || (bModeExternalClock && bExternalLocked)))
 	{
 		// Restart
 
-		if (!bModeClockExternal) timer_Range.start(false);
+		if (!bModeExternalClock) timer_Range.start(false);
 
 		//-
 
@@ -1477,6 +1492,16 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 				RANGE_Selected = 2;
 			}
 
+			//// flip
+			//if (controlManual < 1.f / 3.f) {
+			//	RANGE_Selected = 2;
+			//}
+			//else if (controlManual < 2.f / 3.f) {
+			//	RANGE_Selected = 1;
+			//}
+			//else if (controlManual <= 1.f) {
+			//	RANGE_Selected = 0;
+			//}
 
 			//-
 
@@ -1834,9 +1859,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 			}
 		}
 
-		else if (name == bModeClockExternal.getName())
+		else if (name == bModeExternalClock.getName())
 		{
-			bExternalLocked = bModeClockExternal;//?
+			bExternalLocked = bModeExternalClock;//?
 		}
 
 		else if (name == bClone_TARGETS.getName())
@@ -2019,7 +2044,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 		else if (name == controlManual.getName())
 		{
 			// workflow
-			if (!bModeClockExternal)
+			if (!bModeExternalClock)
 			{
 				if (bModeAutomatic)
 				{
@@ -2028,8 +2053,21 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 						bPLAY = true;
 					}
 				}
-				else {
+				else
+				{
 					bool bforce = false;
+
+					//// flip
+					//if (controlManual < 1.f / 3.f) {
+					//	if (RANGE_Selected.get() != 2) bforce = true;
+					//}
+					//else if (controlManual < 2.f / 3.f) {
+					//	if (RANGE_Selected.get() != 1) bforce = true;
+					//}
+					//else if (controlManual <= 1.f) {
+					//	if (RANGE_Selected.get() != 0) bforce = true;
+					//}
+
 					if (controlManual < 1.f / 3.f) {
 						if (RANGE_Selected.get() != 0) bforce = true;
 					}
@@ -2039,6 +2077,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 					else if (controlManual <= 1.f) {
 						if (RANGE_Selected.get() != 2) bforce = true;
 					}
+
 					if (!bforce)
 					{
 						if (!timer_Range.bIsRunning) {
@@ -2066,9 +2105,9 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 				}
 		}
 
-		else if (name == guiManager.bMinimize.getName())
+		else if (name == ui.bMinimize.getName())
 		{
-			if (guiManager.bMinimize)
+			if (ui.bMinimize)
 				if (bGui_Advanced)bGui_Advanced = false;
 		}
 	}
@@ -2124,15 +2163,15 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter& e)
 //--------------------------------------------------------------
 void ofxSurfingMoods::setupGui()
 {
-	guiManager.setName("ofxSurfingMoods");
-	guiManager.setWindowsMode(IM_GUI_MODE_WINDOWS_SPECIAL_ORGANIZER);
-	guiManager.setup();
+	ui.setName("ofxSurfingMoods");
+	ui.setWindowsMode(IM_GUI_MODE_WINDOWS_SPECIAL_ORGANIZER);
+	ui.setup();
 
-	guiManager.addWindowSpecial(bGui_Main);
-	guiManager.addWindowSpecial(bGui_Advanced);
-	guiManager.addWindowSpecial(bGui_Matrices);
+	ui.addWindowSpecial(bGui_Main);
+	ui.addWindowSpecial(bGui_Advanced);
+	ui.addWindowSpecial(bGui_Matrices);
 
-	guiManager.startup();
+	ui.startup();
 
 	//--
 
@@ -2141,12 +2180,12 @@ void ofxSurfingMoods::setupGui()
 	static bool bCustom2 = true;
 	if (bCustom2)
 	{
-		guiManager.clearStyles();
-		guiManager.AddStyle(bPLAY, OFX_IM_TOGGLE_BIG, 1, false);
+		ui.clearStyles();
+		ui.AddStyle(bPLAY, OFX_IM_TOGGLE_BIG, 1, false);
 
-		guiManager.AddStyle(MODE_Ranged, OFX_IM_TOGGLE_BIG, 3, true);
-		guiManager.AddStyle(MODE_MarkovChain, OFX_IM_TOGGLE_BIG, 3, true);
-		guiManager.AddStyle(MODE_Manual, OFX_IM_TOGGLE_BIG, 3, false);
+		ui.AddStyle(MODE_Ranged, OFX_IM_TOGGLE_BIG, 3, true);
+		ui.AddStyle(MODE_MarkovChain, OFX_IM_TOGGLE_BIG, 3, true);
+		ui.AddStyle(MODE_Manual, OFX_IM_TOGGLE_BIG, 3, false);
 	}
 }
 
@@ -2206,7 +2245,7 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 			window_flags |= ImGuiWindowFlags_NoScrollbar;
 			if (!bGui_ManualSliderHeader) window_flags |= ImGuiWindowFlags_NoTitleBar;
 
-			if (guiManager.beginWindow(bGui_ManualSlider, window_flags))
+			if (ui.BeginWindow(bGui_ManualSlider, window_flags))
 			{
 				// markers zones
 				float x1, x2, gap, yy, ww, hh;
@@ -2241,11 +2280,14 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, _cBg);
 				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, _cBg);
 				{
-					ofxImGuiSurfing::AddVSlider(controlManual);
+					ImVec2 sz = ImVec2(-1.f, -1.f);
+					bool bNoName = true;
+					bool bNoNumber = true;
+					ofxImGuiSurfing::AddVSlider(controlManual, sz, bNoName, bNoNumber);
 				}
 				ImGui::PopStyleColor(5);
 
-				guiManager.endWindow();
+				ui.EndWindow();
 			}
 		}
 		ImGui::PopStyleVar();
@@ -2259,34 +2301,34 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 	{
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 
-		if (guiManager.beginWindowSpecial(bGui_Matrices))
+		if (ui.BeginWindowSpecial(bGui_Matrices))
 		{
 			bool b = true;
-			//bool b = guiManager.bMinimize;
+			//bool b = ui.bMinimize;
 
-			float h = (b ? 1 : 2) * guiManager.getWidgetsHeightUnit();
+			float h = (b ? 1 : 2) * ui.getWidgetsHeightUnit();
 
 			if (PRESET_A_Enable)
 			{
-				guiManager.AddLabel(PRESET_A_Selected.getName(), false, b);
+				ui.AddLabel(PRESET_A_Selected.getName(), false, b);
 				ofxImGuiSurfing::AddMatrixClicker(PRESET_A_Selected, h);
-				if (!b) guiManager.AddSpacingSeparated();
+				if (!b) ui.AddSpacingSeparated();
 			}
 
 			if (PRESET_B_Enable)
 			{
-				guiManager.AddLabel(PRESET_B_Selected.getName(), false, b);
+				ui.AddLabel(PRESET_B_Selected.getName(), false, b);
 				ofxImGuiSurfing::AddMatrixClicker(PRESET_B_Selected, h);
-				if (!b) guiManager.AddSpacingSeparated();
+				if (!b) ui.AddSpacingSeparated();
 			}
 
 			if (PRESET_C_Enable)
 			{
-				guiManager.AddLabel(PRESET_C_Selected.getName(), false, b);
+				ui.AddLabel(PRESET_C_Selected.getName(), false, b);
 				ofxImGuiSurfing::AddMatrixClicker(PRESET_C_Selected, h);
 			}
 
-			guiManager.endWindowSpecial();
+			ui.EndWindowSpecial();
 		}
 	}
 }
@@ -2298,14 +2340,14 @@ void ofxSurfingMoods::draw_ImGui_Main()
 	{
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 
-		if (guiManager.beginWindowSpecial(bGui_Main))
+		if (ui.BeginWindowSpecial(bGui_Main))
 		{
 			//--
 
 			// Minimize
-			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+			ui.Add(ui.bMinimize, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 
-			guiManager.AddSpacingSeparated();
+			ui.AddSpacingSeparated();
 
 			//--
 
@@ -2317,28 +2359,42 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			// Colorize MOODS
 			float a;
 			ImVec4 c;
+
 			if (RANGE_Selected == 0) c = color_MOOD1;
 			else if (RANGE_Selected == 1) c = color_MOOD2;
 			else if (RANGE_Selected == 2) c = color_MOOD3;
-			if (bModeClockExternal) a = 1.0f;//external
-			else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.35, 1, true);//internal playing
-//			ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
-//			ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
-            ImVec4 ca = (ImVec4)ImColor(c.x, c.y, c.z, c.w * a);
-            ImVec4 ca2 = (ImVec4)ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+
+			//external
+			if (bModeExternalClock) a = 1.0f;
+			//internal playing
+			else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.35, 1, true);
+
+			//ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
+			//ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+			ImVec4 ca = (ImVec4)ImColor(c.x, c.y, c.z, c.w * a);
+			ImVec4 ca2 = (ImVec4)ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
 
 			//-
 
 			// Play
 			{
-				guiManager.AddSpacing();
+				ui.AddSpacing();
 
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ca);
-				ImGui::PushStyleColor(ImGuiCol_Button, ca);
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca2);
+				bool b = bPLAY.get();
+				if (b)
+				{
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, ca);
+					ImGui::PushStyleColor(ImGuiCol_Button, ca);
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ca2);
+				}
+				else {
+					ImGui::PushStyleColor(ImGuiCol_Border, ca);
+					//ImGui::PushStyleColor(ImGuiCol_BorderShadow, ca);
+				}
+
 				{
 					// internal
-					if (!bModeClockExternal)
+					if (!bModeExternalClock)
 					{
 						ofxImGuiSurfing::AddBigToggleNamed(bPLAY, -1, -1, "PLAYING", "PLAY");
 					}
@@ -2346,15 +2402,25 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					// external
 					else
 					{
-						guiManager.Add(bExternalLocked, OFX_IM_TOGGLE_BIG);
+						ui.Add(bExternalLocked, OFX_IM_TOGGLE_BIG);
 					}
 				}
-				ImGui::PopStyleColor(3);
 
-				if (bModeClockExternal)
+				if (b)
+				{
+					ImGui::PopStyleColor(3);
+				}
+				else
+				{
+					ImGui::PopStyleColor(1);
+				}
+
+				//--
+
+				if (bModeExternalClock)
 				{
 					static ofParameter<bool> _bBeat{ "Force Beat", false };
-					if (guiManager.Add(_bBeat, OFX_IM_BUTTON_SMALL))
+					if (ui.Add(_bBeat, OFX_IM_BUTTON_SMALL))
 					{
 						if (_bBeat) {
 							_bBeat = false;
@@ -2365,47 +2431,51 @@ void ofxSurfingMoods::draw_ImGui_Main()
 				}
 
 				// External clock
-				guiManager.Add(bModeClockExternal, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-				guiManager.AddSpacing();
+				ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
+				ui.AddSpacing();
 			}
 
 			//--
 
-			if (!guiManager.bMinimize)
+			if (!ui.bMinimize)
 			{
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
+				ui.AddLabel("WIDGETS");
 
-				guiManager.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_BUTTON_ROUNDED);
-				if (MODE_Manual) guiManager.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+				ui.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+				if (MODE_Manual) ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 			}
 
 			//--
 
-			guiManager.AddSpacingSeparated();
+			ui.AddSpacingSeparated();
 
 			//if (bInternalClock) 
 			{
-				// minimized
-				if (guiManager.bMinimize)
-				{
-					// Clock
+				// Clock
 
+				// minimized
+				if (ui.bMinimize && bModeExternalClock) {
+					ui.Add(bpmSpeed, OFX_IM_SLIDER);
+				}
+				else if (ui.bMinimize)
+				{
 					bOpen = false;
 					_flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
 					_flagt |= ImGuiTreeNodeFlags_Framed;
 
 					if (ImGui::TreeNodeEx("CLOCK", _flagt))
 					{
-						guiManager.refreshLayout();
+						ui.refreshLayout();
 
 						// Mini Clock
 
-						float _w3 = guiManager.getWidgetsWidth(3);
-						float _w2 = guiManager.getWidgetsWidth(2);
-						float _h = guiManager.getWidgetsHeightUnit();
+						float _w3 = ui.getWidgetsWidth(3);
+						float _w2 = ui.getWidgetsWidth(2);
+						float _h = ui.getWidgetsHeightUnit();
 
-						guiManager.Add(bpmSpeed, OFX_IM_SLIDER);
-						if (!bModeClockExternal)
+						ui.Add(bpmSpeed, OFX_IM_SLIDER);
+						if (!bModeExternalClock)
 						{
 							if (ImGui::Button("/ 2", ImVec2(_w3, _h))) {
 								bpmSpeed = bpmSpeed / 2.0f;
@@ -2424,7 +2494,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 						ImGui::TreePop();
 					}
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 				}
 
 				// expanded
@@ -2438,17 +2508,17 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 					if (ImGui::TreeNodeEx("CLOCK", _flagt))
 					{
-						guiManager.refreshLayout();
+						ui.refreshLayout();
 
-						float _w1 = guiManager.getWidgetsWidth(1);
-						float _w2 = guiManager.getWidgetsWidth(2);
-						float _h = guiManager.getWidgetsHeightUnit();
+						float _w1 = ui.getWidgetsWidth(1);
+						float _w2 = ui.getWidgetsWidth(2);
+						float _h = ui.getWidgetsHeightUnit();
 
-						guiManager.Add(bpmSpeed, OFX_IM_SLIDER, 1, false);
+						ui.Add(bpmSpeed, OFX_IM_SLIDER, 1, false);
 
-						if (!bModeClockExternal)
+						if (!bModeExternalClock)
 						{
-							guiManager.Add(bpmSpeed, OFX_IM_STEPPER);
+							ui.Add(bpmSpeed, OFX_IM_STEPPER);
 
 							if (ImGui::Button("/ 2", ImVec2(_w2, _h)))
 							{
@@ -2462,15 +2532,15 @@ void ofxSurfingMoods::draw_ImGui_Main()
 								bpmSpeed = bpmSpeed * 2.0f;
 							}
 
-							guiManager.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL);
+							ui.Add(bResetClockSettings, OFX_IM_BUTTON_SMALL);
 						}
 
 						ImGui::TreePop();
 					}
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 				}
 
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
 			}
 
 			//--
@@ -2481,7 +2551,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			// B. Markov
 			// C. Manual
 
-			if (!guiManager.bMinimize)
+			if (!ui.bMinimize)
 			{
 				bool bOpen2 = false;
 				ImGuiTreeNodeFlags _flagt2 = (bOpen2 ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
@@ -2489,27 +2559,27 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 				if (ImGui::TreeNodeEx("MODES", _flagt2))
 				{
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 
 					// Modes
-					guiManager.Add(MODE_Ranged, OFX_IM_TOGGLE_MEDIUM);
+					ui.Add(MODE_Ranged, OFX_IM_TOGGLE_MEDIUM);
 					if (bMarkovFileFound) {
-						guiManager.Add(MODE_MarkovChain, OFX_IM_TOGGLE_MEDIUM);
+						ui.Add(MODE_MarkovChain, OFX_IM_TOGGLE_MEDIUM);
 					}
 					else {
-						guiManager.AddLabel("ERROR! MARKOV FILES NOT FOUND ON /DATA");
+						ui.AddLabel("ERROR! MARKOV FILES NOT FOUND ON /DATA");
 					}
 
-					guiManager.Add(MODE_Manual, OFX_IM_TOGGLE_MEDIUM);
+					ui.Add(MODE_Manual, OFX_IM_TOGGLE_MEDIUM);
 
 					ImGui::TreePop();
 				}
-				guiManager.refreshLayout();
+				ui.refreshLayout();
 
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
 			}
 
-			//if (!guiManager.bMinimize) guiManager.AddSpacingSeparated();
+			//if (!ui.bMinimize) ui.AddSpacingSeparated();
 
 			//--
 
@@ -2521,14 +2591,14 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 			if (ImGui::TreeNodeEx("ACTION", _flagt))
 			{
-				guiManager.refreshLayout();
+				ui.refreshLayout();
 
 				if (MODE_Manual)
 				{
-					guiManager.AddSpacing();
+					ui.AddSpacing();
 					ImGui::PushStyleColor(ImGuiCol_Text, ca);
 
-					guiManager.Add(controlManual, OFX_IM_SLIDER);
+					ui.Add(controlManual, OFX_IM_SLIDER);
 
 					ImGui::PopStyleColor();
 				}
@@ -2540,33 +2610,33 @@ void ofxSurfingMoods::draw_ImGui_Main()
 
 				if (!MODE_Manual)
 				{
-					guiManager.Add(countToDuration, OFX_IM_STEPPER); // user setter
+					ui.Add(countToDuration, OFX_IM_STEPPER); // user setter
 				}
 
 				//--
 
 				// For monitor only
-				//if (!guiManager.bMinimize)
+				//if (!ui.bMinimize)
 				if (!MODE_Manual)
 				{
 					if (countToDuration != 1)
 					{
-						guiManager.Add(counterStepFromOne, OFX_IM_INACTIVE);
+						ui.Add(counterStepFromOne, OFX_IM_INACTIVE);
 					}
 				}
 
 				// Progress Bar
-				if (!bModeClockExternal && !guiManager.bMinimize)
+				if (!bModeExternalClock && !ui.bMinimize)
 				{
-					guiManager.Add(timer_Progress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+					ui.Add(timer_Progress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 
-					if (!MODE_Manual && !bModeClockExternal && countToDuration != 1)
-						guiManager.Add(timer_ProgressComplete, OFX_IM_PROGRESS_BAR_NO_TEXT);
+					if (!MODE_Manual && !bModeExternalClock && countToDuration != 1)
+						ui.Add(timer_ProgressComplete, OFX_IM_PROGRESS_BAR_NO_TEXT);
 				}
 
 				//----
 
-				guiManager.AddSpacing();
+				ui.AddSpacing();
 
 				// Text + Main Controls
 				ImGui::PushStyleColor(ImGuiCol_Text, ca);
@@ -2576,74 +2646,74 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
 					else if (MODE_Manual) s = MODE_Manual.getName();
 
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 
-					guiManager.AddLabelHuge(s.c_str(), false, true);
+					ui.AddLabelHuge(s.c_str(), false, true);
 
-					guiManager.AddSpacing();
-					guiManager.AddSpacing();
+					ui.AddSpacing();
+					ui.AddSpacing();
 
-					guiManager.Add(RANGE_Selected, OFX_IM_DEFAULT);
+					ui.Add(RANGE_Selected, OFX_IM_DEFAULT);
 
-					guiManager.AddSpacing();
+					ui.AddSpacing();
 
-					guiManager.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
+					ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
 				}
 				ImGui::PopStyleColor();
 
-				guiManager.AddSpacing();
+				ui.AddSpacing();
 
 				//-
 
-				if (!guiManager.bMinimize)
+				if (!ui.bMinimize)
 				{
-					guiManager.AddSpacing();
-					guiManager.AddLabel("TARGET > PRESETS", false, true);
+					ui.AddSpacing();
+					ui.AddLabel("TARGET > PRESETS", false, true);
 
-					guiManager.AddSpacingSeparated();
-					guiManager.AddSpacing();
+					ui.AddSpacingSeparated();
+					ui.AddSpacing();
 				}
 
 				if (ImGui::TreeNodeEx("PRESETS", ImGuiTreeNodeFlags_Framed))
 				{
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 
-					if (!guiManager.bMinimize)
+					if (!ui.bMinimize)
 					{
-						guiManager.Add(PRESET_A_Enable, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(PRESET_B_Enable, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(PRESET_C_Enable, OFX_IM_TOGGLE_SMALL);
+						ui.Add(PRESET_A_Enable, OFX_IM_TOGGLE_SMALL);
+						ui.Add(PRESET_B_Enable, OFX_IM_TOGGLE_SMALL);
+						ui.Add(PRESET_C_Enable, OFX_IM_TOGGLE_SMALL);
 
-						guiManager.AddSpacing();
+						ui.AddSpacing();
+
+						ui.AddSpacingSeparated();
 					}
+					ui.AddSpacing();
 
-					guiManager.AddSpacingSeparated();
-					guiManager.AddSpacing();
+					if (PRESET_A_Enable) ui.Add(PRESET_A_Selected, OFX_IM_DEFAULT);
+					if (PRESET_B_Enable) ui.Add(PRESET_B_Selected, OFX_IM_DEFAULT);
+					if (PRESET_C_Enable) ui.Add(PRESET_C_Selected, OFX_IM_DEFAULT);
 
-					if (PRESET_A_Enable) guiManager.Add(PRESET_A_Selected, OFX_IM_DEFAULT);
-					if (PRESET_B_Enable) guiManager.Add(PRESET_B_Selected, OFX_IM_DEFAULT);
-					if (PRESET_C_Enable) guiManager.Add(PRESET_C_Selected, OFX_IM_DEFAULT);
+					ui.AddSpacing();
 
-					guiManager.AddSpacing();
-
-					guiManager.Add(bGui_Matrices, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+					ui.Add(bGui_Matrices, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
 					ImGui::TreePop();
 				}
 				ImGui::TreePop();
 			}
-			guiManager.refreshLayout();
+			ui.refreshLayout();
 
 			//--
 
-			if (!guiManager.bMinimize)
+			if (!ui.bMinimize)
 			{
-				guiManager.AddSpacingSeparated();
+				ui.AddSpacingSeparated();
 
-				guiManager.Add(bGui_Advanced, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+				ui.Add(bGui_Advanced, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 			}
 
-			guiManager.endWindowSpecial();
+			ui.EndWindowSpecial();
 		}
 	}
 }
@@ -2666,14 +2736,14 @@ void ofxSurfingMoods::drawGui()
 {
 	if (!bGui_Main) return;
 
-	guiManager.begin();
+	ui.Begin();
 	{
 		draw_ImGui_Main();
 		draw_ImGui_Matrices();
 		draw_ImGui_Advanced();
 		draw_ImGui_ManualSlider();
 	}
-	guiManager.end();
+	ui.End();
 
 	//--
 
@@ -2681,7 +2751,7 @@ void ofxSurfingMoods::drawGui()
 	if (bGui_PreviewWidget) draw_PreviewWidget();
 
 	// Help
-	if (guiManager.bHelp) textBoxWidget.draw();
+	if (ui.bHelp) textBoxWidget.draw();
 }
 
 //--------------------------------------------------------------
@@ -2695,19 +2765,19 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 			static bool bOpen = true;
 			ImGuiTreeNodeFlags _flagt;
 
-			if (guiManager.beginWindowSpecial(bGui_Advanced))
+			if (ui.BeginWindowSpecial(bGui_Advanced))
 			{
 				//--
 
-				//if (!guiManager.bMinimize) 
+				//if (!ui.bMinimize) 
 				{
-					//guiManager.refreshLayout();
-					//guiManager.AddSpacing();
-					guiManager.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL);
-					guiManager.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL);
-					//guiManager.AddSpacing();
+					//ui.refreshLayout();
+					//ui.AddSpacing();
+					ui.Add(MODE_StartLocked, OFX_IM_TOGGLE_SMALL);
+					ui.Add(MODE_AvoidRepeat, OFX_IM_TOGGLE_SMALL);
+					//ui.AddSpacing();
 
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 				}
 
 				//--
@@ -2720,19 +2790,19 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 
 					if (ImGui::TreeNodeEx("TOOLS", _flagt))
 					{
-						guiManager.refreshLayout();
+						ui.refreshLayout();
 
 						// Target panel
-						guiManager.Add(bClone_TARGETS, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(bReset_Bank, OFX_IM_TOGGLE_SMALL);
-						guiManager.Add(bRandomize_Bank, OFX_IM_TOGGLE_SMALL, 1, false);
+						ui.Add(bClone_TARGETS, OFX_IM_TOGGLE_SMALL);
+						ui.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
+						ui.Add(bReset_Bank, OFX_IM_TOGGLE_SMALL);
+						ui.Add(bRandomize_Bank, OFX_IM_TOGGLE_SMALL, 1, false);
 
 						ImGui::TreePop();
 					}
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 				}
 
 				//--
@@ -2741,45 +2811,45 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 				{
 					if (ImGui::TreeNodeEx("DEBUG LIMITS", _flagt))
 					{
-						guiManager.refreshLayout();
+						ui.refreshLayout();
 						ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 						flags |= ImGuiTreeNodeFlags_Framed;
 						flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
-						guiManager.AddGroup(parameters_ranges, flags);
+						ui.AddGroup(parameters_ranges, flags);
 
 						ImGui::TreePop();
 					}
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 
-					guiManager.AddSpacingSeparated();
+					ui.AddSpacingSeparated();
 				}
 
 				//--
 
 				// Extra
-				if (!guiManager.bMinimize)
+				if (!ui.bMinimize)
 				{
-					//guiManager.AddSpacingSeparated();
+					//ui.AddSpacingSeparated();
 
-					guiManager.AddSpacing();
+					ui.AddSpacing();
 
-					guiManager.Add(guiManager.bExtra, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+					ui.Add(ui.bExtra, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
 
-					if (guiManager.bExtra)
+					if (ui.bExtra)
 					{
-						guiManager.Indent();
+						ui.Indent();
 						{
 							//--
 
-							guiManager.AddSpacing();
+							ui.AddSpacing();
 
-							guiManager.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
-							guiManager.AddSpacing();
-							guiManager.Add(bKeys, OFX_IM_TOGGLE_ROUNDED_SMALL);
-							guiManager.Add(guiManager.bHelp, OFX_IM_TOGGLE_ROUNDED_SMALL);
+							ui.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
+							ui.AddSpacing();
+							ui.Add(bKeys, OFX_IM_TOGGLE_ROUNDED_SMALL);
+							ui.Add(ui.bHelp, OFX_IM_TOGGLE_ROUNDED_SMALL);
 
-							if (MODE_Manual) guiManager.Add(bModeAutomatic, OFX_IM_TOGGLE_ROUNDED);
+							if (MODE_Manual) ui.Add(bModeAutomatic, OFX_IM_TOGGLE_ROUNDED);
 
 							ImGui::Separator();
 
@@ -2787,22 +2857,22 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 
 							// Preview
 
-							guiManager.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL);
+							ui.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL);
 							if (bGui_PreviewWidget)
 							{
-								guiManager.Indent();
+								ui.Indent();
 								{
-									guiManager.Add(bUseCustomPreviewPosition, OFX_IM_TOGGLE_ROUNDED_SMALL);
+									ui.Add(bUseCustomPreviewPosition, OFX_IM_TOGGLE_ROUNDED_SMALL);
 									if (bUseCustomPreviewPosition) {
-										guiManager.Add(bEdit_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL);
-										if (guiManager.Add(bResetPreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL))
+										ui.Add(bEdit_PreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL);
+										if (ui.Add(bResetPreviewWidget, OFX_IM_TOGGLE_ROUNDED_SMALL))
 										{
 											bResetPreviewWidget = false;
 											doResetPreviewWidget();
 										}
 									}
 								}
-								guiManager.Unindent();
+								ui.Unindent();
 							}
 
 							//--
@@ -2813,26 +2883,26 @@ void ofxSurfingMoods::draw_ImGui_Advanced()
 							{
 								ImGui::Separator();
 
-								guiManager.Add(bGui_ManualSlider, OFX_IM_TOGGLE_ROUNDED_SMALL);
+								ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_ROUNDED_SMALL);
 								if (bGui_ManualSlider)
 								{
-									guiManager.Indent();
+									ui.Indent();
 									{
-										guiManager.Add(bGui_ManualSliderHeader, OFX_IM_TOGGLE_ROUNDED_SMALL);
-										if (guiManager.Add(bResetSlider, OFX_IM_TOGGLE_ROUNDED_SMALL))
+										ui.Add(bGui_ManualSliderHeader, OFX_IM_TOGGLE_ROUNDED_SMALL);
+										if (ui.Add(bResetSlider, OFX_IM_TOGGLE_ROUNDED_SMALL))
 										{
 											bResetSlider = true;
 										}
 									}
-									guiManager.Unindent();
+									ui.Unindent();
 								}
 							}
 						}
-						guiManager.Unindent();
+						ui.Unindent();
 					}
 				}
 
-				guiManager.endWindowSpecial();
+				ui.EndWindowSpecial();
 			}
 		}
 	}

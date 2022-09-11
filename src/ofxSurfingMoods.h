@@ -133,7 +133,7 @@ private:
 
 private:
 
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui ui;
 	void setupGui();
 
 public:
@@ -236,8 +236,6 @@ private:
 	ofParameter<bool> MODE_AvoidRepeat{ "NO REPEAT", true };
 	// Next random will go to a different than previous state, if enabled.
 
-	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
-
 	ofColor cRange;
 	ofColor cRangeRaw;
 
@@ -248,6 +246,8 @@ private:
 	// API
 
 public:
+
+	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f  };
 
 	void setup(int numTargets, int numPresets, int limit1, int limit2);
 	// All 3 preset have the same size, usually 8 
@@ -300,7 +300,7 @@ public:
 
 	//--------------------------------------------------------------
 	void setEnableExternalClock(bool b) {
-		bModeClockExternal = b;
+		bModeExternalClock = b;
 	}
 
 	////--------------------------------------------------------------
@@ -312,14 +312,14 @@ private:
 
 	//bool bInternalClock = true;
 
-	ofParameter<bool> bModeClockExternal{ "External Clock", false };
+	ofParameter<bool> bModeExternalClock{ "EXTERNAL CLOCK", false };
 	// disables internal timers to receive ticks. We can force bets internally.
 
 	ofParameter<bool> bModeAutomatic{ "Automatic", false }; // some workflow features
 
 public:
 
-	void setTickMode(bool b) { bModeClockExternal = b; };
+	void setTickMode(bool b) { bModeExternalClock = b; };
 	void doBeatTick();
 	void doRunStep(bool bforced = false);
 
