@@ -133,7 +133,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// 1. Params
 
-	bGui_Main.set("MOODS", true);
+	bGui.set("MOODS", true);
 	bGui_Matrices.set("MATRICES", false);
 	bGui_Advanced.set("ADVANCED", false);
 	bGui_PreviewWidget.set("Preview Widget", false);
@@ -236,7 +236,7 @@ void ofxSurfingMoods::setup_Params()
 
 	// Store params (grouped only to save/load, not to allow on gui or callbacks)
 	params_AppSettings.setName("ofxSurfingMoods_AppSettings");
-	params_AppSettings.add(bGui_Main);
+	params_AppSettings.add(bGui);
 	params_AppSettings.add(bGui_Matrices);
 	params_AppSettings.add(bGui_Advanced);
 	params_AppSettings.add(bGui_ManualSlider);
@@ -369,7 +369,7 @@ void ofxSurfingMoods::startup()
 //--------------------------------------------------------------
 void ofxSurfingMoods::update(ofEventArgs& args)
 {
-	if (bGui_Main) update_PreviewColors();
+	if (bGui) update_PreviewColors();
 
 	//-
 
@@ -755,7 +755,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		const int NUM_Ranges = (int)NUM_RANGES;
 
 		// For 0.20f: if fps is 60. duration will be 60/5 frames = 12frames
-		blinkDuration = 0.20f * ofGetFrameRate();
+		blinkDuration = 0.15f * ofGetFrameRate();
 
 		float sizes = w / (float)NUM_TARGETS;
 		float ro = 4.0f;
@@ -1278,13 +1278,13 @@ void ofxSurfingMoods::setTogglePlay()
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_Visible(bool b)
 {
-	bGui_Main = b;
+	bGui = b;
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::setGui_ToggleVisible()
 {
-	bGui_Main = !bGui_Main;
+	bGui = !bGui;
 }
 
 //TODO:
@@ -2167,7 +2167,7 @@ void ofxSurfingMoods::setupGui()
 	ui.setWindowsMode(IM_GUI_MODE_WINDOWS_SPECIAL_ORGANIZER);
 	ui.setup();
 
-	ui.addWindowSpecial(bGui_Main);
+	ui.addWindowSpecial(bGui);
 	ui.addWindowSpecial(bGui_Advanced);
 	ui.addWindowSpecial(bGui_Matrices);
 
@@ -2336,11 +2336,11 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 //--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui_Main()
 {
-	if (bGui_Main)
+	if (bGui)
 	{
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 
-		if (ui.BeginWindowSpecial(bGui_Main))
+		if (ui.BeginWindowSpecial(bGui))
 		{
 			//--
 
@@ -2379,6 +2379,9 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			// Play
 			{
 				ui.AddSpacing();
+
+				// External clock
+				ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
 
 				bool b = bPLAY.get();
 				if (b)
@@ -2430,9 +2433,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					}
 				}
 
-				// External clock
-				ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
-				ui.AddSpacing();
+				//ui.AddSpacing();
 			}
 
 			//--
@@ -2440,7 +2441,9 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			if (!ui.bMinimize)
 			{
 				ui.AddSpacingSeparated();
+				ui.AddSpacing();
 				ui.AddLabel("WIDGETS");
+				ui.AddSpacing();
 
 				ui.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 				if (MODE_Manual) ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
@@ -2734,7 +2737,7 @@ void ofxSurfingMoods::doResetPreviewWidget()
 //--------------------------------------------------------------
 void ofxSurfingMoods::drawGui()
 {
-	if (!bGui_Main) return;
+	if (!bGui) return;
 
 	ui.Begin();
 	{

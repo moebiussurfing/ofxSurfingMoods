@@ -543,9 +543,12 @@ private:
 
 public:
 
-	ofParameter<bool> bGui_Main;
+	ofParameter<bool> bGui;
 
 	void setKeySpace(bool b) { bKeySpace = b; }//to avoid collapse with other space key as players start key.
+
+	ofParameter<bool> bGui_PreviewWidget;
+	ofParameter<bool> bGui_ManualSlider;
 
 private:
 
@@ -553,10 +556,8 @@ private:
 	ofParameter<bool> bKeySpace;
 	ofParameter<bool> bGui_Advanced;
 	ofParameter<bool> bGui_Matrices;
-	ofParameter<bool> bGui_ManualSlider;
 	ofParameter<bool> bGui_ManualSliderHeader;
 	ofParameter<bool> bEdit_PreviewWidget;
-	ofParameter<bool> bGui_PreviewWidget;
 	ofParameter<bool> bUseCustomPreviewPosition;
 
 	//-
