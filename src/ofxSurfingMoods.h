@@ -27,7 +27,8 @@
 #include "ofxMarkovChain.h"
 #include "ofxSurfingImGui.h" 
 #include "ofxSurfingHelpers.h"
-#include "ofxInteractiveRect.h" // engine to move and resize the preview widget
+#include "ofxSurfingBoxInteractive.h" // engine to move and resize the preview widget
+//#include "ofxInteractiveRect.h" // engine to move and resize the preview widget
 #include "TextBoxWidget.h" // help box
 
 //--
@@ -93,7 +94,7 @@ public:
 
 		addKeysListeners();
 
-		rectPreview.setAutoSave(false);
+		//rectPreview.setAutoSave(false);
 	};
 
 	//--------------------------------------------------------------
@@ -160,7 +161,9 @@ private:
 
 private:
 
-	ofxInteractiveRect rectPreview = { "_PreviewRect" };
+	ofxSurfingBoxInteractive rectPreview;
+	//ofxInteractiveRect rectPreview = { "_PreviewRect" };
+
 	std::string path_rect;
 
 private:
@@ -350,7 +353,7 @@ public:
 	//--------------------------------------------------------------
 	void setPreviewPosition(int x, int y, int w, int h)
 	{
-		rectPreview.setRect(x, y, w, h);
+		rectPreview.setRectangle(ofRectangle(x, y, w, h));
 
 		bUseCustomPreviewPosition = true;
 	}

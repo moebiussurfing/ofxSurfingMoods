@@ -136,8 +136,8 @@ void ofxSurfingMoods::setup_Params()
 	bGui.set("MOODS", true);
 	bGui_Matrices.set("MATRICES", false);
 	bGui_Advanced.set("ADVANCED", false);
-	bGui_PreviewWidget.set("Preview Widget", false);
-	bGui_ManualSlider.set("Manual Slider", false);
+	bGui_PreviewWidget.set("WIDGET", false);
+	bGui_ManualSlider.set("SLIDER", false);
 	bGui_ManualSliderHeader.set("Slider Header", false);
 
 	bPLAY.set("PLAY", false);
@@ -171,7 +171,13 @@ void ofxSurfingMoods::setup_Params()
 	bKeySpace.set("Key Space", true);
 
 	bUseCustomPreviewPosition.set("Custom", false);
-	bEdit_PreviewWidget.set("Edit Preview Widget", false);
+	
+	//bEdit_PreviewWidget.set("Edit Preview Widget", false);
+	bEdit_PreviewWidget.makeReferenceTo(rectPreview.bGui);
+	rectPreview.setPath(path_Folder + "Widget/");
+	rectPreview.setup();
+	rectPreview.setBorderColor(ofColor(64, 24));
+	rectPreview.setRectConstraintMin(glm::vec2(300, 50));
 
 	//----
 
@@ -334,11 +340,13 @@ void ofxSurfingMoods::startup()
 
 	path_rect = path_Folder + "ofxSurfingMoods_";
 
+	/*
 	//TODO: 
 	//crashes sometimes if no file present..
 	bool b = rectPreview.loadSettings("_PreviewRect", path_rect, true);
 	if (!b) rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
 	rectPreview.disableEdit();
+	*/
 
 	//--
 
@@ -560,7 +568,9 @@ void ofxSurfingMoods::windowResized(int w, int h)
 void ofxSurfingMoods::exit()
 {
 	// Preview rectangle
+	/*
 	rectPreview.saveSettings("_PreviewRect", path_rect, true);
+	*/
 
 	//-
 
@@ -774,6 +784,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		//-
 
 		// 0. Main Bg expanded
+		///*
 		if (bUseCustomPreviewPosition)
 		{
 			ofFill();
@@ -785,6 +796,7 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 				rectPreview.getWidth() + 2 * pp, rectPreview.getHeight() + 2 * pp);
 			ofDrawRectRounded(rr, ro);
 		}
+		//*/
 
 		//-
 
@@ -1059,17 +1071,24 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 		//--
 
 		// Preview rectangle Bg when editing
+		///*
 		if (bUseCustomPreviewPosition)
 		{
 			if (bEdit_PreviewWidget)
 			{
+				/*
 				ofPushStyle();
 				ofSetColor(128, 64);
-				ofDrawRectangle(rectPreview);
+				ofDrawRectangle(rectPreview.getRectangle());
+				//ofDrawRectangle(rectPreview);
 				rectPreview.draw();
 				ofPopStyle();
+				*/
+
+				rectPreview.draw();
 			}
 		}
+		//*/
 
 		//--
 
@@ -1999,6 +2018,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 			stop();
 		}
 
+		/*
 		else if (name == bEdit_PreviewWidget.getName())
 		{
 			if (bEdit_PreviewWidget)
@@ -2010,6 +2030,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 				rectPreview.disableEdit();
 			}
 		}
+		*/
 
 		// Modes
 		else if (name == MODE_MarkovChain.getName())
@@ -2206,7 +2227,7 @@ void ofxSurfingMoods::doResetManualSlider()
 
 	ww = 150;
 	xx = ofGetWidth() - ww - padx;
-	yy = rectPreview.getBottomRight().y + pady;
+	yy = rectPreview.getRectangle().getBottomRight().y + pady;
 	hh = ofGetHeight() - yy - pady;
 
 	flagsCond = ImGuiCond_None;
@@ -2345,7 +2366,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			//--
 
 			// Minimize
-			ui.Add(ui.bMinimize, OFX_IM_TOGGLE_ROUNDED_MEDIUM);
+			ui.Add(ui.bMinimize, OFX_IM_TOGGLE_ROUNDED);
 
 			ui.AddSpacingSeparated();
 
@@ -2442,10 +2463,17 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			{
 				ui.AddSpacingSeparated();
 				ui.AddSpacing();
-				ui.AddLabel("WIDGETS");
-				ui.AddSpacing();
+				//ui.AddLabel("WIDGETS");
+				//ui.AddSpacing();
 
 				ui.Add(bGui_PreviewWidget, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+				if (bGui_PreviewWidget) {
+					ui.Indent();
+					ui.Add(bUseCustomPreviewPosition, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
+					ui.Unindent();
+				}
+				
+
 				if (MODE_Manual) ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 			}
 
@@ -2731,7 +2759,7 @@ void ofxSurfingMoods::doResetPreviewWidget()
 	gy = pad;
 	ww = gw;
 	hh = 50;
-	rectPreview.setRect(gx, gy, gw, hh); // initialize
+	rectPreview.setRectangle(ofRectangle(gx, gy, gw, hh)); // initialize
 }
 
 //--------------------------------------------------------------
