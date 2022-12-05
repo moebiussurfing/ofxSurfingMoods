@@ -7,7 +7,9 @@
 
 	TODO:
 
-	+ add divider to make globally slower
+	+ fix advanced panel width grow unlimited
+	+ add divider to make globally slower or faster.
+		important on manual mode
 	+ add LOCK mode to disable momentary editing ranges preset
 	+ reverse manual slider bc matrix presets is inverted 1-9
 	+ allow draw slider and preview widget a part, independently
