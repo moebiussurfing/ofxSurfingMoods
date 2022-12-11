@@ -29,6 +29,23 @@ void ofxSurfingMoods::setup()
 
 	//--
 
+	//TODO:
+	// matrix colors
+	colors.clear();
+	for (size_t i = 0; i < 9; i++)
+	{
+		ofColor c;
+		if (i < 3) c = ofColor::green;
+		else if (i < 6) c = ofColor::yellow;
+		else if (i < 10) c = ofColor::red;
+
+		colors.push_back(c);
+	}
+	keyCommandsChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+	setColorized(true);
+
+	//--
+
 	// Settings paths
 	path_Folder = "ofxSurfingMoods/"; // default folder
 	filename_AppSettings = "Moods_AppSettings"; // settings
@@ -171,7 +188,7 @@ void ofxSurfingMoods::setup_Params()
 	bKeySpace.set("Key Space", true);
 
 	bUseCustomPreviewPosition.set("Custom", false);
-	
+
 	//bEdit_PreviewWidget.set("Edit Preview Widget", false);
 	bEdit_PreviewWidget.makeReferenceTo(rectPreview.bGui);
 	rectPreview.setPath(path_Folder + "Widget/");
@@ -341,7 +358,7 @@ void ofxSurfingMoods::startup()
 	path_rect = path_Folder + "ofxSurfingMoods_";
 
 	/*
-	//TODO: 
+	//TODO:
 	//crashes sometimes if no file present..
 	bool b = rectPreview.loadSettings("_PreviewRect", path_rect, true);
 	if (!b) rectPreview.setRect(25, 650, 700, 50);//initialize when no settings file created yet.
@@ -2324,30 +2341,47 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 
 		if (ui.BeginWindowSpecial(bGui_Matrices))
 		{
-			bool b = true;
+			bool b = false;
 			//bool b = ui.bMinimize;
 
 			float h = (b ? 1 : 2) * ui.getWidgetsHeightUnit();
 
+			string toolTip = "";
+			bool bFlip = true;
+			int amountButtonsPerRowClicker = 3;
+			bool bResponsiveButtonsClicker = true;
+
 			if (PRESET_A_Enable)
 			{
-				ui.AddLabel(PRESET_A_Selected.getName(), false, b);
-				ofxImGuiSurfing::AddMatrixClicker(PRESET_A_Selected, h);
+				ui.AddLabelBig(PRESET_A_Selected.getName(), false, b);
+
+				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_A_Selected, h);
+				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_A_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+
 				if (!b) ui.AddSpacingSeparated();
 			}
 
 			if (PRESET_B_Enable)
 			{
-				ui.AddLabel(PRESET_B_Selected.getName(), false, b);
-				ofxImGuiSurfing::AddMatrixClicker(PRESET_B_Selected, h);
+				ui.AddLabelBig(PRESET_B_Selected.getName(), false, b);
+
+				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_B_Selected, h);
+				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_B_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+
 				if (!b) ui.AddSpacingSeparated();
 			}
 
 			if (PRESET_C_Enable)
 			{
-				ui.AddLabel(PRESET_C_Selected.getName(), false, b);
-				ofxImGuiSurfing::AddMatrixClicker(PRESET_C_Selected, h);
+				ui.AddLabelBig(PRESET_C_Selected.getName(), false, b);
+
+				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_C_Selected, h);
+				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_C_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
 			}
+
+			ui.AddSpacingBigSeparated();
+
+			ui.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
 
 			ui.EndWindowSpecial();
 		}
@@ -2472,7 +2506,7 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					ui.Add(bUseCustomPreviewPosition, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
 					ui.Unindent();
 				}
-				
+
 
 				if (MODE_Manual) ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 			}

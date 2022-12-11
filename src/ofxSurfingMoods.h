@@ -13,13 +13,13 @@
 	+ add LOCK mode to disable momentary editing ranges preset
 	+ reverse manual slider bc matrix presets is inverted 1-9
 	+ allow draw slider and preview widget a part, independently
-	+ 
+	+
 
 
 	BUG:
 
 	+ mode b toggle not showing..
-	
+
 */
 
 
@@ -90,7 +90,7 @@ class ofxSurfingMoods
 public:
 
 	//--------------------------------------------------------------
-	ofxSurfingMoods() 
+	ofxSurfingMoods()
 	{
 		ofAddListener(ofEvents().update, this, &ofxSurfingMoods::update);
 
@@ -115,7 +115,7 @@ public:
 
 private:
 
-	void update(ofEventArgs & args);
+	void update(ofEventArgs& args);
 
 public:
 
@@ -127,8 +127,8 @@ private:
 
 	// Keys
 
-	void keyPressed(ofKeyEventArgs &eventArgs);
-	void keyReleased(ofKeyEventArgs &eventArgs);
+	void keyPressed(ofKeyEventArgs& eventArgs);
+	void keyReleased(ofKeyEventArgs& eventArgs);
 	void addKeysListeners();
 	void removeKeysListeners();
 
@@ -195,7 +195,7 @@ public:
 
 	// Each target/state is linked to
 	// (or trigs) 3 other receiver selectors together: Preset A-B-C
-	
+
 	// Current index target. always starts from 0
 	ofParameter<int> TARGET_Selected;
 
@@ -211,6 +211,13 @@ public:
 
 private:
 
+	vector<char> keyCommandsChars;
+	vector<ofColor> colors;
+	bool bUseColorizedMatrices = false;
+public:
+	void setColorized(bool b) { bUseColorizedMatrices = b; }
+
+private:
 	ofParameterGroup params_Listeners;
 	ofParameterGroup params_AppSettings;
 	ofParameterGroup parameters_ranges;
@@ -237,7 +244,7 @@ private:
 
 	ofParameter<bool> MODE_StartLocked{ "START LOCKED", false };
 	// Every time we arrive to a range, will start from 1st from target of the mood range.
-	
+
 	ofParameter<bool> MODE_AvoidRepeat{ "NO REPEAT", true };
 	// Next random will go to a different than previous state, if enabled.
 
@@ -252,7 +259,7 @@ private:
 
 public:
 
-	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f  };
+	ofParameter<float> controlManual{ "CONTROL", 0, 0, 1.f };
 
 	void setup(int numTargets, int numPresets, int limit1, int limit2);
 	// All 3 preset have the same size, usually 8 
@@ -509,7 +516,7 @@ private:
 	ofParameter<int> Range_Max; // range
 
 	// Callbacks
-	void Changed_Params_Listeners(ofAbstractParameter &e);
+	void Changed_Params_Listeners(ofAbstractParameter& e);
 
 	//-
 
@@ -570,8 +577,8 @@ private:
 	// Timer
 
 	ofxSimpleTimer timer_Range;
-	void timer_Range_Complete(int &args);
-	void timer_Range_Started(int &args);
+	void timer_Range_Complete(int& args);
+	void timer_Range_Started(int& args);
 
 	//-
 
@@ -584,7 +591,7 @@ private:
 
 private:
 
-	void Changed_Ranges(ofAbstractParameter &e);
+	void Changed_Ranges(ofAbstractParameter& e);
 	int RANGE_Selected_PRE;
 
 	struct range
