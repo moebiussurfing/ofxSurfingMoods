@@ -164,7 +164,8 @@ void ofxSurfingMoods::setup_Params()
 	timer.set("TIMER", 1000, 1, 60000);//ms
 	timer.setSerializable(false);
 
-	TARGET_Selected.set("TARGET", 0, 0, NUM_TARGETS - 1);//target
+	TARGET_Selected.set("STATE", 0, 0, NUM_TARGETS - 1);//target
+	//TARGET_Selected.set("TARGET", 0, 0, NUM_TARGETS - 1);//target
 
 	PRESET_A_Enable.set("ENABLE A", true);
 	PRESET_B_Enable.set("ENABLE B", true);
@@ -2351,6 +2352,18 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 			int amountButtonsPerRowClicker = 3;
 			bool bResponsiveButtonsClicker = true;
 
+			//--
+
+			// Target
+			ui.AddLabelBig(TARGET_Selected.getName(), false, b);
+			if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
+			else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+			ui.AddSpacingBigSeparated();
+
+			//--
+
+			// Presets / Devices
+
 			if (PRESET_A_Enable)
 			{
 				ui.AddLabelBig(PRESET_A_Selected.getName(), false, b);
@@ -2436,7 +2449,10 @@ void ofxSurfingMoods::draw_ImGui_Main()
 				ui.AddSpacing();
 
 				// External clock
-				ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
+
+				//ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
+				float _h = ui.getWidgetsHeightUnit();
+				ofxImGuiSurfing::AddBigToggleNamed(bModeExternalClock, -1, _h, bModeExternalClock.getName(), "INTERNAL CLOCK");
 
 				bool b = bPLAY.get();
 				if (b)
@@ -2663,7 +2679,8 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					ui.AddSpacing();
 					ImGui::PushStyleColor(ImGuiCol_Text, ca);
 
-					ui.Add(controlManual, OFX_IM_SLIDER);
+					//ui.Add(controlManual, OFX_IM_SLIDER);
+					ui.Add(controlManual, OFX_IM_HSLIDER_SMALL);
 
 					ImGui::PopStyleColor();
 				}
@@ -2718,11 +2735,13 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					ui.AddSpacing();
 					ui.AddSpacing();
 
-					ui.Add(RANGE_Selected, OFX_IM_DEFAULT);
+					ui.Add(RANGE_Selected, OFX_IM_DRAG);
+					//ui.Add(RANGE_Selected, OFX_IM_INACTIVE);
 
 					ui.AddSpacing();
 
-					ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
+					ui.Add(TARGET_Selected, OFX_IM_HSLIDER_SMALL);
+					//ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
 				}
 				ImGui::PopStyleColor();
 
