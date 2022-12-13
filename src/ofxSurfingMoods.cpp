@@ -318,7 +318,7 @@ void ofxSurfingMoods::setup_Params()
 	//bPLAY.setSerializable(false);
 	counterStepFromOne.setSerializable(false);
 	bGui_ManualSliderHeader.setSerializable(false);
-	autoSaveLoad_settings.setSerializable(false);
+	bMode_Edit.setSerializable(false);//always disabled. mode locked
 }
 
 //--------------------------------------------------------------
@@ -369,7 +369,7 @@ void ofxSurfingMoods::startup()
 	//--
 
 	// Load bank targets
-	if (autoSaveLoad_settings.get())
+	//if (bMode_Edit.get())
 	{
 		if (!loadBanks(path_Folder))
 		{
@@ -379,7 +379,7 @@ void ofxSurfingMoods::startup()
 	}
 
 	// Load panel settings
-	if (autoSaveLoad_settings.get())
+	//if (bMode_Edit.get())
 	{
 		loadSettings(path_Folder);
 	}
@@ -593,9 +593,9 @@ void ofxSurfingMoods::exit()
 	//-
 
 	// Save settings
-	if (autoSaveLoad_settings)
-	{
 		saveSettings(path_Folder);
+	if (bMode_Edit)
+	{
 		saveBanks(path_Folder);
 	}
 
@@ -2354,47 +2354,55 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 
 			//--
 
-			// Target
+			// State / Target
+
 			ui.AddLabelBig(TARGET_Selected.getName(), false, b);
+
 			if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
 			else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
-			ui.AddSpacingBigSeparated();
 
 			//--
 
-			// Presets / Devices
-
-			if (PRESET_A_Enable)
+			if (!ui.bMinimize)
 			{
-				ui.AddLabelBig(PRESET_A_Selected.getName(), false, b);
+				ui.AddSpacingBigSeparated();
 
-				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_A_Selected, h);
-				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_A_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+				//--
 
-				if (!b) ui.AddSpacingSeparated();
+				// Presets / Devices
+
+				if (PRESET_A_Enable)
+				{
+					ui.AddLabelBig(PRESET_A_Selected.getName(), false, b);
+
+					if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_A_Selected, h);
+					else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_A_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+
+					if (!b) ui.AddSpacingSeparated();
+				}
+
+				if (PRESET_B_Enable)
+				{
+					ui.AddLabelBig(PRESET_B_Selected.getName(), false, b);
+
+					if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_B_Selected, h);
+					else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_B_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+
+					if (!b) ui.AddSpacingSeparated();
+				}
+
+				if (PRESET_C_Enable)
+				{
+					ui.AddLabelBig(PRESET_C_Selected.getName(), false, b);
+
+					if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_C_Selected, h);
+					else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_C_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+				}
+
+				ui.AddSpacingBigSeparated();
+
+				ui.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
 			}
-
-			if (PRESET_B_Enable)
-			{
-				ui.AddLabelBig(PRESET_B_Selected.getName(), false, b);
-
-				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_B_Selected, h);
-				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_B_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
-
-				if (!b) ui.AddSpacingSeparated();
-			}
-
-			if (PRESET_C_Enable)
-			{
-				ui.AddLabelBig(PRESET_C_Selected.getName(), false, b);
-
-				if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(PRESET_C_Selected, h);
-				else ofxImGuiSurfing::AddMatrixClickerLabels(PRESET_C_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
-			}
-
-			ui.AddSpacingBigSeparated();
-
-			ui.Add(bResetSort_Bank, OFX_IM_TOGGLE_SMALL);
 
 			ui.EndWindowSpecial();
 		}
@@ -2448,11 +2456,15 @@ void ofxSurfingMoods::draw_ImGui_Main()
 			{
 				ui.AddSpacing();
 
-				// External clock
-
 				//ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
 				float _h = ui.getWidgetsHeightUnit();
-				ofxImGuiSurfing::AddBigToggleNamed(bModeExternalClock, -1, _h, bModeExternalClock.getName(), "INTERNAL CLOCK");
+
+				// Edit mode
+				ofxImGuiSurfing::AddBigToggleNamed(bMode_Edit, -1, _h, "MODE EDIT", "MODE LOCKED");
+				ui.AddSpacingSeparated();
+				
+				// External clock
+				ofxImGuiSurfing::AddBigToggleNamed(bModeExternalClock, -1, _h, bModeExternalClock.getName(), "CLOCK INTERNAL");
 
 				bool b = bPLAY.get();
 				if (b)

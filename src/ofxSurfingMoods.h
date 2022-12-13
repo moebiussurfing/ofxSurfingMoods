@@ -324,7 +324,7 @@ private:
 
 	//bool bInternalClock = true;
 
-	ofParameter<bool> bModeExternalClock{ "EXTERNAL CLOCK", false };
+	ofParameter<bool> bModeExternalClock{ "CLOCK EXTERNAL", false };
 	// disables internal timers to receive ticks. We can force bets internally.
 
 	ofParameter<bool> bModeAutomatic{ "Automatic", false }; // some workflow features
@@ -434,7 +434,7 @@ private:
 	void saveBanks(std::string path);
 	bool loadBanks(std::string path);
 
-	ofParameter<bool> autoSaveLoad_settings{ "MODE EDIT", true };
+	ofParameter<bool> bMode_Edit{ "MODE EDIT", false };
 
 	//--
 
