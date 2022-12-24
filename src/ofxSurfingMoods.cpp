@@ -2334,6 +2334,82 @@ void ofxSurfingMoods::draw_ImGui_ManualSlider()
 }
 
 //--------------------------------------------------------------
+void ofxSurfingMoods::draw_ImGui_GameMode()
+{
+	//--
+
+	// Colorize MOODS
+	float a;
+	ImVec4 c;
+
+	if (RANGE_Selected == 0) c = color_MOOD1;
+	else if (RANGE_Selected == 1) c = color_MOOD2;
+	else if (RANGE_Selected == 2) c = color_MOOD3;
+
+	//external
+	if (bModeExternalClock) a = 1.0f;
+	//internal playing
+	else a = ofMap(1 - timer_Range.getNormalizedProgress(), 0, 1, 0.35, 1, true);
+
+	//ImVec4 ca = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * a);
+	//ImVec4 ca2 = (ImVec4)ImColor::ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+	ImVec4 ca = (ImVec4)ImColor(c.x, c.y, c.z, c.w * a);
+	ImVec4 ca2 = (ImVec4)ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
+
+	//--
+	
+	// Text + Main Controls
+	ImGui::PushStyleColor(ImGuiCol_Text, ca);
+	{
+		std::string s;
+		if (MODE_Ranged) s = MODE_Ranged.getName();
+		else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
+		else if (MODE_Manual) s = MODE_Manual.getName();
+
+		ui.AddSpacingSeparated();
+
+		ui.AddLabelHuge(s.c_str(), false, true);
+
+		ui.AddSpacing();
+		ui.AddSpacing();
+
+		// Mood
+		ui.Add(RANGE_Selected, OFX_IM_DRAG);
+		//ui.Add(RANGE_Selected, OFX_IM_INACTIVE);
+
+		ui.AddSpacing();
+
+		// State
+		ui.Add(TARGET_Selected, OFX_IM_HSLIDER_SMALL);
+		//ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
+	}
+	ImGui::PopStyleColor();
+
+	ui.AddSpacing();
+
+	//--
+
+	bool b = false;
+	//bool b = ui.bMinimize;
+
+	float h = (b ? 1 : 2) * ui.getWidgetsHeightUnit();
+
+	string toolTip = "";
+	bool bFlip = true;
+	int amountButtonsPerRowClicker = 3;
+	bool bResponsiveButtonsClicker = true;
+
+	//--
+
+	// State / Target
+
+	ui.AddLabelBig(TARGET_Selected.getName(), false, b);
+
+	if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
+	else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
+}
+
+//--------------------------------------------------------------
 void ofxSurfingMoods::draw_ImGui_Matrices()
 {
 	if (bGui_Matrices)
@@ -2342,6 +2418,7 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 
 		if (ui.BeginWindowSpecial(bGui_Matrices))
 		{
+			
 			bool b = false;
 			//bool b = ui.bMinimize;
 
@@ -2747,11 +2824,13 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					ui.AddSpacing();
 					ui.AddSpacing();
 
+					// Mood
 					ui.Add(RANGE_Selected, OFX_IM_DRAG);
 					//ui.Add(RANGE_Selected, OFX_IM_INACTIVE);
 
 					ui.AddSpacing();
 
+					// State
 					ui.Add(TARGET_Selected, OFX_IM_HSLIDER_SMALL);
 					//ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
 				}

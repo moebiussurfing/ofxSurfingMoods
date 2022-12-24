@@ -147,6 +147,10 @@ private:
 	void draw_ImGui_Matrices();
 	void draw_ImGui_ManualSlider();
 
+public:
+
+	void draw_ImGui_GameMode();
+
 private:
 
 	ofParameter<bool> bResetSlider{ "Reset Slider",false };
