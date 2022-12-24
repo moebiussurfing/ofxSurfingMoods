@@ -2358,41 +2358,41 @@ void ofxSurfingMoods::draw_ImGui_GameMode()
 
 	//--
 	
-	// Text + Main Controls
-	ImGui::PushStyleColor(ImGuiCol_Text, ca);
-	{
-		std::string s;
-		if (MODE_Ranged) s = MODE_Ranged.getName();
-		else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
-		else if (MODE_Manual) s = MODE_Manual.getName();
+	//// Text + Main Controls
+	//ImGui::PushStyleColor(ImGuiCol_Text, ca);
+	//{
+	//	//std::string s;
+	//	//if (MODE_Ranged) s = MODE_Ranged.getName();
+	//	//else if (MODE_MarkovChain) s = MODE_MarkovChain.getName();
+	//	//else if (MODE_Manual) s = MODE_Manual.getName();
+	//	//ui.AddSpacingSeparated();
+	//	//ui.AddLabelHuge(s.c_str(), false, true);
+	//	//ui.AddSpacing();
+	//	//ui.AddSpacing();
 
-		ui.AddSpacingSeparated();
+	//	// Mood
+	//	ui.pushStyleFont(OFX_IM_FONT_BIG);
+	//	ui.Add(RANGE_Selected, OFX_IM_DRAG);
+	//	//ui.Add(RANGE_Selected, OFX_IM_INACTIVE);
+	//	ui.popStyleFont();
 
-		ui.AddLabelHuge(s.c_str(), false, true);
+	//	//ui.AddSpacing();
 
-		ui.AddSpacing();
-		ui.AddSpacing();
+	//	//// State
+	//	//ui.Add(TARGET_Selected, OFX_IM_HSLIDER_SMALL);
+	//	////ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
+	//}
+	//ImGui::PopStyleColor();
 
-		// Mood
-		ui.Add(RANGE_Selected, OFX_IM_DRAG);
-		//ui.Add(RANGE_Selected, OFX_IM_INACTIVE);
-
-		ui.AddSpacing();
-
-		// State
-		ui.Add(TARGET_Selected, OFX_IM_HSLIDER_SMALL);
-		//ui.Add(TARGET_Selected, OFX_IM_DEFAULT, 1, false);
-	}
-	ImGui::PopStyleColor();
-
-	ui.AddSpacing();
+	//ui.AddSpacing();
 
 	//--
 
-	bool b = false;
-	//bool b = ui.bMinimize;
+	//bool b = false;
+	////bool b = ui.bMinimize;
+	////float h = (b ? 1 : 2) * ui.getWidgetsHeightUnit();
 
-	float h = (b ? 1 : 2) * ui.getWidgetsHeightUnit();
+	float h = 2 * ui.getWidgetsHeightUnit();
 
 	string toolTip = "";
 	bool bFlip = true;
@@ -2403,7 +2403,8 @@ void ofxSurfingMoods::draw_ImGui_GameMode()
 
 	// State / Target
 
-	ui.AddLabelBig(TARGET_Selected.getName(), false, b);
+	ui.AddLabelBig(TARGET_Selected.getName());
+	//ui.AddLabelBig(TARGET_Selected.getName(), false, b);
 
 	if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
 	else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
