@@ -1,4 +1,5 @@
 ofxImGui
+ofxSurfingBox
 ofxSurfingHelpers
 ofxSurfingImGui
 ofxSurfingMoods

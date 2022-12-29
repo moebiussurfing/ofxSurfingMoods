@@ -5,3 +5,4 @@ ofxSurfingHelpers
 ofxSurfingImGui
 ofxSurfingMoods
 ofxWindowApp
+ofxSurfingBox

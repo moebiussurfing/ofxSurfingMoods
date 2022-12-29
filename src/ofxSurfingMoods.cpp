@@ -65,7 +65,7 @@ void ofxSurfingMoods::setup()
 		markov.setup(mat, 0);
 	}
 	else {
-		ofLogError(__FUNCTION__) << "Markov file " << path_markovMatrix << " not found!";
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "Markov file " << path_markovMatrix << " not found!";
 	}
 
 	//--
@@ -78,8 +78,8 @@ void ofxSurfingMoods::setup()
 	bool isLoaded = myFont.load(myTTF, sizeTTF, true, true);
 	if (!isLoaded)
 	{
-		ofLogError(__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
-		ofLogError(__FUNCTION__) << "Load default font.";
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "ofTrueTypeFont FONT FILE '" << myTTF << "' NOT FOUND!";
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "Load default font.";
 
 		myFont.load(OF_TTF_MONO, sizeTTF, true, true);
 	}
@@ -133,7 +133,7 @@ void ofxSurfingMoods::setup()
 
 	//--------
 
-	// startup
+	// Startup
 	startup();
 }
 
@@ -283,6 +283,7 @@ void ofxSurfingMoods::setup_Params()
 	params_AppSettings.add(bUseCustomPreviewPosition);
 	params_AppSettings.add(bModeExternalClock);
 	params_AppSettings.add(ui.params_Advanced);
+	//params_AppSettings.add(bMode_Edit);
 
 	//-
 
@@ -313,6 +314,7 @@ void ofxSurfingMoods::setup_Params()
 	params_Listeners.add(controlManual);
 	params_Listeners.add(countToDuration);
 	params_Listeners.add(ui.bMinimize);
+	params_Listeners.add(bMode_Edit);
 
 	// Exclude from file settings
 	//bPLAY.setSerializable(false);
@@ -390,6 +392,15 @@ void ofxSurfingMoods::startup()
 	//--
 
 	refresh_MOOD_Color();
+
+	//--
+
+	// Link to toggles controller
+
+#ifdef USE_TOGGLE_TRIGGERS
+	index.makeReferenceTo(TARGET_Selected);
+	doBuildMidiNotes();
+#endif
 }
 
 //--------------------------------------------------------------
@@ -464,15 +475,15 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 		if (key == 'k')
 		{
 			bKeys = !bKeys;
-			ofLogNotice(__FUNCTION__) << "KEYS: " << (bKeys ? "ON" : "OFF");
+			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "KEYS: " << (bKeys ? "ON" : "OFF");
 
 			if (!bKeys)
 			{
-				ofLogNotice(__FUNCTION__) << "ALL KEYS DISABLED. PRESS 'k' TO ENABLE GAIN!";
+				ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "ALL KEYS DISABLED. PRESS 'k' TO ENABLE GAIN!";
 			}
 			else
 			{
-				ofLogNotice(__FUNCTION__) << "KEYS ENABLED BACK";
+				ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "KEYS ENABLED BACK";
 			}
 		}
 
@@ -481,7 +492,7 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 	// Disabler for all keys. (independent from bActive)
 	if (!bKeys) return;
 
-	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << (char)key << " [" << key << "]";
 
 	// Modifiers
 	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -491,10 +502,10 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 
 	if (0) // debug
 	{
-		ofLogNotice(__FUNCTION__) << "mod_COMMAND: " << (mod_COMMAND ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_CONTROL: " << (mod_CONTROL ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_ALT: " << (mod_ALT ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_SHIFT: " << (mod_SHIFT ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "mod_COMMAND: " << (mod_COMMAND ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "mod_CONTROL: " << (mod_CONTROL ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "mod_ALT: " << (mod_ALT ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "mod_SHIFT: " << (mod_SHIFT ? "ON" : "OFF");
 	}
 
 	//-
@@ -551,7 +562,7 @@ void ofxSurfingMoods::keyPressed(ofKeyEventArgs& eventArgs)
 void ofxSurfingMoods::keyReleased(ofKeyEventArgs& eventArgs)
 {
 	const int& key = eventArgs.key;
-	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << (char)key << " [" << key << "]";
 
 	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
 	bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
@@ -562,21 +573,21 @@ void ofxSurfingMoods::keyReleased(ofKeyEventArgs& eventArgs)
 //--------------------------------------------------------------
 void ofxSurfingMoods::addKeysListeners()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__);
 	ofAddListener(ofEvents().keyPressed, this, &ofxSurfingMoods::keyPressed);
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::removeKeysListeners()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__);
 	ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingMoods::keyPressed);
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::windowResized(int w, int h)
 {
-	ofLogNotice(__FUNCTION__) << w << ", " << h;
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << w << ", " << h;
 
 	// workaround
 	bResetLayout = true;
@@ -593,7 +604,7 @@ void ofxSurfingMoods::exit()
 	//-
 
 	// Save settings
-		saveSettings(path_Folder);
+	saveSettings(path_Folder);
 	if (bMode_Edit)
 	{
 		saveBanks(path_Folder);
@@ -611,7 +622,7 @@ void ofxSurfingMoods::exit()
 //--------------------------------------------------------------
 void ofxSurfingMoods::refresh_MOOD_Color()
 {
-	ofLogVerbose(__FUNCTION__);
+	ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__);
 
 	// Mood color preview label
 	switch (RANGE_Selected.get())
@@ -1130,11 +1141,11 @@ void ofxSurfingMoods::draw_PreviewWidget(int x, int  y, int  w, int  h) // custo
 //--------------------------------------------------------------
 void ofxSurfingMoods::load_range(int r) // recall current range margins from data vector
 {
-	ofLogNotice(__FUNCTION__) << r;
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << r;
 
 	if ((r < 0) || (r >= NUM_RANGES))
 	{
-		ofLogError(__FUNCTION__) << "load_range. OUT OF RANGE";
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "load_range. OUT OF RANGE";
 	}
 	else
 	{
@@ -1164,11 +1175,11 @@ void ofxSurfingMoods::save_range(int r)
 {
 	if ((r < 0) || (r >= NUM_RANGES))
 	{
-		if (r != -1) ofLogError(__FUNCTION__) << "OUT OF RANGE !";
+		if (r != -1) ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "OUT OF RANGE !";
 	}
 	else
 	{
-		ofLogNotice(__FUNCTION__) << r;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << r;
 
 		//// Clamp ranges
 		//if (r < 0)
@@ -1187,7 +1198,7 @@ void ofxSurfingMoods::save_range(int r)
 //--------------------------------------------------------------
 void ofxSurfingMoods::stopMachine()
 {
-	ofLogNotice(__FUNCTION__) << "stopMachine";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "stopMachine";
 
 	counterStep = 0;
 	directionUp = true;
@@ -1213,7 +1224,7 @@ void ofxSurfingMoods::stopMachine()
 //--------------------------------------------------------------
 void ofxSurfingMoods::resetClock()
 {
-	ofLogNotice(__FUNCTION__) << "resetClock";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "resetClock";
 
 	//timer_Range.stop();
 	bpmLenghtBars = 1;
@@ -1228,7 +1239,7 @@ void ofxSurfingMoods::resetClock()
 //--------------------------------------------------------------
 void ofxSurfingMoods::resetBank(bool RANDOMIZED, bool SORT_RELATIVE)
 {
-	ofLogNotice(__FUNCTION__) << "resetBank";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "resetBank";
 
 	// erase bank targets
 	for (int p = 0; p < NUM_TARGETS; p++)
@@ -1391,7 +1402,7 @@ void ofxSurfingMoods::doRunEngineStep()
 			RANGE_Selected = RANGE_Selected - 1;
 		}
 
-		ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
 	}
 
 	//-
@@ -1469,7 +1480,7 @@ void ofxSurfingMoods::doRunEngineStep()
 
 	//-
 
-	ofLogNotice(__FUNCTION__) << "TARGET RANDOM: " << TARGET_Selected;
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "TARGET RANDOM: " << TARGET_Selected;
 
 	//-
 }
@@ -1483,7 +1494,7 @@ void ofxSurfingMoods::doBeatTick()
 //--------------------------------------------------------------
 void ofxSurfingMoods::clone()
 {
-	ofLogVerbose(__FUNCTION__) << "clone targets";
+	ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << "clone targets";
 	for (int i = TARGET_Selected; i < NUM_TARGETS; i++)
 	{
 		presets_A[i] = PRESET_A_Selected;
@@ -1663,7 +1674,7 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 
 					//--
 
-					ofLogNotice(__FUNCTION__) << "TARGET: " << TARGET_Selected;
+					ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "TARGET: " << TARGET_Selected;
 
 					// TODO: only implemented to 3 ranges..
 					if (TARGET_Selected >= ranges[0].min && TARGET_Selected <= ranges[0].max) {
@@ -1676,7 +1687,7 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 						RANGE_Selected = 2;
 					}
 
-					//ofLogNotice(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
+					//ofLogNotice("ofxSurfingMoods")<<(__FUNCTION__) << "RANGE_Selected: " << RANGE_Selected;
 				}
 			}
 		}
@@ -1686,16 +1697,16 @@ void ofxSurfingMoods::doRunStep(bool bforced)
 //--------------------------------------------------------------
 void ofxSurfingMoods::timer_Range_Complete(int& args)
 {
-	ofLogNotice(__FUNCTION__) << "\n";
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "\n";
 
-	ofLogVerbose(__FUNCTION__) << "timer_Range_Complete";
+	ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << "timer_Range_Complete";
 	doRunStep();
 }
 
 //--------------------------------------------------------------
 void ofxSurfingMoods::timer_Range_Started(int& args)
 {
-	ofLogVerbose(__FUNCTION__) << "timer_Range_Started";
+	ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << "timer_Range_Started";
 }
 
 //--------------------------------------------------------------
@@ -1725,17 +1736,17 @@ void ofxSurfingMoods::saveBanks(std::string path)
 
 		js_targets.push_back(pt);
 
-		ofLogNotice(__FUNCTION__) << "presets: " << pt;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "presets: " << pt;
 	}
 	bool bSaved = ofSavePrettyJson(path + filename_Bank, js_targets);
 
 	if (bSaved)
 	{
-		ofLogNotice(__FUNCTION__) << "ofSaveJson: " << js_targets;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "ofSaveJson: " << js_targets;
 	}
 	else
 	{
-		ofLogError(__FUNCTION__) << "CAN'T SAVE FILES INTO: " << path;
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "CAN'T SAVE FILES INTO: " << path;
 	}
 }
 
@@ -1747,7 +1758,7 @@ void ofxSurfingMoods::saveSettings(std::string path)
 	ofSerialize(_settings, params_AppSettings);
 	std::string _path = path + filename_AppSettings + ".xml";
 	_settings.save(_path);
-	ofLogNotice(__FUNCTION__) << _path;
+	ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << _path;
 }
 
 //--------------------------------------------------------------
@@ -1762,11 +1773,11 @@ bool ofxSurfingMoods::loadBanks(std::string path)
 		// parse json
 		file >> js_targets;
 
-		ofLogVerbose(__FUNCTION__) << js_targets;
-		ofLogNotice(__FUNCTION__) << "LOADED FILE: " << pathBank;
-		ofLogNotice(__FUNCTION__) << js_targets;
+		ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << js_targets;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "LOADED FILE: " << pathBank;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << js_targets;
 
-		ofLogNotice(__FUNCTION__) << pathBank + " json file must be present and formatted as expected!";
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << pathBank + " json file must be present and formatted as expected!";
 
 		// avoid crashes
 		int p = 0;
@@ -1774,7 +1785,7 @@ bool ofxSurfingMoods::loadBanks(std::string path)
 		{
 			if ((!js_tar.empty()) && (p < NUM_TARGETS))
 			{
-				ofLogVerbose(__FUNCTION__) << endl << js_tar;
+				ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << endl << js_tar;
 
 				int prst_A;
 				int prst_B;
@@ -1793,9 +1804,9 @@ bool ofxSurfingMoods::loadBanks(std::string path)
 				presets_B[p] = (int)MIN(prst_B, NUM_PRESETS_B);
 				presets_C[p] = (int)MIN(prst_C, NUM_PRESETS_C);
 
-				ofLogVerbose(__FUNCTION__) << presets_A[p];
-				ofLogVerbose(__FUNCTION__) << presets_B[p];
-				ofLogVerbose(__FUNCTION__) << presets_C[p];
+				ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << presets_A[p];
+				ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << presets_B[p];
+				ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << presets_C[p];
 				p++;
 			}
 		}
@@ -1804,7 +1815,7 @@ bool ofxSurfingMoods::loadBanks(std::string path)
 	}
 	else
 	{
-		ofLogError(__FUNCTION__) << pathBank << " NOT FOUND!";
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << pathBank << " NOT FOUND!";
 		return false;
 	}
 }
@@ -1826,14 +1837,14 @@ void ofxSurfingMoods::loadSettings(std::string path)
 
 	if (bLoaded)
 	{
-		ofLogNotice(__FUNCTION__) << "LOADED: " << _path;
-		ofLogNotice(__FUNCTION__) << endl << endl << _settings.toString();
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << "LOADED: " << _path;
+		ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << endl << endl << _settings.toString();
 
 		ofDeserialize(_settings, params_AppSettings);
 	}
 	else
 	{
-		ofLogError(__FUNCTION__) << "FILE NOT FOUND: " << _path;
+		ofLogError("ofxSurfingMoods") << (__FUNCTION__) << "FILE NOT FOUND: " << _path;
 
 		// workaround
 		// Should check rect settings file instead..
@@ -1850,7 +1861,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 	{
 		std::string name = e.getName();
 
-		if (name != "COMPLETE") ofLogVerbose(__FUNCTION__) << name << " : " << e;
+		if (name != "COMPLETE") ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << name << " : " << e;
 
 		if (0) {}
 
@@ -1912,7 +1923,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 		else if (name == TARGET_Selected.getName())
 		{
-			ofLogNotice(__FUNCTION__) << name << ":" << TARGET_Selected;
+			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << name << ":" << TARGET_Selected;
 
 			// Blink
 			bBlink = true;
@@ -1939,7 +1950,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 				//TODO:
 				// Save not required if target contents (selected A-B-C) not changed..
 
-				if (target_autoSave && TARGET_Selected_PRE >= 0)
+				if (bAutoSave_Target && TARGET_Selected_PRE >= 0)
 				{
 					//TODO:
 					// should clamp!
@@ -1951,7 +1962,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 				//-
 
-				if (target_autoLoad)
+				if (bAutoLoad_Target)
 				{
 					// auto load
 					if (PRESET_A_Enable) PRESET_A_Selected = presets_A[TARGET_Selected];
@@ -2135,6 +2146,21 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 		}
 
 		// workflow
+		else if (name == bMode_Edit.getName())
+		{
+			if (bMode_Edit.get())
+			{
+				bAutoSave_Target = true;
+				bAutoSave_Range = true;
+			}
+			else
+			{
+				bAutoSave_Target = false;
+				bAutoSave_Range = false;
+			}
+		}
+
+		// workflow
 		else if (name == bModeAutomatic.getName())
 		{
 			if (!bModeAutomatic)
@@ -2146,8 +2172,11 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 		else if (name == ui.bMinimize.getName())
 		{
-			if (ui.bMinimize)
+			if (ui.bMinimize) {
+
 				if (bGui_Advanced)bGui_Advanced = false;
+				//bExpand = false;
+			}
 		}
 	}
 }
@@ -2158,11 +2187,11 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter& e)
 	if (bDISABLE_CALLBACKS) return;
 	{
 		std::string name = e.getName();
-		ofLogVerbose(__FUNCTION__) << name << " : " << e;
+		ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << name << " : " << e;
 
 		if (name == RANGE_Selected.getName())
 		{
-			ofLogNotice(__FUNCTION__) << RANGE_Selected;
+			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << RANGE_Selected;
 
 			//TODO
 			// split to functions to disable autosave when playing mode..
@@ -2171,7 +2200,7 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter& e)
 			if (RANGE_Selected != RANGE_Selected_PRE)
 			{
 				int r;
-				if (range_autoSave)
+				if (bAutoSave_Range)
 				{
 					// save range
 					r = RANGE_Selected_PRE;
@@ -2180,7 +2209,7 @@ void ofxSurfingMoods::Changed_Ranges(ofAbstractParameter& e)
 
 				//-
 
-				if (range_autoLoad)
+				if (bAutoLoad_Range)
 				{
 					// load range
 					r = RANGE_Selected;
@@ -2357,7 +2386,7 @@ void ofxSurfingMoods::draw_ImGui_GameMode()
 	ImVec4 ca2 = (ImVec4)ImColor(c.x, c.y, c.z, c.w * (a * 0.5));//lower
 
 	//--
-	
+
 	//// Text + Main Controls
 	//ImGui::PushStyleColor(ImGuiCol_Text, ca);
 	//{
@@ -2419,7 +2448,6 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 
 		if (ui.BeginWindowSpecial(bGui_Matrices))
 		{
-			
 			bool b = false;
 			//bool b = ui.bMinimize;
 
@@ -2439,9 +2467,14 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 			if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
 			else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
 
+			ui.AddSpacing();
+			ui.AddSpacing();
+			ui.Add(bExpand, OFX_IM_TOGGLE_ROUNDED_SMALL);
+
 			//--
 
-			if (!ui.bMinimize)
+			//if (!ui.bMinimize)
+			if (bExpand)
 			{
 				ui.AddSpacingBigSeparated();
 
@@ -2537,10 +2570,6 @@ void ofxSurfingMoods::draw_ImGui_Main()
 				//ui.Add(bModeExternalClock, OFX_IM_TOGGLE_SMALL);
 				float _h = ui.getWidgetsHeightUnit();
 
-				// Edit mode
-				ofxImGuiSurfing::AddBigToggleNamed(bMode_Edit, -1, _h, "MODE EDIT", "MODE LOCKED");
-				ui.AddSpacingSeparated();
-				
 				// External clock
 				ofxImGuiSurfing::AddBigToggleNamed(bModeExternalClock, -1, _h, bModeExternalClock.getName(), "CLOCK INTERNAL");
 
@@ -2613,8 +2642,15 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					ui.Unindent();
 				}
 
-
 				if (MODE_Manual) ui.Add(bGui_ManualSlider, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+
+				ui.Add(bGui_Matrices, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+
+				ui.AddSpacingSeparated();
+
+				// Edit mode
+				float _h = ui.getWidgetsHeightUnit();
+				ofxImGuiSurfing::AddBigToggleNamed(bMode_Edit, -1, _h, "MODE EDIT", "MODE LOCKED", true);
 			}
 
 			//--
@@ -2870,9 +2906,9 @@ void ofxSurfingMoods::draw_ImGui_Main()
 					if (PRESET_B_Enable) ui.Add(PRESET_B_Selected, OFX_IM_DEFAULT);
 					if (PRESET_C_Enable) ui.Add(PRESET_C_Selected, OFX_IM_DEFAULT);
 
-					ui.AddSpacing();
+					//ui.AddSpacing();
 
-					ui.Add(bGui_Matrices, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+					//ui.Add(bGui_Matrices, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
 					ImGui::TreePop();
 				}
@@ -2910,18 +2946,22 @@ void ofxSurfingMoods::doResetPreviewWidget()
 //--------------------------------------------------------------
 void ofxSurfingMoods::drawGui()
 {
-	if (!bGui) return;
-
 	ui.Begin();
 	{
-		draw_ImGui_Main();
-		draw_ImGui_Matrices();
-		draw_ImGui_Advanced();
+		if (bGui) {
+			draw_ImGui_Main();
+			draw_ImGui_Matrices();
+			draw_ImGui_Advanced();
+		}
+
+		// visible also when gui hidden!
 		draw_ImGui_ManualSlider();
 	}
 	ui.End();
 
 	//--
+
+	if (!bGui) return;
 
 	// Preview widget
 	if (bGui_PreviewWidget) draw_PreviewWidget();

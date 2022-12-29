@@ -6,9 +6,9 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 
 ## HIERARCHY
 
-1. There are **THREE MOODS** (also named as **RANGES**). (Red - Yellow - Green)  
+1. There are **THREE MOODS** (also named **RANGES**). (Red - Yellow - Green)  
 
-2. Each **RANGE** has **THREE STATES**. (also named as **TARGETS**)  
+2. Each **RANGE** has **THREE STATES**. (also named **TARGETS**)  
 
 3. Every **TARGET** can be linked to three (A-B-C) **PRESETS RECEIVERS**.  
 
@@ -16,13 +16,13 @@ An **openFrameworks** add-on that works as my personal **MOOD-MACHINE**.
 
 ## What we will do with that Target index evolution?
 
-We will get this index changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**,  
+We will get these indexes changes using **callbacks** in our **ofApp**, to **apply the States to our Scene**,  
 linking them to change some kind of:  
 *Parameters / States / Scenes / Preset Selections / Colors / Triggering Video / Sounds ...etc*  
 
 ## There's some clock inside?
 
-Yes. There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walking around into the *MOOD STATES*.  
+Yes. There is an internal **BPM Clock** and customizable timers and counters to configure the global speeds or how much time we want to stay or walk around into the *MOOD STATES*.  
 
 ## Screenshots
 
@@ -70,13 +70,12 @@ Download / Clone and add to **PROJECT GENERATOR**:
 - [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) / _Fork_ from @**Daandelange**.  
 - [ofxBeatClock](https://github.com/moebiussurfing/ofxBeatClock) / _Optional_. For the Advanced Example. 
+- [ofxSurfingBox](https://github.com/moebiussurfing/ofxSurfingBox)
 
 Already included in *OF_ADDON/libs* or into other add-ons. No need to add them manually:
 
 - [ofxMarkovChain](https://github.com/elaye/ofxMarkovChain)
 - [ofxSimpleTimer](https://github.com/HeliosInteractive/ofxSimpleTimer)
-- [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_  
-- [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_  
 
 ## Tested Systems
 
