@@ -401,6 +401,10 @@ void ofxSurfingMoods::startup()
 	index.makeReferenceTo(TARGET_Selected);
 	doBuildMidiNotes();
 #endif
+
+	//--
+
+	bMode_Edit = bMode_Edit;
 }
 
 //--------------------------------------------------------------
