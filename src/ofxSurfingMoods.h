@@ -7,12 +7,9 @@
 
 	TODO:
 
-	+ add edit/lock mode
 	+ add divider to make globally slower or faster.
 		important on manual mode
 	+ fix advanced panel width grow unlimited
-	+ add LOCK mode to disable momentary editing ranges preset
-	
 
 	BUG:
 
@@ -28,14 +25,14 @@
 #include "ofxSurfingImGui.h" 
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingBoxInteractive.h" // engine to move and resize the preview widget
-//#include "ofxInteractiveRect.h" // engine to move and resize the preview widget
 #include "TextBoxWidget.h" // help box
+#include "surfingParamIndexToggles.h"
 
 //--
 
 // Constants
 #define NUM_RANGES 3 // TARGET RANGES
-#define MAX_ITEMS 16 // reserve max for arrays creations
+#define MAX_ITEMS 16 // Reserve max for arrays creations
 
 #define PREVIEW_START_AT_ZERO
 
@@ -132,9 +129,14 @@ private:
 
 	//-
 
-private:
+public:
 
 	ofxSurfingGui ui;
+
+	ofxSurfingGui* getUi() { return &ui; }
+
+private:
+
 	void setupGui();
 
 public:
@@ -168,7 +170,6 @@ private:
 private:
 
 	ofxSurfingBoxInteractive rectPreview;
-	//ofxInteractiveRect rectPreview = { "_PreviewRect" };
 
 	std::string path_rect;
 
@@ -613,15 +614,9 @@ private:
 
 	bool directionUp = true;
 
-	//ofParameter<bool> bAutoSave_Range = true;
-	//ofParameter<bool> bAutoLoad_Range = true;
-
-	//ofParameter<bool> bAutoSave_Target = true;
-	//ofParameter<bool> bAutoLoad_Target = true;
-
 	bool bAutoSave_Range = true;
 	bool bAutoLoad_Range = true;
-	
+
 	bool bAutoSave_Target = true;
 	bool bAutoLoad_Target = true;
 
@@ -630,139 +625,18 @@ private:
 
 	//--
 
-	// Force to allow using by external midi manager!
-	
-#define USE_TOGGLE_TRIGGERS
+	// Toggles index / selectors
 
-/*
-//#ifdef USE__OFX_SURFING_PRESET__MIDI__
-#if defined(USE__OFX_SURFING_PRESET__MIDI__) || defined(USE__OFX_SURFING_CONTROL__OFX_REMOTE_PARAMETERS__SERVER) || defined(USE__OFX_SURFING_PRESETS__INDEX_SELECTOR_TOGGLES)
-#define USE_TOGGLE_TRIGGERS
-#endif
-*/
-
-#ifdef USE_TOGGLE_TRIGGERS
-
-private:
-	
-	ofParameter<int> index; // Current selected preset index
-
-	vector<ofParameter<bool>> notesIndex;
-	ofParameterGroup params_PresetToggles{ "Presets" };
-	//void Changed_Params_PresetToggles(ofAbstractParameter& e);
-
-	//bool bSyncRemote;
-
-	//--------------------------------------------------------------
-	void refreshToggleNotes()
-	{
-		if (bDISABLE_CALLBACKS) return;
-
-		// Sets to true the respective toggle for current index and set to false for the others.
-
-		for (int i = 0; i <= index.getMax() && i < notesIndex.size(); i++)
-		{
-			if (i > notesIndex.size() - 1) break;
-
-			notesIndex[i].set(false);
-		}
-		if (index <= index.getMax() && index < notesIndex.size())
-		{
-			if (index <= notesIndex.size() - 1)
-				notesIndex[index].set(true);
-		}
-
-#ifdef USE__OFX_SURFING_CONTROL__OFX_REMOTE_PARAMETERS__SERVER
-		bSyncRemote = true;
-#endif
-	}
-
-	//TODO:
+	surfingParamIndexToggles toggles_Target;
+	surfingParamIndexToggles toggles_PresetA;
+	surfingParamIndexToggles toggles_PresetB;
+	surfingParamIndexToggles toggles_PresetC;
 
 public:
 
-	// To select index preset using bool toggle parameters triggers!
-	//--------------------------------------------------------------
-	ofParameterGroup& getParametersSelectorToggles()
-	{
-		//doBuildMidiNotes();
-
-		return params_PresetToggles;
-	}
-
-private:
-
-	//--------------------------------------------------------------
-	void doBuildMidiNotes()
-	{
-		notesIndex.clear();
-		params_PresetToggles.clear();
-
-		for (int i = 0; i <= index.getMax(); i++)
-		{
-			std::string n = index.getName();
-			//std::string n = "P";
-			//std::string n = "Preset ";
-
-			//n += ofToString(i < 10 ? "0" : "");
-			n += "_";
-			n += ofToString(i);
-
-			ofParameter<bool> b{ n, false };
-			notesIndex.push_back(b);
-			params_PresetToggles.add(b);
-		}
-
-		ofRemoveListener(params_PresetToggles.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_PresetToggles);
-
-		ofAddListener(params_PresetToggles.parameterChangedE(), this, &ofxSurfingMoods::Changed_Params_PresetToggles);
-
-		//--
-
-		//#ifdef INCLUDE__OFX_SURFING_PRESET__OFX_MIDI_PARAMS
-		//	surfingMIDI.clear();
-		//	surfingMIDI.add(params_Preset); // -> to control preset params
-		//	surfingMIDI.add(params_PresetToggles); // -> to select index preset by note/toggle and exclusive
-		//#endif
-	}
-
-	//--------------------------------------------------------------
-	void Changed_Params_PresetToggles(ofAbstractParameter& e)
-	{
-		if (bDISABLE_CALLBACKS) return;
-
-		std::string name = e.getName();
-
-		bool bdone = false;
-
-		for (int i = 0; i <= index.getMax() && i < notesIndex.size(); i++)
-		{
-			//if (i >= notesIndex.size()) break;
-
-			// true
-			if (notesIndex[i].get() && name == notesIndex[i].getName())
-			{
-				index = i;
-				ofLogNotice("ofxSurfingPresets") << (__FUNCTION__) << " " << name << " : TRUE";
-				bdone = true;
-
-				continue;
-			}
-		}
-		if (!bdone) return; // Not any detected note true
-
-		//-
-
-		// Make exclusive. All others to false
-		for (int i = 0; i <= index.getMax() && i < notesIndex.size(); i++)
-		{
-			if (i != index && notesIndex[i].get())
-			{
-				notesIndex[i] = false;
-			}
-		}
-	}
-
-#endif
+	ofParameterGroup& getTogglesTarget() { return toggles_Target.getParamToggles(); }
+	ofParameterGroup& getTogglesPresetA() { return toggles_PresetA.getParamToggles(); }
+	ofParameterGroup& getTogglesPresetB() { return toggles_PresetB.getParamToggles(); }
+	ofParameterGroup& getTogglesPresetC() { return toggles_PresetC.getParamToggles(); }
 };
 

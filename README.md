@@ -67,10 +67,10 @@ Uses ofxBeatClock.
 Download / Clone and add to **PROJECT GENERATOR**:  
 
 - [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+- [ofxSurfingBox](https://github.com/moebiussurfing/ofxSurfingBox)
 - [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test) / _Fork_ from @**Daandelange**.  
 - [ofxBeatClock](https://github.com/moebiussurfing/ofxBeatClock) / _Optional_. For the Advanced Example. 
-- [ofxSurfingBox](https://github.com/moebiussurfing/ofxSurfingBox)
 
 Already included in *OF_ADDON/libs* or into other add-ons. No need to add them manually:
 

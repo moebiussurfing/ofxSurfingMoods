@@ -131,8 +131,15 @@ void ofxSurfingMoods::setup()
 	// Gui
 	setupGui();
 
-	//--------
+	//--
 
+	toggles_Target.setup(TARGET_Selected);
+	toggles_PresetA.setup(PRESET_A_Selected);
+	toggles_PresetB.setup(PRESET_B_Selected);
+	toggles_PresetC.setup(PRESET_C_Selected);
+	
+	//--------
+	
 	// Startup
 	startup();
 }
@@ -2001,7 +2008,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 				TARGET_Selected_PRE = TARGET_Selected;
 			}
-			
+
 			// not changed. re trig
 			else
 			{
@@ -2013,7 +2020,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 					if (PRESET_C_Enable) PRESET_C_Selected = presets_C[TARGET_Selected];
 				}
 			}
-}
+		}
 
 		//else if (name == "PRESET A" || name == "PRESET B" || name == "PRESET C")
 		//{
@@ -2485,11 +2492,11 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 			if (!bUseColorizedMatrices) ofxImGuiSurfing::AddMatrixClicker(TARGET_Selected, h);
 			else ofxImGuiSurfing::AddMatrixClickerLabels(TARGET_Selected, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, h, toolTip, bFlip);
 
-			ui.AddSpacing();
-
 			if (!ui.bMinimize) {
 				ui.AddSpacing();
+				ui.AddSpacing();
 				ui.Add(bExpand, OFX_IM_TOGGLE_ROUNDED_SMALL);
+				ui.AddSpacing();
 			}
 
 			//--
@@ -2497,7 +2504,7 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 			//if (!ui.bMinimize)
 			if (bExpand)
 			{
-				ui.AddSpacingBigSeparated();
+				ui.AddSeparated();
 
 				h = 1 * ui.getWidgetsHeightUnit();
 

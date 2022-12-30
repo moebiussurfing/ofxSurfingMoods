@@ -1,6 +1,6 @@
-ofxBeatClock
 ofxImGui
 ofxMidi
+ofxMidiParams
 ofxSurfingBox
 ofxSurfingHelpers
 ofxSurfingImGui
