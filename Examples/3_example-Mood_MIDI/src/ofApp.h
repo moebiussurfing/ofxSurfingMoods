@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "ofxSurfingMoods.h"
+#include "ofxMidiParams.h"
 
 #include "ofxColorGradient.h" // Not required. For the example only
 #include "ofxWindowApp.h" // Not required. For the example only
@@ -48,4 +49,9 @@ public:
 	void Changed_Mood_PRESET_A(int &index);
     void Changed_Mood_PRESET_B(int &index);
     void Changed_Mood_PRESET_C(int &index);
+
+    //--
+
+    ofxMidiParams mMidiParams;
+
 };

@@ -39,16 +39,32 @@ void ofApp::draw()
 
 	ui.Begin();
 
-	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_BIG;
+	ImVec2 size_min = ImVec2(500, -1);
+	ImVec2 size_max = ImVec2(600, -1);
+	ImGui::SetNextWindowSizeConstraints(size_min, size_max);
 
 	if (ui.BeginWindow("ofApp"))
 	{
-		if (ui.BeginTree("LOCAL")) {
-			ui.Add(moods.TARGET_Selected);
-			ui.AddSpacing();
-			ui.Add(moods.PRESET_A_Selected);
-			ui.Add(moods.PRESET_B_Selected);
-			ui.Add(moods.PRESET_C_Selected);
+		if (ui.BeginTree("LOCAL"))
+		{
+			//ui.Add(moods.TARGET_Selected);
+			//ui.AddSpacing();
+			//ui.Add(moods.PRESET_A_Selected);
+			//ui.Add(moods.PRESET_B_Selected);
+			//ui.Add(moods.PRESET_C_Selected);
+
+			SurfingGuiTypes t = OFX_IM_VSLIDER;
+			float sz = 0.25;
+			ImGui::Columns(4, "##s4");
+			ui.Add(moods.TARGET_Selected, t, 4, sz);
+			ImGui::NextColumn();
+			ui.Add(moods.PRESET_A_Selected, t, 4, sz);
+			ImGui::NextColumn();
+			ui.Add(moods.PRESET_B_Selected, t, 4, sz);
+			ImGui::NextColumn();
+			ui.Add(moods.PRESET_C_Selected, t, 4, sz);
+			ImGui::Columns(1);
+
 			ui.EndTree();
 		}
 
@@ -57,40 +73,41 @@ void ofApp::draw()
 		ImGui::Columns(4, "##t4");
 
 		ui.AddGroup(moods.getTogglesTarget());
-		//ui.AddSpacing();
 		ImGui::NextColumn();
 
 		ui.AddGroup(moods.getTogglesPresetA());
 		ImGui::NextColumn();
-		
+
 		ui.AddGroup(moods.getTogglesPresetB());
 		ImGui::NextColumn();
-		
+
 		ui.AddGroup(moods.getTogglesPresetC());
-		
 		ImGui::Columns(1);
 
 		// styles
 		{
 			static bool bDone = false;
-			if (!bDone) {
+			if (!bDone)
+			{
 				bDone = true;
 				//ui.ClearStyles();
 
+				SurfingGuiTypes t = OFX_IM_TOGGLE_BIG_XXL_BORDER_BLINK;
+				//SurfingGuiTypes t = OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK;
+
 				auto& g1 = moods.getTogglesTarget();
-				ui.AddStyleGroupForBools(g1, OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK);
+				ui.AddStyleGroupForBools(g1, t);
 
 				auto& g2 = moods.getTogglesPresetA();
-				ui.AddStyleGroupForBools(g2, OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK);
+				ui.AddStyleGroupForBools(g2, t);
 
 				auto& g3 = moods.getTogglesPresetB();
-				ui.AddStyleGroupForBools(g3, OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK);
+				ui.AddStyleGroupForBools(g3, t);
 
 				auto& g4 = moods.getTogglesPresetC();
-				ui.AddStyleGroupForBools(g4, OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK);
+				ui.AddStyleGroupForBools(g4, t);
 			}
 		}
-
 
 		ui.EndWindow();
 	};
@@ -100,6 +117,8 @@ void ofApp::draw()
 	//-
 
 	moods.drawGui();
+
+	mMidiParams.draw();
 }
 
 //--------------------------------------------------------------
@@ -154,6 +173,18 @@ void ofApp::setupMoods()
 	// 9 Presets for each preset receiver A-B-C.
 	// Splitting the 3 Moods:
 	// Limit 0-1 target 3, limit 1-2 target 6.
+
+	//--
+
+	mMidiParams.connect();
+
+	// -> add groups
+	mMidiParams.add(moods.getTogglesTarget());
+	mMidiParams.add(moods.getTogglesPresetA());
+	mMidiParams.add(moods.getTogglesPresetB());
+	mMidiParams.add(moods.getTogglesPresetC());
+
+	mMidiParams.setVisible(true);
 }
 
 //--------------------------------------------------------------
