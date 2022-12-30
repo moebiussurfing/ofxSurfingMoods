@@ -45,7 +45,7 @@ void ofApp::draw()
 
 	if (ui.BeginWindow("ofApp"))
 	{
-		if (ui.BeginTree("LOCAL"))
+		if (ui.BeginTree("LOCAL", true))
 		{
 			//ui.Add(moods.TARGET_Selected);
 			//ui.AddSpacing();
@@ -53,15 +53,19 @@ void ofApp::draw()
 			//ui.Add(moods.PRESET_B_Selected);
 			//ui.Add(moods.PRESET_C_Selected);
 
+			float sz = 0.25f;
 			SurfingGuiTypes t = OFX_IM_VSLIDER;
-			float sz = 0.24;
-			ImGui::Columns(4, "##s4");
+			ImGui::Columns(4, "##s4", false);
+			ui.AddSpacing();
 			ui.Add(moods.TARGET_Selected, t, 4, sz);
 			ImGui::NextColumn();
+			ui.AddSpacing();
 			ui.Add(moods.PRESET_A_Selected, t, 4, sz);
 			ImGui::NextColumn();
+			ui.AddSpacing();
 			ui.Add(moods.PRESET_B_Selected, t, 4, sz);
 			ImGui::NextColumn();
+			ui.AddSpacing();
 			ui.Add(moods.PRESET_C_Selected, t, 4, sz);
 			ImGui::Columns(1);
 
@@ -70,7 +74,7 @@ void ofApp::draw()
 
 		ui.AddSpacingSeparated();
 
-		ImGui::Columns(4, "##t4");
+		ImGui::Columns(4, "##t4", false);
 		ui.AddGroup(moods.getTogglesTarget());
 		ImGui::NextColumn();
 		ui.AddGroup(moods.getTogglesPresetA());
@@ -89,7 +93,6 @@ void ofApp::draw()
 				//ui.ClearStyles();
 
 				SurfingGuiTypes t = OFX_IM_TOGGLE_BIG_XXL_BORDER_BLINK;
-				//SurfingGuiTypes t = OFX_IM_TOGGLE_MEDIUM_BORDER_BLINK;
 
 				auto& g1 = moods.getTogglesTarget();
 				ui.AddStyleGroupForBools(g1, t);

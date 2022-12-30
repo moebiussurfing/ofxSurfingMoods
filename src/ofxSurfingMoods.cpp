@@ -137,9 +137,9 @@ void ofxSurfingMoods::setup()
 	toggles_PresetA.setup(PRESET_A_Selected);
 	toggles_PresetB.setup(PRESET_B_Selected);
 	toggles_PresetC.setup(PRESET_C_Selected);
-	
+
 	//--------
-	
+
 	// Startup
 	startup();
 }
@@ -1935,7 +1935,7 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 		else if (name == TARGET_Selected.getName())
 		{
-			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << name << ":" << TARGET_Selected;
+			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << " " << name << ":" << TARGET_Selected;
 
 			// Blink
 			bBlink = true;

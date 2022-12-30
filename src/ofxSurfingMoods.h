@@ -7,6 +7,7 @@
 
 	TODO:
 
+	+ add toggle flip matrix toggles
 	+ add divider to make globally slower or faster.
 		important on manual mode
 	+ fix advanced panel width grow unlimited
