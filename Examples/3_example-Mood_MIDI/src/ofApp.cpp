@@ -54,7 +54,7 @@ void ofApp::draw()
 			//ui.Add(moods.PRESET_C_Selected);
 
 			SurfingGuiTypes t = OFX_IM_VSLIDER;
-			float sz = 0.25;
+			float sz = 0.24;
 			ImGui::Columns(4, "##s4");
 			ui.Add(moods.TARGET_Selected, t, 4, sz);
 			ImGui::NextColumn();
@@ -71,16 +71,12 @@ void ofApp::draw()
 		ui.AddSpacingSeparated();
 
 		ImGui::Columns(4, "##t4");
-
 		ui.AddGroup(moods.getTogglesTarget());
 		ImGui::NextColumn();
-
 		ui.AddGroup(moods.getTogglesPresetA());
 		ImGui::NextColumn();
-
 		ui.AddGroup(moods.getTogglesPresetB());
 		ImGui::NextColumn();
-
 		ui.AddGroup(moods.getTogglesPresetC());
 		ImGui::Columns(1);
 
