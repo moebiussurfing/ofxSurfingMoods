@@ -1873,7 +1873,8 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 	{
 		std::string name = e.getName();
 
-		if (name != "COMPLETE") ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << name << " : " << e;
+		if (name != timer_Progress.getName()) 
+			ofLogVerbose("ofxSurfingMoods") << (__FUNCTION__) << name << " : " << e;
 
 		if (0) {}
 
@@ -2449,8 +2450,6 @@ void ofxSurfingMoods::draw_ImGui_GameMode()
 	float h = 2 * ui.getWidgetsHeightUnit();
 
 	string toolTip = "";
-	bool bFlip = true;
-	int amountButtonsPerRowClicker = 3;
 	bool bResponsiveButtonsClicker = true;
 
 	//--
@@ -2479,8 +2478,6 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 			float h = 2 * ui.getWidgetsHeightUnit();
 
 			string toolTip = "";
-			bool bFlip = true;
-			int amountButtonsPerRowClicker = 3;
 			bool bResponsiveButtonsClicker = true;
 
 			//--
@@ -2496,6 +2493,7 @@ void ofxSurfingMoods::draw_ImGui_Matrices()
 				ui.AddSpacing();
 				ui.AddSpacing();
 				ui.Add(bExpand, OFX_IM_TOGGLE_ROUNDED_SMALL);
+				ui.Add(bFlip, OFX_IM_TOGGLE_ROUNDED_MINI);
 				ui.AddSpacing();
 			}
 

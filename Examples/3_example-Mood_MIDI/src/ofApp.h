@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "ofxSurfingMoods.h"
+
 #include "ofxMidiParams.h"
 
 #include "ofxColorGradient.h" // Not required. For the example only

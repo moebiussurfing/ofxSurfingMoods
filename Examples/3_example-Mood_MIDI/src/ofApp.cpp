@@ -45,7 +45,7 @@ void ofApp::draw()
 
 	if (ui.BeginWindow("ofApp"))
 	{
-		if (ui.BeginTree("LOCAL", true))
+		//if (ui.BeginTree("LOCAL", true, false))
 		{
 			//ui.Add(moods.TARGET_Selected);
 			//ui.AddSpacing();
@@ -69,7 +69,7 @@ void ofApp::draw()
 			ui.Add(moods.PRESET_C_Selected, t, 4, sz);
 			ImGui::Columns(1);
 
-			ui.EndTree();
+			//ui.EndTree(false);
 		}
 
 		ui.AddSpacingSeparated();
@@ -176,6 +176,11 @@ void ofApp::setupMoods()
 	//--
 
 	mMidiParams.connect();
+
+	mMidiParams.add(moods.TARGET_Selected);
+	mMidiParams.add(moods.PRESET_A_Selected);
+	mMidiParams.add(moods.PRESET_B_Selected);
+	mMidiParams.add(moods.PRESET_C_Selected);
 
 	// -> add groups
 	mMidiParams.add(moods.getTogglesTarget());

@@ -25,9 +25,9 @@
 #include "ofxMarkovChain.h"
 #include "ofxSurfingImGui.h" 
 #include "ofxSurfingHelpers.h"
-#include "ofxSurfingBoxInteractive.h" // engine to move and resize the preview widget
+#include "ofxSurfingBoxInteractive.h" // to move and resize the preview widget
 #include "TextBoxWidget.h" // help box
-#include "surfingParamIndexToggles.h"
+#include "surfingParamIndexToggles.h" // to create and expose toggles to each used index (target and presets ABC)
 
 //--
 
@@ -152,6 +152,8 @@ private:
 	void draw_ImGui_ManualSlider();
 
 	ofParameter<bool> bExpand{ "Expand", false };
+	ofParameter<bool> bFlip{ "Flip", false };
+	ofParameter<int> amountButtonsPerRowClicker{ "Amount", 3, 1, 9};
 
 public:
 
