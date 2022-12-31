@@ -177,12 +177,13 @@ void ofApp::setupMoods()
 
 	mMidiParams.connect();
 
+	// -> Add selector indexes
 	mMidiParams.add(moods.TARGET_Selected);
 	mMidiParams.add(moods.PRESET_A_Selected);
 	mMidiParams.add(moods.PRESET_B_Selected);
 	mMidiParams.add(moods.PRESET_C_Selected);
 
-	// -> add groups
+	// -> Add groups
 	mMidiParams.add(moods.getTogglesTarget());
 	mMidiParams.add(moods.getTogglesPresetA());
 	mMidiParams.add(moods.getTogglesPresetB());
