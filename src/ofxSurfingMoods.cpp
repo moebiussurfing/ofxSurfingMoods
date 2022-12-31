@@ -292,6 +292,7 @@ void ofxSurfingMoods::setup_Params()
 	params_AppSettings.add(ui.params_Advanced);
 	//params_AppSettings.add(bMode_Edit);
 	params_AppSettings.add(bExpand);
+	params_AppSettings.add(bFlip);
 
 	//-
 
@@ -1878,62 +1879,6 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 
 		if (0) {}
 
-		else if (name == countToDuration.getName())
-		{
-			countToDuration = ofClamp(countToDuration, countToDuration.getMin(), countToDuration.getMax());
-
-			counterStepFromOne.setMin(1);
-			counterStepFromOne.setMax(countToDuration.get());
-		}
-
-		else if (name == bPLAY.getName())
-		{
-			if (bPLAY)
-			{
-				// 60,000 / bpmSpeed = MS
-				timer = bpmLenghtBars * (BPM_BAR_RATIO * (60000 / bpmSpeed));
-				timer_Range.start(false);
-				bIsPlaying = true;
-
-				//-
-
-				counterStep = 0;
-				counterStepFromOne = counterStep + 1; // for gui user
-
-				// workflow
-				// enable some mode
-				if (!MODE_MarkovChain && !MODE_Manual && !MODE_Ranged)
-				{
-					MODE_Ranged = true;
-					MODE_MarkovChain = false;
-					MODE_Manual = false;
-				}
-			}
-			else
-			{
-				timer_Range.stop();
-				bIsPlaying = false;
-
-				counterStep = 0;
-				counterStepFromOne = 0;
-				RANGE_Selected = 0;
-			}
-		}
-
-		else if (name == bModeExternalClock.getName())
-		{
-			bExternalLocked = bModeExternalClock;//?
-		}
-
-		else if (name == bClone_TARGETS.getName())
-		{
-			if (bClone_TARGETS)
-			{
-				bClone_TARGETS = false;
-				clone();
-			}
-		}
-
 		else if (name == TARGET_Selected.getName())
 		{
 			ofLogNotice("ofxSurfingMoods") << (__FUNCTION__) << " " << name << ":" << TARGET_Selected;
@@ -2020,6 +1965,62 @@ void ofxSurfingMoods::Changed_Params_Listeners(ofAbstractParameter& e)
 					if (PRESET_B_Enable) PRESET_B_Selected = presets_B[TARGET_Selected];
 					if (PRESET_C_Enable) PRESET_C_Selected = presets_C[TARGET_Selected];
 				}
+			}
+		}
+
+		else if (name == countToDuration.getName())
+		{
+			countToDuration = ofClamp(countToDuration, countToDuration.getMin(), countToDuration.getMax());
+
+			counterStepFromOne.setMin(1);
+			counterStepFromOne.setMax(countToDuration.get());
+		}
+
+		else if (name == bPLAY.getName())
+		{
+			if (bPLAY)
+			{
+				// 60,000 / bpmSpeed = MS
+				timer = bpmLenghtBars * (BPM_BAR_RATIO * (60000 / bpmSpeed));
+				timer_Range.start(false);
+				bIsPlaying = true;
+
+				//-
+
+				counterStep = 0;
+				counterStepFromOne = counterStep + 1; // for gui user
+
+				// workflow
+				// enable some mode
+				if (!MODE_MarkovChain && !MODE_Manual && !MODE_Ranged)
+				{
+					MODE_Ranged = true;
+					MODE_MarkovChain = false;
+					MODE_Manual = false;
+				}
+			}
+			else
+			{
+				timer_Range.stop();
+				bIsPlaying = false;
+
+				counterStep = 0;
+				counterStepFromOne = 0;
+				RANGE_Selected = 0;
+			}
+		}
+
+		else if (name == bModeExternalClock.getName())
+		{
+			bExternalLocked = bModeExternalClock;//?
+		}
+
+		else if (name == bClone_TARGETS.getName())
+		{
+			if (bClone_TARGETS)
+			{
+				bClone_TARGETS = false;
+				clone();
 			}
 		}
 
