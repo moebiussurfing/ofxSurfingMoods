@@ -7,6 +7,8 @@
 
 	TODO:
 
+	+ fix vert slider coloring when standalone
+		+ make theme dark & light to change border color.
 	+ add toggle flip matrix toggles
 	+ add divider to make globally slower or faster.
 		important on manual mode
