@@ -39,7 +39,7 @@ ofxMC::Matrix::Matrix(string filename) {
 	ofBuffer::Lines lines = buffer.getLines();
 	for (ofBuffer::Line line = lines.begin(); line != lines.end(); ++line) {
 		vector<float> row;
-		istringstream ss(*line);
+		std::istringstream ss(*line);
 		float val;
 		while (ss >> val) {
 			row.push_back(val);
